@@ -1,3 +1,8 @@
+export interface TileAttributes {
+  door?: boolean
+  spawn?: boolean
+}
+
 /**
  * Representa un tile individual en el mapa
  */
@@ -8,6 +13,8 @@ export interface MapTile {
   //
   spriteX: number
   spriteY: number
+
+  attributes?: TileAttributes
 
   /** Posición X en el grid del mapa */
   x: number
