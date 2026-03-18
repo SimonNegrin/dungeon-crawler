@@ -17,5 +17,8 @@
     "svelte-check": "^4.4.5",
     "typescript": "~5.9.3",
     "vite": "^8.0.0"
+  },
+  "dependencies": {
+    "parse-tmx": "^2.19.2"
   }
 }
