@@ -2,6 +2,7 @@
   import { loadSpritesheet } from "./common"
   import Rogue from "./Rogue.svelte"
   import type { MapTileAttributes, Position, Spritesheet } from "./types"
+  import Vec2 from "./Vec2"
 
   const TILE_FLOOR = "floor"
   const TILE_DOOR = "door"
@@ -11,7 +12,7 @@
   type Grid = CellType[][]
   type Player = {
     name: string
-    position: Position
+    position: Vec2
   }
 
   let {
@@ -26,7 +27,7 @@
   let players = $state<Player[]>([
     {
       name: "Krom",
-      position: { x: 1, y: 1 },
+      position: new Vec2(1, 1),
     },
   ])
 
@@ -54,7 +55,25 @@
 
     return lines
   }
+
+  function windowOnkeydown(event: KeyboardEvent): void {
+    const movements: Record<string, Vec2> = {
+      ArrowRight: new Vec2(1, 0),
+      ArrowLeft: new Vec2(-1, 0),
+      ArrowDown: new Vec2(0, 1),
+      ArrowUp: new Vec2(0, -1),
+    }
+
+    const movement = movements[event.key]
+    if (!movement) return
+
+    players.forEach((player) => {
+      player.position = player.position.add(movement)
+    })
+  }
 </script>
+
+<svelte:window onkeydown={windowOnkeydown} />
 
 {#await stagePromise then stage}
   <div
