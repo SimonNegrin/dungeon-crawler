@@ -48,3 +48,8 @@ export function calcDistanceBetween(a: Vec2, b: Vec2): Promise<number> {
     easystar.calculate()
   })
 }
+
+export function canWalkToPosition(position: Vec2): boolean {
+  const currentGrid = get(grid)
+  return currentGrid?.[position.y]?.[position.x] === 0
+}

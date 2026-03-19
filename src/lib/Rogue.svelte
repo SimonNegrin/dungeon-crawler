@@ -1,5 +1,9 @@
 <script lang="ts" module>
-  import { calcDistanceBetween, loadSpritesheet } from "./common"
+  import {
+    calcDistanceBetween,
+    canWalkToPosition,
+    loadSpritesheet,
+  } from "./common"
   import type { Player, RogueTileAttributes, Tile } from "./types"
   import Vec2 from "./Vec2"
   import { grid } from "./state"
@@ -18,10 +22,6 @@
   let tile = $derived(getRogueTile(player.name))
   let steps = $state(player.steps)
   let walkSound: WalkSound
-
-  function canWalk(position: Vec2): boolean {
-    return $grid?.[position.y]?.[position.x] === 0
-  }
 
   function getRogueTile(name: string): Tile<RogueTileAttributes> {
     const layer = roguesSpritesheet.layers[0]
@@ -48,7 +48,7 @@
     if (!movement) return
 
     const position = player.position.add(movement)
-    if (!canWalk(position)) return
+    if (!canWalkToPosition(position)) return
 
     const distance = await calcDistanceBetween(player.origin, position)
     if (distance > player.steps) return

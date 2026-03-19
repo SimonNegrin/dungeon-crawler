@@ -143,6 +143,7 @@
     }
 
     &::after {
+      --flicker-opacity: 0.4;
       content: "";
       display: block;
       position: absolute;
@@ -160,67 +161,67 @@
 
   @keyframes flicker {
     0% {
-      opacity: 0.27861;
+      opacity: calc(0.27861 * var(--flicker-opacity));
     }
     5% {
-      opacity: 0.34769;
+      opacity: calc(0.34769 * var(--flicker-opacity));
     }
     10% {
-      opacity: 0.23604;
+      opacity: calc(0.23604 * var(--flicker-opacity));
     }
     15% {
-      opacity: 0.90626;
+      opacity: calc(0.90626 * var(--flicker-opacity));
     }
     20% {
-      opacity: 0.18128;
+      opacity: calc(0.18128 * var(--flicker-opacity));
     }
     25% {
-      opacity: 0.83891;
+      opacity: calc(0.83891 * var(--flicker-opacity));
     }
     30% {
-      opacity: 0.65583;
+      opacity: calc(0.65583 * var(--flicker-opacity));
     }
     35% {
-      opacity: 0.67807;
+      opacity: calc(0.67807 * var(--flicker-opacity));
     }
     40% {
-      opacity: 0.26559;
+      opacity: calc(0.26559 * var(--flicker-opacity));
     }
     45% {
-      opacity: 0.84693;
+      opacity: calc(0.84693 * var(--flicker-opacity));
     }
     50% {
-      opacity: 0.96019;
+      opacity: calc(0.96019 * var(--flicker-opacity));
     }
     55% {
-      opacity: 0.08594;
+      opacity: calc(0.08594 * var(--flicker-opacity));
     }
     60% {
-      opacity: 0.20313;
+      opacity: calc(0.20313 * var(--flicker-opacity));
     }
     65% {
-      opacity: 0.71988;
+      opacity: calc(0.71988 * var(--flicker-opacity));
     }
     70% {
-      opacity: 0.53455;
+      opacity: calc(0.53455 * var(--flicker-opacity));
     }
     75% {
-      opacity: 0.37288;
+      opacity: calc(0.37288 * var(--flicker-opacity));
     }
     80% {
-      opacity: 0.71428;
+      opacity: calc(0.71428 * var(--flicker-opacity));
     }
     85% {
-      opacity: 0.70419;
+      opacity: calc(0.70419 * var(--flicker-opacity));
     }
     90% {
-      opacity: 0.7003;
+      opacity: calc(0.7003 * var(--flicker-opacity));
     }
     95% {
-      opacity: 0.36108;
+      opacity: calc(0.36108 * var(--flicker-opacity));
     }
     100% {
-      opacity: 0.24387;
+      opacity: calc(0.24387 * var(--flicker-opacity));
     }
   }
 
