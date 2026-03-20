@@ -1,22 +1,26 @@
 <script lang="ts">
-  import GameMap from "./lib/GameMap.svelte"
   import AspectRatio from "./lib/AspectRatio.svelte"
-  import { onMount } from "svelte"
-  import { loadStage } from "./lib/state"
+  import { loadStage, stage } from "./lib/state"
+  import Landing from "./lib/Landing.svelte"
+  import GameMap from "./lib/GameMap.svelte"
 
-  onMount(() => {
+  function onStart(): void {
     loadStage("Stage_1")
-  })
+  }
 </script>
 
 <main>
   <AspectRatio ratio={16 / 9}>
-    <div class="game-container">
-      <div class="screen-container">
-        <GameMap />
+    {#if $stage}
+      <div class="game-container">
+        <div class="screen-container">
+          <GameMap />
+        </div>
+        <div class="game-info"></div>
       </div>
-      <div class="game-info"></div>
-    </div>
+    {:else}
+      <Landing onclick={onStart} />
+    {/if}
   </AspectRatio>
 </main>
 

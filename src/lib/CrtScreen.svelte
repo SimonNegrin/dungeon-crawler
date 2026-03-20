@@ -3,19 +3,20 @@
 
   let {
     children,
+    flickerOpacity = 0.55,
   }: {
     children: Snippet
+    flickerOpacity?: number
   } = $props()
 </script>
 
-<div class="crt-screen">
+<div class="crt-screen" style:--flicker-opacity={flickerOpacity}>
   <div class="inner-shadow"></div>
   {@render children()}
 </div>
 
 <style>
   .crt-screen {
-    --flicker-opacity: 0.55;
     --border-radius: 15% 15% 15% 15% / 10% 10% 10% 10%;
 
     position: relative;
