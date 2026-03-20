@@ -1,33 +1,33 @@
 <script lang="ts" module>
-  import {
-    calcCharacterDistanceBetween,
-    canOccupyPosition,
-    isEthereal,
-    loadSpritesheet,
-  } from "./common"
-  import { players } from "./state"
-  import type { RogueTileAttributes, Tile } from "./types"
-  import Vec2 from "./Vec2"
+  import { isEthereal, loadSpritesheet } from "./common"
+  import type { Character, RogueTileAttributes, Tile } from "./types"
   import WalkSound from "./WalkSound.svelte"
 
   const spritesheet = await loadSpritesheet<RogueTileAttributes>("Rogues")
 </script>
 
+<!-- svelte-ignore state_referenced_locally -->
 <script lang="ts">
   let {
-    playerIndex,
+    player,
   }: {
-    playerIndex: number
+    player: Character
   } = $props()
 
   let canvas: HTMLCanvasElement
   let walkSound: WalkSound
 
-  let player = $derived($players[playerIndex])
+  let lastPosition = player.position
   let tile = $derived(getRogueTile(player.name))
-  let steps = $derived(player.steps)
-  let walkRight = $state(false)
+  let lookRight = $state(false)
   let ethereal = $derived(isEthereal(player))
+
+  $effect(() => {
+    if (player.position.x !== lastPosition.x) {
+      lookRight = player.position.x > lastPosition.x
+      lastPosition = player.position
+    }
+  })
 
   $effect(() => {
     const img = document.createElement("img") as HTMLImageElement
@@ -59,40 +59,7 @@
     }
     return tile
   }
-
-  async function windowOnkeydown(event: KeyboardEvent): Promise<void> {
-    event.preventDefault()
-
-    const movements: Record<string, Vec2> = {
-      ArrowRight: new Vec2(1, 0),
-      ArrowLeft: new Vec2(-1, 0),
-      ArrowDown: new Vec2(0, 1),
-      ArrowUp: new Vec2(0, -1),
-    }
-
-    const movement = movements[event.key]
-    if (!movement) return
-
-    const position = player.position.add(movement)
-    if (!canOccupyPosition(player, position)) return
-
-    const distance = await calcCharacterDistanceBetween(
-      player,
-      player.origin,
-      position,
-    )
-    if (distance === null || distance > player.steps) return
-
-    steps = player.steps - distance
-    if (position.x !== player.position.x) {
-      walkRight = position.x >= player.position.x
-    }
-    player.position = position
-    walkSound.play()
-  }
 </script>
-
-<!-- <svelte:window onkeydown={windowOnkeydown} /> -->
 
 <div
   class="rogue"
@@ -101,12 +68,11 @@
   style:left="{player.position.x * spritesheet.tileSize}px"
   style:top="{player.position.y * spritesheet.tileSize}px"
 >
-  <div class="steps">{steps}</div>
   <canvas
     bind:this={canvas}
     class="sprite"
     class:ethereal
-    class:walk-right={walkRight}
+    class:look-right={lookRight}
     width={spritesheet.tileSize}
     height={spritesheet.tileSize}
   ></canvas>
@@ -119,20 +85,6 @@
     position: absolute;
     transition-duration: 200ms;
   }
-  .steps {
-    --size: 12px;
-    position: absolute;
-    bottom: calc(100% - 0px);
-    left: calc(50% - var(--size) / 2);
-    width: var(--size);
-    height: var(--size);
-    font-size: calc(var(--size) * 0.75);
-    line-height: var(--size);
-    text-align: center;
-    border-radius: 100%;
-    background-color: red;
-    color: white;
-  }
   .sprite {
     image-rendering: pixelated;
 
@@ -141,7 +93,7 @@
       opacity: 0.8;
     }
 
-    &.walk-right {
+    &.look-right {
       transform: scaleX(-1);
     }
   }

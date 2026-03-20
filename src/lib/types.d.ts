@@ -6,7 +6,6 @@ export type Character = {
   name: string
   steps: number
   position: Vec2
-  origin: Vec2
   items?: Item[]
 }
 

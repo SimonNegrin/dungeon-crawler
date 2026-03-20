@@ -5,17 +5,18 @@
   import Cursor from "./Cursor.svelte"
   import Loading from "./Loading.svelte"
   import Player from "./Player.svelte"
-  import { players, stage } from "./state"
+  import { playerIndex, getCurrentPlayer, players, stage } from "./state"
   import Vec2 from "./Vec2"
 
+  let freezePath = $state(false)
   let clientWidth = $state(0)
   let stageScale = $derived(clientWidth / 512)
-  let cursorPosition = $state(new Vec2(2, 2))
+  let cursorPosition = $state($players[$playerIndex].position)
   let cursorPath = $state<Vec2[]>([])
 
   $effect(() => {
-    const [player] = $players
-    getCharacterPathTo(player, cursorPosition).then((path) => {
+    if (freezePath) return
+    getCharacterPathTo($players[$playerIndex], cursorPosition).then((path) => {
       if (!path) {
         cursorPath = []
         return
@@ -43,18 +44,29 @@
   }
 
   async function walkToCursor(): Promise<void> {
-    const [player] = $players
-
-    if (!canOccupyPosition(player, cursorPosition)) {
+    const currentPlayer = getCurrentPlayer()
+    if (!canOccupyPosition(currentPlayer, cursorPosition)) {
       return
     }
 
-    const path = await getCharacterPathTo(player, cursorPosition)
+    const path = await getCharacterPathTo(currentPlayer, cursorPosition)
     if (!path) {
       return
     }
 
-    console.log({ path })
+    freezePath = true
+    for (const step of path.slice(1)) {
+      $players[$playerIndex].position = step
+      await waitTime(200)
+      cursorPath = cursorPath.slice(1)
+    }
+    freezePath = false
+  }
+
+  function waitTime(ms: number): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms)
+    })
   }
 </script>
 
@@ -110,8 +122,8 @@
               ></div>
             {/each}
 
-            {#each $players as _, playerIndex}
-              <Player {playerIndex} />
+            {#each $players as player}
+              <Player {player} />
             {/each}
           </div>
         </div>
@@ -158,7 +170,18 @@
     position: absolute;
     width: var(--tile-size);
     height: var(--tile-size);
-    border: 1px solid yellow;
+
+    &::before {
+      content: "";
+      display: block;
+      width: 8px;
+      height: 8px;
+      background-color: yellow;
+      position: absolute;
+      top: calc(50% - 4px);
+      left: calc(50% - 4px);
+      border-radius: 100%;
+    }
   }
   .spritesheet {
     position: absolute;
