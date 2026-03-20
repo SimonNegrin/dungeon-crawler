@@ -49,8 +49,8 @@
           </div>
 
           <div class="gameboard">
-            {#each $players as _, index}
-              <Player bind:player={$players[index]} />
+            {#each $players as _, playerIndex}
+              <Player {playerIndex} />
             {/each}
           </div>
         </div>

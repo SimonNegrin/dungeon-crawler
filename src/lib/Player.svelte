@@ -5,7 +5,8 @@
     isEthereal,
     loadSpritesheet,
   } from "./common"
-  import type { Character, RogueTileAttributes, Tile } from "./types"
+  import { players } from "./state"
+  import type { RogueTileAttributes, Tile } from "./types"
   import Vec2 from "./Vec2"
   import WalkSound from "./WalkSound.svelte"
 
@@ -14,13 +15,14 @@
 
 <script lang="ts">
   let {
-    player = $bindable(),
+    playerIndex,
   }: {
-    player: Character
+    playerIndex: number
   } = $props()
 
+  let player = $derived($players[playerIndex])
   let tile = $derived(getRogueTile(player.name))
-  let steps = $state(player.steps)
+  let steps = $derived(player.steps)
   let walkSound: WalkSound
   let ethereal = $derived(isEthereal(player))
 

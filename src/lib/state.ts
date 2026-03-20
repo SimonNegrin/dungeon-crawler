@@ -17,7 +17,9 @@ export const players = writable<Character[]>([
     position: new Vec2(2, 2),
     origin: new Vec2(2, 2),
     steps: 8,
-    items: [colganteEtereo],
+    items: [
+      // colganteEtereo
+    ],
   },
 ])
 
