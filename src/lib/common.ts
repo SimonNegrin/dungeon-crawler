@@ -159,6 +159,7 @@ export async function removeFog(position: Vec2): Promise<void> {
   }
 
   // If we match two layers it means we can remove al tiles from them
+  // because the player have visibility of all layers areas
   if (adjacentFogLayers.length === 2) {
     adjacentFogLayers.forEach((layer) => {
       layer.tiles = []

@@ -4,11 +4,31 @@
   import type Vec2 from "./Vec2"
   import { gameState } from "./state.svelte"
 
+  interface Star {
+    x: number
+    y: number
+    opacity: number
+  }
+
   let {
     position,
   }: {
     position: Vec2
   } = $props()
+
+  let stars = $state(createStars(5))
+
+  function createStars(n = 5): Star[] {
+    let stars: Star[] = []
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random(),
+        y: Math.random(),
+        opacity: 0.4 + 0.6 * Math.random(),
+      })
+    }
+    return stars
+  }
 
   function top(position: Vec2): number {
     let top = position.y * TILE_SIZE
@@ -50,7 +70,16 @@
   style:left="{position.x * TILE_SIZE}px"
   style:top="{top(position)}px"
   style:height="{height(position)}px"
-></div>
+>
+  {#each stars as star}
+    <div
+      class="star"
+      style:left="{star.x * 100}%"
+      style:top="{star.y * 100}%"
+      style:opacity={star.opacity}
+    ></div>
+  {/each}
+</div>
 
 <style>
   .fog {
@@ -58,16 +87,12 @@
     width: var(--tile-size);
     background-color: #000000;
     opacity: 1;
-    background-image: linear-gradient(135deg, #414141 25%, transparent 25%),
-      linear-gradient(225deg, #414141 25%, transparent 25%),
-      linear-gradient(45deg, #414141 25%, transparent 25%),
-      linear-gradient(315deg, #414141 25%, #000000 25%);
-    background-position:
-      5px 0,
-      5px 0,
-      0 0,
-      0 0;
-    background-size: 11px 11px;
-    background-repeat: repeat;
+  }
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: #fff;
+    transform: translate(-50%, -50%);
   }
 </style>
