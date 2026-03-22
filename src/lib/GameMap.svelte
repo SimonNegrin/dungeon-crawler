@@ -100,7 +100,6 @@
         <div
           class="stage"
           style="transform: scale({stageScale});"
-          style:--tile-size="{TILE_SIZE}px"
           style:--map-width={gameState.stage.mapWidth}
           style:--map-height={gameState.stage.mapHeight}
         >

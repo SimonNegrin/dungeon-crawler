@@ -10,7 +10,7 @@
   }
 </script>
 
-<main style:--tile-size={TILE_SIZE}>
+<main style:--tile-size="{TILE_SIZE}px">
   <AspectRatio ratio={16 / 9}>
     {#if gameState.stage}
       <div class="game-container">

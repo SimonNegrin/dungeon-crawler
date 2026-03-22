@@ -2,6 +2,11 @@ import type Vec2 from "./Vec2"
 
 export type Grid = (0 | 1)[][]
 
+export interface Position {
+  x: number
+  y: number
+}
+
 export type Character = {
   name: string
   steps: number

@@ -10,16 +10,20 @@
     layer: Layer<MapTileAttributes>
     zIndex: number
   } = $props()
+
+  let fogLayer = $derived(layer.name.startsWith("fog"))
 </script>
 
 <div class="layer" data-name={layer.name} style:z-index={zIndex}>
-  {#each layer.tiles as tile (tile.position.toString())}
-    {#if layer.name.startsWith("fog")}
+  {#if fogLayer}
+    {#each layer.tiles as tile (tile.position.toString())}
       <Fog position={tile.position} />
-    {:else}
+    {/each}
+  {:else}
+    {#each layer.tiles as tile (tile.position.toString())}
       <MapTile {tile} />
-    {/if}
-  {/each}
+    {/each}
+  {/if}
 </div>
 
 <style>

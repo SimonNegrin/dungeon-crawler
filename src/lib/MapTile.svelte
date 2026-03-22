@@ -10,21 +10,19 @@
   } = $props()
 </script>
 
-{#if gameState.stage}
-  <div
-    class="tile"
-    style:left="{tile.position.x * TILE_SIZE}px"
-    style:top="{tile.position.y * TILE_SIZE}px"
-  >
-    <img
-      class="spritesheet"
-      src={gameState.stage.spritesheetUrl}
-      style:left="{tile.sprite.x * -TILE_SIZE}px"
-      style:top="{tile.sprite.y * -TILE_SIZE}px"
-      alt=""
-    />
-  </div>
-{/if}
+<div
+  class="tile"
+  style:left="{tile.position.x * TILE_SIZE}px"
+  style:top="{tile.position.y * TILE_SIZE}px"
+>
+  <img
+    class="spritesheet"
+    src={gameState.stage!.spritesheetUrl}
+    style:left="{tile.sprite.x * -TILE_SIZE}px"
+    style:top="{tile.sprite.y * -TILE_SIZE}px"
+    alt=""
+  />
+</div>
 
 <style>
   .tile {
