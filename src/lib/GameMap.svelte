@@ -13,6 +13,7 @@
   import Player from "./Player.svelte"
   import { playerIndex, getCurrentPlayer, players, stage } from "./state"
   import Vec2 from "./Vec2"
+  import Fog from "./Fog.svelte"
 
   let freezePath = $state(false)
   let clientWidth = $state(0)
@@ -111,17 +112,22 @@
                 {#each layer.tiles as tile}
                   <div
                     class="tile"
-                    out:fade={{ delay: 1000 * Math.random() }}
-                    style:left="{tile.x * $stage.tileSize}px"
-                    style:top="{tile.y * $stage.tileSize}px"
+                    class:fog={layer.name.startsWith("fog")}
+                    out:fade={{ delay: 500 * Math.random() }}
+                    style:left="{tile.position.x * $stage.tileSize}px"
+                    style:top="{tile.position.y * $stage.tileSize}px"
                   >
-                    <img
-                      class="spritesheet"
-                      src={$stage.spritesheetUrl}
-                      style:left="{tile.spriteX * -$stage.tileSize}px"
-                      style:top="{tile.spriteY * -$stage.tileSize}px"
-                      alt=""
-                    />
+                    {#if layer.name.startsWith("fog")}
+                      <Fog />
+                    {:else}
+                      <img
+                        class="spritesheet"
+                        src={$stage.spritesheetUrl}
+                        style:left="{tile.sprite.x * -$stage.tileSize}px"
+                        style:top="{tile.sprite.y * -$stage.tileSize}px"
+                        alt=""
+                      />
+                    {/if}
                   </div>
                 {/each}
               </div>

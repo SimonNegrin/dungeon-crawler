@@ -5,6 +5,7 @@ import type {
   Layer,
   MapTileAttributes,
   Spritesheet,
+  Tile,
 } from "./types"
 import Vec2 from "./Vec2"
 import { get } from "svelte/store"
@@ -33,10 +34,16 @@ export async function loadSpritesheet<T>(
   spritesheet.spritesheetUrl = `/${spritesheetName}/spritesheet.png`
 
   spritesheet.layers.forEach((layer) => {
-    layer.tiles.forEach((tile) => {
+    layer.tiles = layer.tiles.map((tile: any): Tile<T> => {
       const id = Number(tile.id)
-      tile.spriteX = id % 8
-      tile.spriteY = Math.floor(id / 8)
+      const spriteX = id % 8
+      const spriteY = Math.floor(id / 8)
+      return {
+        id: tile.id,
+        position: new Vec2(tile.x, tile.y),
+        sprite: new Vec2(spriteX, spriteY),
+        attributes: tile.attributes,
+      }
     })
   })
   return spritesheet
@@ -128,7 +135,7 @@ export function tileIsFog(position: Vec2): boolean {
       return false
     }
     return layer.tiles.some((tile) => {
-      return tile.x === position.x && tile.y === position.y
+      return tile.position.isSame(position)
     })
   })
 }
@@ -147,9 +154,7 @@ export async function removeFog(position: Vec2): Promise<void> {
   // Find the adjacent fog layer to the point
   const adjacentFogLayers = fogLayers.filter((layer) => {
     return layer.tiles.some((tile) => {
-      const xdist = Math.abs(tile.x - position.x)
-      const ydist = Math.abs(tile.y - position.y)
-      return xdist <= 1 && ydist <= 1
+      return tile.position.isAdjacent(position)
     })
   })
 
@@ -176,7 +181,7 @@ export async function removeFog(position: Vec2): Promise<void> {
   const overlapingFogLayers = fogLayers.filter((layer) => {
     return layer.tiles.some((a) => {
       return adjacentFogLayer.tiles.some((b) => {
-        return a.x === b.x && a.y === b.y
+        return a.position.isSame(b.position)
       })
     })
   })
@@ -185,7 +190,7 @@ export async function removeFog(position: Vec2): Promise<void> {
   overlapingFogLayers.forEach((overlapingLayer) => {
     overlapingLayer.tiles = overlapingLayer.tiles.filter((a) => {
       return !adjacentFogLayer.tiles.some((b) => {
-        return a.x === b.x && a.y === b.y
+        return a.position.isSame(b.position)
       })
     })
   })
@@ -204,6 +209,8 @@ export function createGrid(character: Character): Grid | null {
     return null
   }
 
+  // Create a grid with the dimensions of the stage with
+  // all tiles available to be occupied
   const grid: Grid = []
   for (let y = 0; y < currentStage.mapHeight; y++) {
     const line: (typeof TILE_FLOOR)[] = Array(currentStage.mapWidth).fill(
@@ -223,11 +230,16 @@ export function createGrid(character: Character): Grid | null {
   currentStage.layers.forEach((layer) => {
     if (!layer.collider) return
     layer.tiles.forEach((tile) => {
-      if (!tile.attributes?.door) {
-        grid[tile.y][tile.x] = TILE_BLOCK
+      if (isOpenDoorTile(tile)) {
+        return
       }
+      grid[tile.position.y][tile.position.x] = TILE_BLOCK
     })
   })
 
   return grid
+}
+
+function isOpenDoorTile(tile: Tile<MapTileAttributes>): boolean {
+  return (tile.attributes?.door && tile.attributes?.isOpen) || false
 }

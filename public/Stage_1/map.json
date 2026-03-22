@@ -225,7 +225,12 @@
         { "id": "11", "x": 7, "y": 11 },
         { "id": "12", "x": 3, "y": 7, "attributes": { "door": true } },
         { "id": "12", "x": 8, "y": 3, "attributes": { "door": true } },
-        { "id": "13", "x": 3, "y": 4, "attributes": { "door": true } },
+        {
+          "id": "13",
+          "x": 3,
+          "y": 4,
+          "attributes": { "door": true, "isOpen": true }
+        },
         { "id": "23", "x": 0, "y": 5 },
         { "id": "23", "x": 14, "y": 1 },
         { "id": "32", "x": 13, "y": 6, "attributes": { "door": true } }

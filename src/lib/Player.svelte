@@ -37,8 +37,8 @@
       const ctx = canvas.getContext("2d")!
       ctx.drawImage(
         img,
-        tile.spriteX * spritesheet.tileSize,
-        tile.spriteY * spritesheet.tileSize,
+        tile.sprite.x * spritesheet.tileSize,
+        tile.sprite.y * spritesheet.tileSize,
         spritesheet.tileSize,
         spritesheet.tileSize,
         0,

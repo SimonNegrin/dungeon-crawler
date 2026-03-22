@@ -28,6 +28,8 @@ export interface Position {
 
 export interface MapTileAttributes {
   door?: boolean
+  keyId?: string
+  isOpen?: true
   spawn?: boolean
 }
 
@@ -40,30 +42,20 @@ export interface RogueTileAttributes {
  * Representa un tile individual en el mapa
  */
 export interface Tile<TileAttributesType> {
-  /** ID del tile en el spritesheet */
   id: string
-
-  //
-  spriteX: number
-  spriteY: number
 
   attributes?: TileAttributesType
 
-  /** Posición X en el grid del mapa */
-  x: number
-  /** Posición Y en el grid del mapa */
-  y: number
+  sprite: Vec2
+  position: Vec2
 }
 
 /**
  * Representa una capa del mapa (ej: Collition, Decoration, Floor)
  */
 export interface Layer<TileAttributesType> {
-  /** Nombre de la capa */
   name: string
-  /** Array de tiles que componen esta capa */
   tiles: Tile<TileAttributesType>[]
-  /** Indica si esta capa tiene colisiones */
   collider: boolean
 }
 
@@ -72,14 +64,9 @@ export interface Layer<TileAttributesType> {
  */
 export interface Spritesheet<TileAttributesType> {
   spritesheetUrl: string
-
-  /** Tamaño de cada tile en píxeles */
   tileSize: number
-  /** Ancho del mapa en número de tiles */
   mapWidth: number
-  /** Alto del mapa en número de tiles */
   mapHeight: number
-  /** Capas del mapa (se renderizan en orden) */
   layers: Layer<TileAttributesType>[]
 }
 
