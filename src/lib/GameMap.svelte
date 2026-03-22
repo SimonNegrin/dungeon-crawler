@@ -14,30 +14,34 @@
   import { gameState } from "./state.svelte"
   import Vec2 from "./Vec2"
   import MapLayer from "./MapLayer.svelte"
+  import PlayerAction from "./PlayerAction"
+  import InventoryExchange from "./InventoryExchange.svelte"
 
   let freezePath = $state(false)
   let clientWidth = $state(0)
   let stageScale = $derived(clientWidth / 512)
-  let cursorPosition = $state(gameState.currentPlayer.position)
-  let cursorPath = $state<Vec2[]>([])
 
   $effect(() => {
     if (freezePath) return
-    getCharacterPathTo(gameState.currentPlayer, cursorPosition).then((path) => {
-      if (!path) {
-        cursorPath = []
-        return
-      }
-      cursorPath = path.slice(1, -1)
+    getCharacterPathTo(
+      gameState.stage!,
+      gameState.currentPlayer,
+      gameState.cursorPosition,
+    ).then((path) => {
+      gameState.cursorPath = path?.slice(1, -1) || []
     })
   })
 
   function onkeydown(event: KeyboardEvent): void {
+    if (gameState.openInventory) return
     if (event.key === " ") {
-      walkToCursor()
+      action()
       return
     }
+    moveCursor(event)
+  }
 
+  function moveCursor(event: KeyboardEvent): void {
     const movements: Record<string, Vec2> = {
       ArrowRight: new Vec2(1, 0),
       ArrowLeft: new Vec2(-1, 0),
@@ -49,7 +53,7 @@
       return
     }
 
-    const newPosition = cursorPosition.add(movements[event.key])
+    const newPosition = gameState.cursorPosition.add(movements[event.key])
 
     if (!isInsideGameboard(newPosition)) {
       return
@@ -59,33 +63,15 @@
       return
     }
 
-    cursorPosition = newPosition
+    gameState.cursorPosition = newPosition
   }
 
-  async function walkToCursor(): Promise<void> {
-    const path = await getCharacterPathTo(
-      gameState.currentPlayer,
-      cursorPosition,
-    )
-    if (!path?.length) {
-      return
-    }
-
+  async function action(): Promise<void> {
     freezePath = true
-    for (const step of path.slice(1)) {
-      gameState.currentPlayer.position = step
-      await waitTime(200)
-      cursorPath = cursorPath.slice(1)
-    }
+    const action = new PlayerAction(gameState)
+    await action.execute()
     freezePath = false
-
     await removeFog(gameState.currentPlayer.position)
-  }
-
-  function waitTime(ms: number): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms)
-    })
   }
 </script>
 
@@ -113,9 +99,9 @@
           </div>
 
           <div class="gameboard">
-            <Cursor position={cursorPosition} />
+            <Cursor position={gameState.cursorPosition} />
 
-            {#each cursorPath as step}
+            {#each gameState.cursorPath as step}
               <div
                 class="step"
                 style:left="{step.x * TILE_SIZE}px"
@@ -126,6 +112,10 @@
             {#each gameState.players as player}
               <Player {player} />
             {/each}
+
+            {#if gameState.openInventory}
+              <InventoryExchange inventory={gameState.openInventory} />
+            {/if}
           </div>
         </div>
       {/if}

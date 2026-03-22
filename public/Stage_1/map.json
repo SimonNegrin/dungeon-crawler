@@ -231,7 +231,31 @@
           "y": 4,
           "attributes": { "door": true, "isOpen": true }
         },
-        { "id": "23", "x": 0, "y": 5 },
+        {
+          "id": "23",
+          "x": 0,
+          "y": 5,
+          "attributes": {
+            "name": "Cofre mugriento",
+            "items": [
+              {
+                "name": "Colgante etéreo",
+                "desc": "Inmunidad física",
+                "ethereal": true
+              },
+              {
+                "name": "Espada corta",
+                "desc": "Ataque +1",
+                "attack": 1
+              },
+              {
+                "name": "Rodela",
+                "desc": "Defensa +1",
+                "defence": 1
+              }
+            ]
+          }
+        },
         { "id": "23", "x": 14, "y": 1 },
         { "id": "32", "x": 13, "y": 6, "attributes": { "door": true } }
       ],

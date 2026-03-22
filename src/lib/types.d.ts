@@ -2,16 +2,32 @@ import type Vec2 from "./Vec2"
 
 export type Grid = (0 | 1)[][]
 
+export interface Inventory {
+  name: string
+  items: Item[]
+}
+
 export interface Position {
   x: number
   y: number
+}
+
+interface GameState {
+  stage: Stage | null
+  playerIndex: 0
+  currentPlayer: Character
+  openInventory: Inventory | null
+  cursorPosition: Vec2
+  cursorPath: Vec2[]
+  players: Character[]
 }
 
 export type Character = {
   name: string
   steps: number
   position: Vec2
-  items?: Item[]
+  traits: Item[]
+  inventory: Inventory
 }
 
 export interface Item {
@@ -32,10 +48,12 @@ export interface Position {
 }
 
 export interface MapTileAttributes {
+  name?: string
   door?: boolean
   keyId?: string
   isOpen?: true
   spawn?: boolean
+  items?: Item[]
 }
 
 export interface RogueTileAttributes {
@@ -49,7 +67,7 @@ export interface RogueTileAttributes {
 export interface Tile<TileAttributesType> {
   id: string
 
-  attributes?: TileAttributesType
+  attributes: TileAttributesType
 
   sprite: Vec2
   position: Vec2

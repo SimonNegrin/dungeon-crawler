@@ -1,13 +1,6 @@
-import type { Character, Item, Stage } from "./types"
+import type { Character, GameState, Item, Stage } from "./types"
 import { loadSpritesheet } from "./common"
 import Vec2 from "./Vec2"
-
-interface GameState {
-  stage: Stage | null
-  playerIndex: 0
-  currentPlayer: Character
-  players: Character[]
-}
 
 const colganteEtereo: Item = {
   name: "Colgante etéreo",
@@ -19,13 +12,20 @@ const player: Character = {
   name: "Ladelbar",
   position: new Vec2(2, 2),
   steps: 8,
-  items: [colganteEtereo],
+  traits: [],
+  inventory: {
+    name: "Bolsa de Ladelbar",
+    items: [],
+  },
 }
 
 export const gameState = $state<GameState>({
   stage: null,
   playerIndex: 0,
   currentPlayer: player,
+  openInventory: null,
+  cursorPosition: player.position,
+  cursorPath: [],
   players: [player],
 })
 

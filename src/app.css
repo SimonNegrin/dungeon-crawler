@@ -1,7 +1,14 @@
+@font-face {
+  font-family: "PixelifySans";
+  src: url("public/Pixelify_Sans/PixelifySans-VariableFont_wght.ttf");
+}
+
 :root {
   --main-background-color: rgb(22, 22, 22);
+  --font-family-1: PixelifySans;
 
   font-family:
+    var(--font-family-1),
     system-ui,
     -apple-system,
     BlinkMacSystemFont,

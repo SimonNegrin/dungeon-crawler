@@ -2,9 +2,11 @@ import EasyStar from "easystarjs"
 import type {
   Character,
   Grid,
+  Inventory,
   Layer,
   MapTileAttributes,
   Spritesheet,
+  Stage,
   Tile,
 } from "./types"
 import Vec2 from "./Vec2"
@@ -42,7 +44,7 @@ export async function loadSpritesheet<T>(
         id: tile.id,
         position: new Vec2(tile.x, tile.y),
         sprite: new Vec2(spriteX, spriteY),
-        attributes: tile.attributes,
+        attributes: tile.attributes || {},
       }
     })
   })
@@ -50,11 +52,12 @@ export async function loadSpritesheet<T>(
 }
 
 export function getCharacterPathTo(
+  stage: Stage,
   character: Character,
   target: Vec2,
 ): Promise<Vec2[] | null> {
   return new Promise((resolve) => {
-    const grid = createGrid(character)
+    const grid = createGrid(stage, character)
     if (!grid) {
       return resolve(null)
     }
@@ -79,12 +82,13 @@ export function getCharacterPathTo(
 }
 
 export function calcCharacterDistanceBetween(
+  stage: Stage,
   character: Character,
   a: Vec2,
   b: Vec2,
 ): Promise<number | null> {
   return new Promise((resolve) => {
-    const grid = createGrid(character)
+    const grid = createGrid(stage, character)
     if (!grid) {
       return resolve(null)
     }
@@ -104,10 +108,8 @@ export function calcCharacterDistanceBetween(
 }
 
 export function isEthereal(character: Character): boolean {
-  if (!character.items) {
-    return false
-  }
-  return character.items.some((item) => {
+  const allItems = [...character.traits, ...character.inventory.items]
+  return allItems.some((item) => {
     return item.ethereal === true
   })
 }
@@ -133,7 +135,7 @@ export function tileIsFog(position: Vec2): boolean {
       return false
     }
     return layer.tiles.some((tile) => {
-      return tile.position.isSame(position)
+      return tile.position.isEqual(position)
     })
   })
 }
@@ -195,7 +197,7 @@ export async function removeFog(position: Vec2): Promise<void> {
     const fogTiles = gameState.stage!.layers[fogLayerIdx].tiles
     fogTiles.forEach((tile, index) => {
       adjacentFogLayer.tiles.forEach((t) => {
-        if (tile.position.isSame(t.position)) {
+        if (tile.position.isEqual(t.position)) {
           overlapingIndxs.push(index)
         }
       })
@@ -215,18 +217,12 @@ export async function removeFog(position: Vec2): Promise<void> {
 }
 
 // Creates a ad-hoc grid for the given character
-export function createGrid(character: Character): Grid | null {
-  if (!gameState.stage) {
-    return null
-  }
-
+export function createGrid(stage: Stage, character: Character): Grid | null {
   // Create a grid with the dimensions of the stage with
   // all tiles available to be occupied
   const grid: Grid = []
-  for (let y = 0; y < gameState.stage.mapHeight; y++) {
-    const line: (typeof TILE_FLOOR)[] = Array(gameState.stage.mapWidth).fill(
-      TILE_FLOOR,
-    )
+  for (let y = 0; y < stage.mapHeight; y++) {
+    const line: (typeof TILE_FLOOR)[] = Array(stage.mapWidth).fill(TILE_FLOOR)
     grid.push(line)
   }
 
@@ -238,7 +234,7 @@ export function createGrid(character: Character): Grid | null {
   }
 
   // Block all tiles from the collider layers
-  gameState.stage.layers.forEach((layer) => {
+  stage.layers.forEach((layer) => {
     if (!layer.collider) return
     layer.tiles.forEach((tile) => {
       if (isOpenDoorTile(tile)) {
@@ -253,4 +249,26 @@ export function createGrid(character: Character): Grid | null {
 
 function isOpenDoorTile(tile: Tile<MapTileAttributes>): boolean {
   return (tile.attributes?.door && tile.attributes?.isOpen) || false
+}
+
+export function isInventory(tile: Partial<Inventory>): tile is Inventory {
+  return typeof tile.name === "string" && Array.isArray(tile.items)
+}
+
+export function getTilesAtPosition(position: Vec2): Tile<MapTileAttributes>[] {
+  const tiles: Tile<MapTileAttributes>[] = []
+  gameState.stage?.layers.forEach((layer) => {
+    layer.tiles.forEach((tile) => {
+      if (tile.position.isEqual(position)) {
+        tiles.push(tile)
+      }
+    })
+  })
+  return tiles
+}
+
+export function waitTime(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
 }

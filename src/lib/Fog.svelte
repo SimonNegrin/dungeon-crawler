@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fade } from "svelte/transition"
+  import { fade, fly } from "svelte/transition"
   import { TILE_SIZE } from "./common"
   import type Vec2 from "./Vec2"
   import { gameState } from "./state.svelte"
@@ -57,7 +57,7 @@
           if (tile.attributes?.door) {
             return false
           }
-          return tile.position.isSame(position)
+          return tile.position.isEqual(position)
         })
       )
     })
@@ -66,7 +66,7 @@
 
 <div
   class="fog"
-  out:fade={{ delay: 500 * Math.random() }}
+  out:fly={{ y: 20, delay: 500 * Math.random() }}
   style:left="{position.x * TILE_SIZE}px"
   style:top="{top(position)}px"
   style:height="{height(position)}px"
