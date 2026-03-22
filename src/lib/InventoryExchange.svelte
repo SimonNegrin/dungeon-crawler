@@ -189,18 +189,22 @@
         content: "";
         display: block;
         position: absolute;
-        top: calc(50% - 2px);
-        width: 10px;
+        top: calc(50% - 4px);
+        width: 4px;
         height: 4px;
-        background-color: var(--color-back);
+        transform: rotate(45deg);
       }
 
       &::before {
-        left: -14px;
+        left: -12px;
+        border-top: 3px solid var(--color-back);
+        border-right: 3px solid var(--color-back);
       }
 
       &::after {
-        right: -18px;
+        right: -14px;
+        border-left: 3px solid var(--color-back);
+        border-bottom: 3px solid var(--color-back);
       }
     }
 
