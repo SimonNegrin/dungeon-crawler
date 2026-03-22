@@ -2,15 +2,14 @@ import EasyStar from "easystarjs"
 import type {
   Character,
   Grid,
-  Layer,
   MapTileAttributes,
   Spritesheet,
   Tile,
 } from "./types"
 import Vec2 from "./Vec2"
-import { get } from "svelte/store"
-import { players, stage } from "./state"
+import { gameState } from "./state.svelte"
 
+export const TILE_SIZE = 32
 export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1
 
@@ -113,24 +112,22 @@ export function isEthereal(character: Character): boolean {
 }
 
 export function isInsideGameboard(position: Vec2): boolean {
-  const currentStage = get(stage)
-  if (!currentStage) {
+  if (!gameState.stage) {
     return false
   }
   return (
     position.x >= 0 &&
     position.y >= 0 &&
-    position.x < currentStage.mapWidth &&
-    position.y < currentStage.mapHeight
+    position.x < gameState.stage.mapWidth &&
+    position.y < gameState.stage.mapHeight
   )
 }
 
 export function tileIsFog(position: Vec2): boolean {
-  const currentStage = get(stage)
-  if (!currentStage || !isInsideGameboard(position)) {
+  if (!gameState.stage || !isInsideGameboard(position)) {
     return false
   }
-  return currentStage.layers.some((layer) => {
+  return gameState.stage.layers.some((layer) => {
     if (!layer.name.startsWith("fog")) {
       return false
     }
@@ -142,12 +139,11 @@ export function tileIsFog(position: Vec2): boolean {
 
 export async function removeFog(position: Vec2): Promise<void> {
   // First check if we have stage and the point is inside the gameboard
-  const currentStage = get(stage)
-  if (!currentStage || !isInsideGameboard(position)) {
+  if (!gameState.stage || !isInsideGameboard(position)) {
     return
   }
 
-  const fogLayers = currentStage.layers.filter((layer) => {
+  const fogLayers = gameState.stage.layers.filter((layer) => {
     return layer.name.startsWith("fog")
   })
 
@@ -167,8 +163,6 @@ export async function removeFog(position: Vec2): Promise<void> {
     adjacentFogLayers.forEach((layer) => {
       layer.tiles = []
     })
-    // Update the stage store
-    stage.set(currentStage)
     return
   }
 
@@ -197,23 +191,19 @@ export async function removeFog(position: Vec2): Promise<void> {
 
   // Remove all tiles from adjacent layer
   adjacentFogLayer.tiles = []
-
-  // Update the stage store
-  stage.set(currentStage)
 }
 
 // Creates a ad-hoc grid for the given character
 export function createGrid(character: Character): Grid | null {
-  const currentStage = get(stage)
-  if (!currentStage) {
+  if (!gameState.stage) {
     return null
   }
 
   // Create a grid with the dimensions of the stage with
   // all tiles available to be occupied
   const grid: Grid = []
-  for (let y = 0; y < currentStage.mapHeight; y++) {
-    const line: (typeof TILE_FLOOR)[] = Array(currentStage.mapWidth).fill(
+  for (let y = 0; y < gameState.stage.mapHeight; y++) {
+    const line: (typeof TILE_FLOOR)[] = Array(gameState.stage.mapWidth).fill(
       TILE_FLOOR,
     )
     grid.push(line)
@@ -227,7 +217,7 @@ export function createGrid(character: Character): Grid | null {
   }
 
   // Block all tiles from the collider layers
-  currentStage.layers.forEach((layer) => {
+  gameState.stage.layers.forEach((layer) => {
     if (!layer.collider) return
     layer.tiles.forEach((tile) => {
       if (isOpenDoorTile(tile)) {

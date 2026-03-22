@@ -4,6 +4,10 @@ export default class Vec2 {
     public y: number,
   ) {}
 
+  up(): Vec2 {
+    return new Vec2(this.x, this.y - 1)
+  }
+
   add(vec2: Vec2): Vec2 {
     return new Vec2(this.x + vec2.x, this.y + vec2.y)
   }

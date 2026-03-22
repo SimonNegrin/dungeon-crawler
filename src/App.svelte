@@ -1,6 +1,6 @@
 <script lang="ts">
   import AspectRatio from "./lib/AspectRatio.svelte"
-  import { loadStage, stage } from "./lib/state"
+  import { loadStage, gameState } from "./lib/state.svelte"
   import Landing from "./lib/Landing.svelte"
   import GameMap from "./lib/GameMap.svelte"
 
@@ -11,7 +11,7 @@
 
 <main>
   <AspectRatio ratio={16 / 9}>
-    {#if $stage}
+    {#if gameState.stage}
       <div class="game-container">
         <div class="screen-container">
           <GameMap />
