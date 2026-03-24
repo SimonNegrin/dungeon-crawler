@@ -7,6 +7,7 @@
   import { onMount } from "svelte"
   import Audio from "./Audio.svelte"
   import ItemStats from "./ItemStats.svelte"
+  import { nextPlayerIfExaust } from "./common"
 
   let {
     inventory,
@@ -40,6 +41,7 @@
   function close(event: KeyboardEvent): void {
     event.preventDefault()
     gameState.openInventory = null
+    nextPlayerIfExaust()
   }
 
   function moveHorizontally(): void {

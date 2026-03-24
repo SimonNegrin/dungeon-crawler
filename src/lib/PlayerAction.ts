@@ -5,6 +5,7 @@ import {
   INITIATIVE_CHEST,
   INITIATIVE_DOOR,
   INITIATIVE_STEP,
+  nextPlayerIfExaust,
   waitTime,
 } from "./common"
 import { gameState } from "./state.svelte"
@@ -17,9 +18,10 @@ export default class PlayerAction {
     if (!gameState.stage) {
       return
     }
+    await this.doAction()
+  }
 
-    // Si el cursor está sobre un cofre y la posición del cofre es adjacente recta
-    // al jugador actual se abre el cofre
+  private async doAction(): Promise<void> {
     if (await this.interactChest()) {
       return
     }
@@ -84,6 +86,7 @@ export default class PlayerAction {
       door.attributes.isOpen = true
       gameState.initiativeLeft -= INITIATIVE_STEP
       doorUnlockSound()
+      nextPlayerIfExaust()
       return true
     }
 
@@ -97,6 +100,7 @@ export default class PlayerAction {
       player.items = player.items.filter((item) => item.id !== keyId)
       gameState.initiativeLeft -= INITIATIVE_DOOR
       doorUnlockSound()
+      nextPlayerIfExaust()
       return true
     }
 
@@ -104,6 +108,7 @@ export default class PlayerAction {
     // to indicate the interaction try
     gameState.initiativeLeft -= INITIATIVE_STEP
     doorLockedSound()
+    nextPlayerIfExaust()
     return true
   }
 
@@ -122,6 +127,7 @@ export default class PlayerAction {
       // Check if the player has the initiative needed to walk
       if (gameState.initiativeLeft < INITIATIVE_STEP) {
         // TODO: Sound of exaust
+        nextPlayerIfExaust()
         return true
       }
       gameState.initiativeLeft--

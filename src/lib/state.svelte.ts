@@ -2,10 +2,18 @@ import type { Character, GameState, Stage } from "./types"
 import { loadSpritesheet } from "./common"
 import Vec2 from "./Vec2"
 
-const player: Character = {
+const ladelbar: Character = {
   name: "Ladelbar",
   position: new Vec2(2, 2),
-  initiative: 12,
+  initiative: 8,
+  traits: [],
+  items: [],
+}
+
+const krom: Character = {
+  name: "Krom",
+  position: new Vec2(3, 2),
+  initiative: 8,
   traits: [],
   items: [],
 }
@@ -13,13 +21,13 @@ const player: Character = {
 export const gameState = $state<GameState>({
   stage: null,
   playerIndex: 0,
-  currentPlayer: player,
-  initiativeLeft: player.initiative,
+  currentPlayer: ladelbar,
+  initiativeLeft: ladelbar.initiative,
   initiativeRequired: 0,
   openInventory: null,
-  cursorPosition: player.position,
+  cursorPosition: ladelbar.position,
   cursorPath: [],
-  players: [player],
+  players: [ladelbar, krom],
 })
 
 export async function loadStage(name: string): Promise<void> {

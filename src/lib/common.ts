@@ -233,7 +233,12 @@ export function createGrid(stage: Stage, character: Character): Grid | null {
     grid.push(line)
   }
 
-  // TODO: Block all tiles occupied by characters
+  // Block all tiles occupied by players
+  gameState.players.forEach((player) => {
+    grid[player.position.y][player.position.x] = TILE_BLOCK
+  })
+
+  // TODO: Block all tiles occupied by NPCs
 
   // If the character is ethereal it can move to any tile
   if (isEthereal(character)) {
@@ -284,4 +289,22 @@ export function waitTime(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms)
   })
+}
+
+export function nextPlayerIfExaust(): void {
+  // We skip if the current player still have initiative
+  if (gameState.initiativeLeft > 0) {
+    return
+  }
+  nextPlayer()
+}
+
+export function nextPlayer(): void {
+  const index = (gameState.playerIndex + 1) % gameState.players.length
+  const player = gameState.players[index]
+  gameState.currentPlayer = player
+  gameState.playerIndex = index
+  gameState.cursorPosition = player.position
+  gameState.initiativeLeft = player.initiative
+  gameState.openInventory = null
 }

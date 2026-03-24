@@ -14,7 +14,7 @@ export interface Position {
 
 interface GameState {
   stage: Stage | null
-  playerIndex: 0
+  playerIndex: number
   currentPlayer: Character
   initiativeLeft: number
   initiativeRequired: number

@@ -1,9 +1,13 @@
 <script lang="ts" module>
   import { isEthereal, loadSpritesheet } from "./common"
-  import type { Character, RogueTileAtts, Tile } from "./types"
+  import type { Character, Tile } from "./types"
   import WalkSound from "./WalkSound.svelte"
 
-  const spritesheet = await loadSpritesheet<RogueTileAtts>("Rogues")
+  type PlayerAtts = {
+    name: string
+  }
+
+  const spritesheet = await loadSpritesheet<PlayerAtts>("Rogues")
 </script>
 
 <!-- svelte-ignore state_referenced_locally -->
@@ -52,7 +56,7 @@
     }
   })
 
-  function getRogueTile(name: string): Tile<RogueTileAtts> {
+  function getRogueTile(name: string): Tile<PlayerAtts> {
     const layer = spritesheet.layers[0]
     const tile = layer.tiles.find((tile) => {
       return tile.attributes?.name === name
