@@ -6,7 +6,7 @@
   import { TILE_SIZE } from "./lib/common"
 
   function onStart(): void {
-    loadStage("Stage_1")
+    loadStage("stage_1")
   }
 </script>
 

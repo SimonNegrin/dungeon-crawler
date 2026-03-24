@@ -1,9 +1,9 @@
 <script lang="ts" module>
   import { loadSpritesheet, TILE_SIZE } from "./common"
-  import type { ItemTileAttributes } from "./types"
+  import type { ItemTileAtts } from "./types"
   import type Vec2 from "./Vec2"
 
-  const spritesheet = await loadSpritesheet<ItemTileAttributes>("Items")
+  const spritesheet = await loadSpritesheet<ItemTileAtts>("Items")
   const positions = new Map<string, Vec2>(
     spritesheet.layers[0].tiles.map((tile) => {
       return [tile.attributes.id, tile.sprite]

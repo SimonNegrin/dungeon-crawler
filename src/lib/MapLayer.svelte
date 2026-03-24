@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Layer, MapTileAttributes } from "./types"
+  import type { Layer, MapTileAtts } from "./types"
   import Fog from "./Fog.svelte"
   import MapTile from "./MapTile.svelte"
 
@@ -7,7 +7,7 @@
     layer,
     zIndex,
   }: {
-    layer: Layer<MapTileAttributes>
+    layer: Layer<MapTileAtts>
     zIndex: number
   } = $props()
 

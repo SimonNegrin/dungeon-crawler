@@ -1,22 +1,13 @@
-import type { Character, GameState, Item, Stage } from "./types"
+import type { Character, GameState, Stage } from "./types"
 import { loadSpritesheet } from "./common"
 import Vec2 from "./Vec2"
-
-const colganteEtereo: Item = {
-  name: "Colgante etéreo",
-  desc: "Trasciende tu cuerpo físico",
-  ethereal: true,
-}
 
 const player: Character = {
   name: "Ladelbar",
   position: new Vec2(2, 2),
   steps: 8,
   traits: [],
-  inventory: {
-    name: "Bolsa de Ladelbar",
-    items: [],
-  },
+  items: [],
 }
 
 export const gameState = $state<GameState>({

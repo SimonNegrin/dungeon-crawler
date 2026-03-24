@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { MapTileAttributes, Tile } from "./types"
+  import type { MapTileAtts, Tile } from "./types"
   import { gameState } from "./state.svelte"
   import { TILE_SIZE } from "./common"
 
   let {
     tile,
   }: {
-    tile: Tile<MapTileAttributes>
+    tile: Tile<MapTileAtts>
   } = $props()
 </script>
 

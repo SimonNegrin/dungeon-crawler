@@ -4,7 +4,7 @@ import type {
   Grid,
   Inventory,
   Layer,
-  MapTileAttributes,
+  MapTileAtts,
   Spritesheet,
   Stage,
   Tile,
@@ -108,7 +108,7 @@ export function calcCharacterDistanceBetween(
 }
 
 export function isEthereal(character: Character): boolean {
-  const allItems = [...character.traits, ...character.inventory.items]
+  const allItems = [...character.traits, ...character.items]
   return allItems.some((item) => {
     return item.ethereal === true
   })
@@ -249,16 +249,19 @@ export function createGrid(stage: Stage, character: Character): Grid | null {
   return grid
 }
 
-function isOpenDoorTile(tile: Tile<MapTileAttributes>): boolean {
-  return (tile.attributes?.door && tile.attributes?.isOpen) || false
+function isOpenDoorTile(tile: Tile<MapTileAtts>): boolean {
+  return tile.attributes.type === "door" && tile.attributes.isOpen
 }
 
-export function isInventory(tile: Partial<Inventory>): tile is Inventory {
-  return typeof tile.name === "string" && Array.isArray(tile.items)
+export function isInventory(anything: any): anything is Inventory {
+  if (!anything) {
+    return false
+  }
+  return typeof anything.name === "string" && Array.isArray(anything.items)
 }
 
-export function getTilesAtPosition(position: Vec2): Tile<MapTileAttributes>[] {
-  const tiles: Tile<MapTileAttributes>[] = []
+export function getTilesAtPosition(position: Vec2): Tile<MapTileAtts>[] {
+  const tiles: Tile<MapTileAtts>[] = []
   gameState.stage?.layers.forEach((layer) => {
     layer.tiles.forEach((tile) => {
       if (tile.position.isEqual(position)) {

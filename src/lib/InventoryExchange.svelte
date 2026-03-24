@@ -15,7 +15,7 @@
 
   let exchangeAudio: Audio
   let openAudio: Audio
-  let playerInventory = $derived(gameState.currentPlayer.inventory)
+  let currentPlayer = $derived(gameState.currentPlayer)
   let leftInventory = $state(true)
   let indexLeft = $state(0)
   let indexRight = $state(0)
@@ -27,8 +27,8 @@
 
   function exchangeItem(): void {
     const [index, from, target] = leftInventory
-      ? [indexLeft, inventory, playerInventory]
-      : [indexRight, playerInventory, inventory]
+      ? [indexLeft, inventory, currentPlayer]
+      : [indexRight, currentPlayer, inventory]
     const [item] = from.items.splice(index, 1)
     target.items.push(item)
     exchangeAudio.play()
@@ -49,14 +49,14 @@
     if (indexLeft >= inventory.items.length) {
       indexLeft = Math.max(0, inventory.items.length - 1)
     }
-    if (indexRight >= playerInventory.items.length) {
-      indexRight = Math.max(0, playerInventory.items.length - 1)
+    if (indexRight >= currentPlayer.items.length) {
+      indexRight = Math.max(0, currentPlayer.items.length - 1)
     }
     if (inventory.items.length === 0) {
       leftInventory = false
       return
     }
-    if (playerInventory.items.length === 0) {
+    if (currentPlayer.items.length === 0) {
       leftInventory = true
       return
     }
@@ -66,7 +66,7 @@
     if (leftInventory) {
       indexLeft = (indexLeft + 1) % inventory.items.length
     } else {
-      indexRight = (indexRight + 1) % playerInventory.items.length
+      indexRight = (indexRight + 1) % currentPlayer.items.length
     }
   }
 
@@ -76,7 +76,7 @@
       if (indexLeft < 0) indexLeft += inventory.items.length
     } else {
       indexRight--
-      if (indexRight < 0) indexRight += playerInventory.items.length
+      if (indexRight < 0) indexRight += currentPlayer.items.length
     }
   }
 </script>
@@ -117,12 +117,12 @@
       </div>
     </div>
     <div class="inventory">
-      <div class="inventory-name">{playerInventory.name}</div>
+      <div class="inventory-name">{currentPlayer.name}</div>
       <div class="inventory-content">
-        {#if !playerInventory.items.length}
+        {#if !currentPlayer.items.length}
           <div class="empty">--- Vacio ---</div>
         {/if}
-        {#each playerInventory.items as item, index}
+        {#each currentPlayer.items as item, index}
           <div
             class="item"
             class:selected={!leftInventory && indexRight === index}

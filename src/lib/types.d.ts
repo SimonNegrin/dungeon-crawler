@@ -27,20 +27,44 @@ export type Character = {
   steps: number
   position: Vec2
   traits: Item[]
-  inventory: Inventory
+  items: Item[]
 }
 
 export interface Item {
   spriteId: string
   name: string
   desc: string
+
+  // ID of the item
+  id: string
+
+  // Enables physical immunity if enabled
   ethereal?: true
+
+  // Enables magic attack if enabled
   magic?: true
-  lifetime?: number
+
+  // Number of turns that the item lasts
+  turns?: number
+
+  // How many uses can be made before it disapear
+  uses?: number
+
+  // If defined, enables distance attack at indicated distance
+  // For example, a bow will have a number here
+  range?: number
+
+  // Modify the character attack
   attack?: number
-  attackDistance?: number
+
+  // Modify the character defence
   defence?: number
+
+  // Modify the character damage
   damage?: number
+
+  // Modify the character initiative
+  initiative?: number
 }
 
 export interface Position {
@@ -48,54 +72,56 @@ export interface Position {
   y: number
 }
 
-export interface MapTileAttributes {
-  name?: string
-  door?: boolean
-  keyId?: string
-  isOpen?: true
-  spawn?: boolean
-  items?: Item[]
-}
+export type MapTileAtts = AttsDoor | AttsChest | AttsSpawn
 
-export interface ItemTileAttributes {
-  id: string
-}
-
-export interface RogueTileAttributes {
+export interface AttsDoor {
+  type: "door"
   name: string
-  kind: string
+  isOpen: boolean
+  keyId: string
+}
+
+export interface AttsChest {
+  type: "chest"
+  name: string
+  isOpen: boolean
+  keyId?: string
+  items: Item[]
+}
+
+export interface AttsSpawn {
+  type: "spawn"
+  spawnType: "player" | "npc"
 }
 
 /**
  * Representa un tile individual en el mapa
  */
-export interface Tile<TileAttributesType> {
+export interface Tile<TileAtts> {
   id: string
-
-  attributes: TileAttributesType
-
   sprite: Vec2
   position: Vec2
+  attributes: TileAtts
 }
 
 /**
  * Representa una capa del mapa (ej: Collition, Decoration, Floor)
  */
-export interface Layer<TileAttributesType> {
+export interface Layer<TileAtts> {
   name: string
-  tiles: Tile<TileAttributesType>[]
+  tiles: Tile<TileAtts>[]
   collider: boolean
 }
 
 /**
  * Representa la estructura completa del mapa del juego
  */
-export interface Spritesheet<TileAttributesType> {
+export interface Spritesheet<TileAtts> {
   spritesheetUrl: string
   tileSize: number
   mapWidth: number
   mapHeight: number
-  layers: Layer<TileAttributesType>[]
+  layers: Layer<TileAtts>[]
 }
 
-export type Stage = Spritesheet<MapTileAttributes>
+export type Stage = Spritesheet<MapTileAtts>

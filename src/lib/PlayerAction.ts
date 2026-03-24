@@ -1,5 +1,5 @@
 import { getCharacterPathTo, isInventory, waitTime } from "./common"
-import type { GameState, Inventory, MapTileAttributes, Tile } from "./types"
+import type { GameState, Inventory, MapTileAtts, Tile } from "./types"
 import type Vec2 from "./Vec2"
 
 export default class PlayerAction {
@@ -57,7 +57,7 @@ export default class PlayerAction {
     return true
   }
 
-  private getTileWithInventory(position: Vec2): Tile<MapTileAttributes> | null {
+  private getTileWithInventory(position: Vec2): Tile<MapTileAtts> | null {
     for (const layer of this.gameState.stage!.layers) {
       for (const tile of layer.tiles) {
         if (position.isEqual(tile.position) && isInventory(tile.attributes)) {
