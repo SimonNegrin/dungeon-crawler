@@ -1,9 +1,8 @@
 <script lang="ts" module>
   import { loadSpritesheet, TILE_SIZE } from "./common"
-  import type { ItemTileAtts } from "./types"
   import type Vec2 from "./Vec2"
 
-  const spritesheet = await loadSpritesheet<ItemTileAtts>("Items")
+  const spritesheet = await loadSpritesheet<{ id: string }>("items")
   const positions = new Map<string, Vec2>(
     spritesheet.layers[0].tiles.map((tile) => {
       return [tile.attributes.id, tile.sprite]
@@ -31,7 +30,7 @@
 
 <div class="item-sprite">
   <img
-    src="/Items/spritesheet.png"
+    src="/items/spritesheet.png"
     style:left="{position.x * -TILE_SIZE}px"
     style:top="{position.y * -TILE_SIZE}px"
     class="spritesheet"
@@ -44,6 +43,7 @@
     position: relative;
     width: var(--tile-size);
     height: var(--tile-size);
+    flex-shrink: 0;
     overflow: hidden;
   }
   .spritesheet {
