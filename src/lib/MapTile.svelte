@@ -2,6 +2,7 @@
   import type { MapTileAtts, Tile } from "./types"
   import { gameState } from "./state.svelte"
   import { TILE_SIZE } from "./common"
+  import Audio from "./Audio.svelte"
 
   let {
     tile,

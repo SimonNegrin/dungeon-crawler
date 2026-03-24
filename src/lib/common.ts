@@ -7,6 +7,7 @@ import type {
   Stage,
   Tile,
   TileType,
+  TileTypeMap,
 } from "./types"
 import Vec2 from "./Vec2"
 import { gameState } from "./state.svelte"
@@ -238,7 +239,7 @@ export function createGrid(stage: Stage, character: Character): Grid | null {
   stage.layers.forEach((layer) => {
     if (!layer.collider) return
     layer.tiles.forEach((tile) => {
-      if (isOpenDoorTile(tile)) {
+      if (isOpenDoor(tile)) {
         return
       }
       grid[tile.position.y][tile.position.x] = TILE_BLOCK
@@ -247,6 +248,11 @@ export function createGrid(stage: Stage, character: Character): Grid | null {
 
   return grid
 }
+
+export function getTileTypeAt<K extends keyof TileTypeMap>(
+  tileType: K,
+  position: Vec2,
+): Tile<TileTypeMap[K]> | null
 
 export function getTileTypeAt(
   tileType: TileType,
@@ -265,20 +271,8 @@ export function getTileTypeAt(
   return null
 }
 
-function isOpenDoorTile(tile: Tile<MapTileAtts>): boolean {
+function isOpenDoor(tile: Tile<MapTileAtts>): boolean {
   return tile.attributes.type === "door" && tile.attributes.isOpen
-}
-
-export function getTilesAtPosition(position: Vec2): Tile<MapTileAtts>[] {
-  const tiles: Tile<MapTileAtts>[] = []
-  gameState.stage?.layers.forEach((layer) => {
-    layer.tiles.forEach((tile) => {
-      if (tile.position.isEqual(position)) {
-        tiles.push(tile)
-      }
-    })
-  })
-  return tiles
 }
 
 export function waitTime(ms: number): Promise<void> {

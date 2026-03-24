@@ -26,6 +26,7 @@
   })
 
   function exchangeItem(): void {
+    if (!inventory) return
     const [index, from, target] = leftInventory
       ? [indexLeft, inventory, currentPlayer]
       : [indexRight, currentPlayer, inventory]
@@ -46,6 +47,7 @@
   }
 
   function adjustIndex() {
+    if (!inventory) return
     if (indexLeft >= inventory.items.length) {
       indexLeft = Math.max(0, inventory.items.length - 1)
     }
@@ -63,6 +65,7 @@
   }
 
   function moveDown() {
+    if (!inventory) return
     if (leftInventory) {
       indexLeft = (indexLeft + 1) % inventory.items.length
     } else {
@@ -71,6 +74,7 @@
   }
 
   function moveUp() {
+    if (!inventory) return
     if (leftInventory) {
       indexLeft--
       if (indexLeft < 0) indexLeft += inventory.items.length
