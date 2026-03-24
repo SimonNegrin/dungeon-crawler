@@ -192,7 +192,6 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    overflow: hidden;
   }
   .empty {
     padding: 4px 8px;
