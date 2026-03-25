@@ -1,10 +1,12 @@
 import EasyStar from "easystarjs"
 import type {
   Character,
+  CharacterDto,
   Grid,
   MapTileAtts,
   Spritesheet,
   Stage,
+  StatType,
   Tile,
   TileType,
   TileTypeMap,
@@ -94,13 +96,6 @@ export function getCharacterPathTo(
       },
     )
     easystar.calculate()
-  })
-}
-
-export function isEthereal(character: Character): boolean {
-  const allItems = [...character.traits, ...character.items]
-  return allItems.some((item) => {
-    return item.ethereal === true
   })
 }
 
@@ -293,7 +288,7 @@ export function nextPlayer(): void {
   gameState.currentPlayer = player
   gameState.playerIndex = index
   gameState.cursorPosition = player.position
-  gameState.initiativeLeft = calcCharacterInitiative(player)
+  gameState.initiativeLeft = player.getStat("initiative")
   gameState.openInventory = null
   nextSound()
 }
@@ -308,52 +303,39 @@ export function spendInitiative(amount: number): boolean {
   return true
 }
 
-export function calcCharacterInitiative(character: Character): number {
-  let value = character.initiative
+export function createCharacter(character: CharacterDto): Character {
+  return {
+    ...character,
+    getStat: (stat: StatType) => calcStat(stat, character),
+    isEthereal: () => isEthereal(character),
+  }
+}
+
+export function calcStat(stat: StatType, character: CharacterDto): number {
+  let value = character.stats[stat]
   ;[...character.traits, ...character.items].forEach((item) => {
-    if (typeof item.initiative === "number") {
-      value += item.initiative
-    }
+    item.statModifiers?.forEach((item) => {
+      if (item.stat === stat) {
+        value += item.value
+      }
+    })
   })
   return value
 }
 
-export function calcCharacterTotalHealth(character: Character): number {
-  let value = character.totalHealth
-  ;[...character.traits, ...character.items].forEach((item) => {
-    if (typeof item.totalHealth === "number") {
-      value += item.totalHealth
-    }
+export function isEthereal(character: CharacterDto): boolean {
+  return [...character.traits, ...character.items].some((item) => {
+    return item.metadata?.ethereal === true
   })
-  return value
 }
 
-export function calcCharacterAttack(character: Character): number {
-  let value = character.attack
-  ;[...character.traits, ...character.items].forEach((item) => {
-    if (typeof item.attack === "number") {
-      value += item.attack
-    }
+export function removeItemById(character: Character, itemId: string): void {
+  character.items = character.items.filter((item) => {
+    return item.id !== itemId
   })
-  return value
 }
 
-export function calcCharacterDefence(character: Character): number {
-  let value = character.defence
-  ;[...character.traits, ...character.items].forEach((item) => {
-    if (typeof item.defence === "number") {
-      value += item.defence
-    }
-  })
-  return value
-}
-
-export function calcCharacterDamage(character: Character): number {
-  let value = character.damage
-  ;[...character.traits, ...character.items].forEach((item) => {
-    if (typeof item.damage === "number") {
-      value += item.damage
-    }
-  })
-  return value
-}
+export async function playAnimation(
+  animationId: string,
+  position: Vec2,
+): Promise<void> {}

@@ -490,10 +490,8 @@
             "isOpen": false,
             "items": [
               {
-                "spriteId": "short_sword",
-                "name": "Espada corta",
-                "desc": "Mejor que nada",
-                "attack": 1
+                "type": "short_sword",
+                "id": "short_sword"
               },
               {
                 "spriteId": "rusty_key",

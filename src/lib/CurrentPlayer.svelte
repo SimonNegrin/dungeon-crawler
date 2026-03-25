@@ -1,17 +1,7 @@
 <script lang="ts">
-  import {
-    calcCharacterAttack,
-    calcCharacterDamage,
-    calcCharacterDefence,
-    calcCharacterInitiative,
-    calcCharacterTotalHealth,
-  } from "./common"
+  import { calcStat } from "./common"
   import Sprite from "./Sprite.svelte"
   import { gameState } from "./state.svelte"
-
-  let playerInitiative = $derived(
-    calcCharacterInitiative(gameState.currentPlayer),
-  )
 </script>
 
 <div class="current-player">
@@ -24,27 +14,31 @@
     <tbody>
       <tr>
         <td>Iniciativa</td>
-        <td>{gameState.initiativeLeft}/{playerInitiative}</td>
-      </tr>
-      <tr>
-        <td>Salud</td>
         <td
-          >{gameState.currentPlayer.health}/{calcCharacterTotalHealth(
-            gameState.currentPlayer,
+          >{gameState.initiativeLeft}/{gameState.currentPlayer.getStat(
+            "initiative",
           )}</td
         >
       </tr>
       <tr>
+        <td>Salud</td>
+        <td
+          >{gameState.currentPlayer.getStat(
+            "health",
+          )}/{gameState.currentPlayer.getStat("totalHealth")}</td
+        >
+      </tr>
+      <tr>
         <td>Ataque</td>
-        <td>{calcCharacterAttack(gameState.currentPlayer)}</td>
+        <td>{calcStat("attack", gameState.currentPlayer)}</td>
       </tr>
       <tr>
         <td>Daño</td>
-        <td>{calcCharacterDamage(gameState.currentPlayer)}</td>
+        <td>{gameState.currentPlayer.getStat("damage")}</td>
       </tr>
       <tr>
         <td>Defensa</td>
-        <td>{calcCharacterDefence(gameState.currentPlayer)}</td>
+        <td>{gameState.currentPlayer.getStat("defence")}</td>
       </tr>
     </tbody>
   </table>

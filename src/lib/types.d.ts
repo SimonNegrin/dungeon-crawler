@@ -25,58 +25,64 @@ interface GameState {
   players: Character[]
 }
 
-export type Character = {
+export interface CharacterDto {
   spritePath: string
   name: string
   position: Vec2
-  initiative: number
-  totalHealth: number
-  health: number
-  attack: number
-  defence: number
-  damage: number
+  stats: Record<StatType, number>
   traits: Item[]
   items: Item[]
 }
 
+export interface Character extends CharacterDto {
+  getStat(stat: StatType): number
+  isEthereal(): boolean
+}
+
+export type StatType =
+  | "attack"
+  | "defence"
+  | "damage"
+  | "aim"
+  | "initiative"
+  | "health"
+  | "totalHealth"
+
+export interface StatModifier {
+  stat: StatType
+  value: number
+}
+
+export interface EffectHandlers {
+  onEquip?: EffectHandler
+  onUnequip?: EffectHandler
+  onUse?: EffectHandler
+}
+
+export type EffectHandler = (character: Character, item: Item) => Promise<void>
+
+export interface ItemMetadata {
+  uses?: number // para consumibles
+  turns?: number // para efectos temporales
+  range?: number // para armas a distancia
+  ethereal?: boolean // inmunidad física
+  magic?: boolean // ataque mágico
+}
+
 export interface Item {
   spriteId: string
+  id: string
   name: string
   desc: string
 
-  // ID of the item
-  id: string
+  // Modificadores de stats (pueden ser múltiples)
+  statModifiers?: StatModifier[]
 
-  // Enables physical immunity if enabled
-  ethereal?: true
+  // Handlers opcionales para efectos complejos
+  effectHandlers?: EffectHandlers
 
-  // Enables magic attack if enabled
-  magic?: true
-
-  // Number of turns that the item lasts
-  turns?: number
-
-  // How many uses can be made before it disapear
-  uses?: number
-
-  // If defined, enables distance attack at indicated distance
-  // For example, a bow will have a number here
-  range?: number
-
-  // Modify the character attack
-  attack?: number
-
-  // Modify the character defence
-  defence?: number
-
-  // Modify the character damage
-  damage?: number
-
-  // Modify the character initiative
-  initiative?: number
-
-  // Modify the character total health
-  totalHealth?: number
+  // Metadata para items especiales
+  metadata?: ItemMetadata
 }
 
 export interface Position {

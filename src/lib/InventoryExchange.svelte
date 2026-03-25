@@ -115,7 +115,7 @@
               <div class="name">{item.name}</div>
               <div class="desc">{item.desc}</div>
               <div class="stats-container">
-                <ItemStats {item} />
+                <!-- <ItemStats {item} /> -->
               </div>
             </div>
           </div>
@@ -138,7 +138,7 @@
               <div class="name">{item.name}</div>
               <div class="desc">{item.desc}</div>
               <div class="stats-container">
-                <ItemStats {item} />
+                <!-- <ItemStats {item} /> -->
               </div>
             </div>
           </div>
