@@ -33,12 +33,7 @@
   style:top="{player.position.y * TILE_SIZE}px"
 >
   {#if gameState.currentPlayer === player}
-    <div class="current-player">
-      <div class="mark"></div>
-      <div class="mark"></div>
-      <div class="mark"></div>
-      <div class="mark"></div>
-    </div>
+    <div class="current-player"></div>
   {/if}
 
   <Sprite path={player.spritePath} {lookRight} />
@@ -47,6 +42,7 @@
 <style>
   .player {
     position: absolute;
+    z-index: 1;
     transition-duration: 200ms;
     width: var(--tile-size);
     height: var(--tile-size);
@@ -64,33 +60,6 @@
     left: 0;
     width: 100%;
     height: 100%;
-
-    & .mark {
-      position: absolute;
-      width: 6px;
-      height: 2px;
-      background-color: chartreuse;
-
-      &:nth-child(1) {
-        top: 0;
-        left: 0;
-        rotate: 45deg;
-      }
-      &:nth-child(2) {
-        top: 0;
-        right: 0;
-        rotate: -45deg;
-      }
-      &:nth-child(3) {
-        left: 0;
-        bottom: 0;
-        rotate: -45deg;
-      }
-      &:nth-child(4) {
-        right: 0;
-        bottom: 0;
-        rotate: 45deg;
-      }
-    }
+    border: 2px dotted yellow;
   }
 </style>

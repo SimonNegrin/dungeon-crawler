@@ -13,6 +13,7 @@
 <style>
   .cursor {
     position: absolute;
+    z-index: 2;
     width: var(--tile-size);
     height: var(--tile-size);
     left: calc(var(--tile-size) * var(--x));
