@@ -4,7 +4,6 @@
     getCharacterPathTo,
     isInsideGameboard,
     removeFog,
-    TILE_SIZE,
     tileIsFog,
   } from "./common"
   import CrtScreen from "./CrtScreen.svelte"
@@ -17,6 +16,7 @@
   import PlayerAction from "./PlayerAction"
   import InventoryExchange from "./InventoryExchange.svelte"
   import { disapearSound } from "./audio"
+  import CursorPath from "./CursorPath.svelte"
 
   let freezePath = $state(false)
   let clientWidth = $state(0)
@@ -35,7 +35,7 @@
         return
       }
       gameState.initiativeRequired = Math.max(0, path.length - 1)
-      gameState.cursorPath = path.slice(1, -1)
+      gameState.cursorPath = path
     })
   })
 
@@ -110,13 +110,7 @@
           <div class="gameboard">
             <Cursor position={gameState.cursorPosition} />
 
-            {#each gameState.cursorPath as step}
-              <div
-                class="step"
-                style:left="{step.x * TILE_SIZE}px"
-                style:top="{step.y * TILE_SIZE}px"
-              ></div>
-            {/each}
+            <CursorPath />
 
             {#each gameState.players as player}
               <Player {player} />
@@ -152,23 +146,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-  }
-  .step {
-    position: absolute;
-    width: var(--tile-size);
-    height: var(--tile-size);
-
-    &::before {
-      content: "";
-      display: block;
-      width: 8px;
-      height: 8px;
-      background-color: yellow;
-      position: absolute;
-      top: calc(50% - 4px);
-      left: calc(50% - 4px);
-      border-radius: 100%;
-    }
   }
   .gameboard {
     position: absolute;

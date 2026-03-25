@@ -3,7 +3,7 @@
   import { walkSound } from "./audio"
   import { isEthereal, TILE_SIZE } from "./common"
   import Sprite from "./Sprite.svelte"
-  import type { Character, Tile } from "./types"
+  import type { Character } from "./types"
 
   let {
     player,
