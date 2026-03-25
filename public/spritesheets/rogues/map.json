@@ -10,25 +10,25 @@
           "id": "0",
           "x": 0,
           "y": 0,
-          "attributes": { "name": "Krom", "kind": "Enano" }
+          "attributes": { "id": "krom" }
         },
         {
           "id": "1",
           "x": 1,
           "y": 0,
-          "attributes": { "name": "Ladelbar", "kind": "Elfa" }
+          "attributes": { "id": "ladelbar" }
         },
         {
           "id": "2",
           "x": 2,
           "y": 0,
-          "attributes": { "name": "Lim", "kind": "Humano" }
+          "attributes": { "id": "rodolfo" }
         },
         {
           "id": "3",
           "x": 3,
           "y": 0,
-          "attributes": { "name": "Rat", "kind": "Humano" }
+          "attributes": { "id": "paco" }
         },
         { "id": "4", "x": 4, "y": 0 },
         { "id": "5", "x": 5, "y": 0 },

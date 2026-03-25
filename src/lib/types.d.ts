@@ -25,6 +25,7 @@ interface GameState {
 }
 
 export type Character = {
+  spritePath: string
   name: string
   position: Vec2
   initiative: number

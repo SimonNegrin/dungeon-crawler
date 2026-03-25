@@ -110,8 +110,7 @@
             class="item"
             class:selected={leftInventory && indexLeft === index}
           >
-            <!-- <ItemSprite id={item.spriteId} /> -->
-            <Sprite path="items/{item.spriteId}" />
+            <ItemSprite id={item.spriteId} />
             <div>
               <div class="name">{item.name}</div>
               <div class="desc">{item.desc}</div>

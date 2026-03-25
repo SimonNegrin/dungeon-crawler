@@ -52,6 +52,11 @@
     const [spritesheetId] = path.split("/")
     return `/spritesheets/${spritesheetId}/spritesheet.png`
   }
+
+  function transformOrigin(spritePosition: Vec2): string {
+    const x = spritePosition.x * TILE_SIZE + TILE_SIZE / 2
+    return `${x}px center`
+  }
 </script>
 
 <div class="sprite">
@@ -59,6 +64,8 @@
     src={spritesheet}
     style:left="{spritePosition.x * -TILE_SIZE}px"
     style:top="{spritePosition.y * -TILE_SIZE}px"
+    style:transform-origin={transformOrigin(spritePosition)}
+    class:look-right={lookRight}
     alt=""
   />
 </div>
@@ -74,5 +81,9 @@
   img {
     position: absolute;
     image-rendering: pixelated;
+
+    &.look-right {
+      transform: scaleX(-1);
+    }
   }
 </style>

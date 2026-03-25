@@ -3,6 +3,7 @@ import { loadSpritesheet } from "./common"
 import Vec2 from "./Vec2"
 
 const ladelbar: Character = {
+  spritePath: "rogues/ladelbar",
   name: "Ladelbar",
   position: new Vec2(2, 2),
   initiative: 8,
@@ -11,6 +12,7 @@ const ladelbar: Character = {
 }
 
 const krom: Character = {
+  spritePath: "rogues/krom",
   name: "Krom",
   position: new Vec2(3, 2),
   initiative: 8,
