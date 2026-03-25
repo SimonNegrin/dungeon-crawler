@@ -7,7 +7,7 @@
     name: string
   }
 
-  const spritesheet = await loadSpritesheet<PlayerAtts>("Rogues")
+  const spritesheet = await loadSpritesheet<PlayerAtts>("rogues")
 </script>
 
 <!-- svelte-ignore state_referenced_locally -->

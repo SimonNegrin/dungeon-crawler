@@ -30,7 +30,7 @@
 
 <div class="item-sprite">
   <img
-    src="/items/spritesheet.png"
+    src="/spritesheets/items/spritesheet.png"
     style:left="{position.x * -TILE_SIZE}px"
     style:top="{position.y * -TILE_SIZE}px"
     class="spritesheet"

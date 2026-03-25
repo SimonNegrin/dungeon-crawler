@@ -31,7 +31,7 @@ export const INITIATIVE_STEP = 1
 export async function loadSpritesheet<T>(
   spritesheetName: string,
 ): Promise<Spritesheet<T>> {
-  const response = await fetch(`/${spritesheetName}/map.json`)
+  const response = await fetch(`/spritesheets/${spritesheetName}/map.json`)
 
   if (!response.ok) {
     throw new Error(`No se pudo cargar el stage: ${spritesheetName}`)
@@ -39,7 +39,7 @@ export async function loadSpritesheet<T>(
 
   const spritesheet: Spritesheet<T> = await response.json()
 
-  spritesheet.spritesheetUrl = `/${spritesheetName}/spritesheet.png`
+  spritesheet.spritesheetUrl = `/spritesheets/${spritesheetName}/spritesheet.png`
 
   spritesheet.layers.forEach((layer) => {
     layer.tiles = layer.tiles.map((tile: any): Tile<T> => {

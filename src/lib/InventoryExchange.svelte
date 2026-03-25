@@ -8,6 +8,7 @@
   import ItemStats from "./ItemStats.svelte"
   import { nextPlayerIfExaust } from "./common"
   import { chestOpenSound, penClickSound } from "./audio"
+  import Sprite from "./Sprite.svelte"
 
   let {
     inventory,
@@ -109,7 +110,8 @@
             class="item"
             class:selected={leftInventory && indexLeft === index}
           >
-            <ItemSprite id={item.spriteId} />
+            <!-- <ItemSprite id={item.spriteId} /> -->
+            <Sprite path="items/{item.spriteId}" />
             <div>
               <div class="name">{item.name}</div>
               <div class="desc">{item.desc}</div>
