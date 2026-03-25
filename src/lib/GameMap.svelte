@@ -1,11 +1,6 @@
 <script lang="ts">
   import AspectRatio from "./AspectRatio.svelte"
-  import {
-    getCharacterPathTo,
-    isInsideGameboard,
-    removeFog,
-    tileIsFog,
-  } from "./common"
+  import { isInsideGameboard, removeFog, tileIsFog } from "./common"
   import CrtScreen from "./CrtScreen.svelte"
   import Cursor from "./Cursor.svelte"
   import Loading from "./Loading.svelte"
@@ -18,24 +13,8 @@
   import { disapearSound } from "./audio"
   import CursorPath from "./CursorPath.svelte"
 
-  let freezePath = $state(false)
   let clientWidth = $state(0)
   let stageScale = $derived(clientWidth / 512)
-
-  $effect(() => {
-    if (freezePath) return
-    getCharacterPathTo(gameState.currentPlayer, gameState.cursorPosition).then(
-      (path) => {
-        if (!path) {
-          gameState.initiativeRequired = 0
-          gameState.cursorPath = []
-          return
-        }
-        gameState.initiativeRequired = Math.max(0, path.length - 1)
-        gameState.cursorPath = path
-      },
-    )
-  })
 
   function onkeydown(event: KeyboardEvent): void {
     if (event.defaultPrevented) return
@@ -72,10 +51,10 @@
   }
 
   async function action(): Promise<void> {
-    freezePath = true
+    gameState.freezePath = true
     const action = new PlayerAction()
     await action.execute()
-    freezePath = false
+    gameState.freezePath = false
     if (await removeFog(gameState.currentPlayer.position)) {
       disapearSound()
     }

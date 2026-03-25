@@ -37,6 +37,7 @@ export const gameState = $state<GameState>({
   openInventory: null,
   cursorPosition: ladelbar.position,
   cursorPath: [],
+  freezePath: false,
   players: [ladelbar, krom],
 })
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TILE_SIZE } from "./common"
+  import { getCharacterPathTo, TILE_SIZE } from "./common"
   import { gameState } from "./state.svelte"
   import type Vec2 from "./Vec2"
 
@@ -9,6 +9,21 @@
   }
 
   let steps = $derived(updateSteps(gameState.cursorPath))
+
+  $effect(() => {
+    if (gameState.freezePath) return
+    getCharacterPathTo(gameState.currentPlayer, gameState.cursorPosition).then(
+      (path) => {
+        if (!path) {
+          gameState.initiativeRequired = 0
+          gameState.cursorPath = []
+          return
+        }
+        gameState.initiativeRequired = Math.max(0, path.length - 1)
+        gameState.cursorPath = path
+      },
+    )
+  })
 
   function updateSteps(cursorPath: Vec2[]): Step[] {
     const steps: Step[] = []
@@ -20,19 +35,6 @@
     }
     return steps
   }
-
-  // function stepClass(step: Step): string {
-  //   if (step.current.x > step.next.x) {
-  //     return "step-left"
-  //   }
-  //   if (step.current.x < step.next.x) {
-  //     return "step-right"
-  //   }
-  //   if (step.current.y > step.next.y) {
-  //     return "step-up"
-  //   }
-  //   return "step-down"
-  // }
 </script>
 
 {#each steps as step}
@@ -61,21 +63,6 @@
       height: var(--sign-size);
       background-color: yellow;
       border-radius: 100%;
-      /* border-top: 2px solid yellow;
-      border-right: 2px solid yellow; */
     }
-
-    /* &.step-right::before {
-      transform: rotate(45deg);
-    }
-    &.step-left::before {
-      transform: rotate(-135deg);
-    }
-    &.step-up::before {
-      transform: rotate(-45deg);
-    }
-    &.step-down::before {
-      transform: rotate(135deg);
-    } */
   }
 </style>

@@ -19,6 +19,7 @@ interface GameState {
   initiativeLeft: number
   initiativeRequired: number
   openInventory: Inventory | null
+  freezePath: boolean
   cursorPosition: Vec2
   cursorPath: Vec2[]
   players: Character[]
