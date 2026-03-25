@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Item } from "./types"
+  import type { Item, StatType } from "./types"
 
   let {
     item,
@@ -11,37 +11,51 @@
 
   function updateStats(item: Item): string[] {
     const stats: string[] = []
-    if (typeof item.attack === "number") {
-      stats.push(`${modifier(item.attack)} ataque`)
+
+    // Process stat modifiers
+    if (item.statModifiers) {
+      for (const modifier of item.statModifiers) {
+        const statName = getStatName(modifier.stat)
+        stats.push(`${modifierValue(modifier.value)} ${statName}`)
+      }
     }
-    if (typeof item.defence === "number") {
-      stats.push(`${modifier(item.defence)} defensa`)
+
+    // Process metadata
+    if (item.metadata) {
+      if (item.metadata.range !== undefined) {
+        stats.push(`${modifierValue(item.metadata.range)} alcance`)
+      }
+      if (item.metadata.magic) {
+        stats.push("Ataque mágico")
+      }
+      if (item.metadata.ethereal) {
+        stats.push("Inmunidad física")
+      }
+      if (item.metadata.turns !== undefined) {
+        stats.push(`${item.metadata.turns} turnos`)
+      }
+      if (item.metadata.uses !== undefined) {
+        stats.push(`${item.metadata.uses} usos`)
+      }
     }
-    if (typeof item.damage === "number") {
-      stats.push(`${modifier(item.damage)} daño`)
-    }
-    if (typeof item.initiative === "number") {
-      stats.push(`${modifier(item.initiative)} iniciativa`)
-    }
-    if (typeof item.range === "number") {
-      stats.push(`${modifier(item.range)} alcance`)
-    }
-    if (item.magic) {
-      stats.push("Ataque mágico")
-    }
-    if (item.ethereal) {
-      stats.push("Inmunidad física")
-    }
-    if (typeof item.turns === "number") {
-      stats.push(`${item.turns} turnos`)
-    }
-    if (typeof item.uses === "number") {
-      stats.push(`${item.turns} usos`)
-    }
+
     return stats
   }
 
-  function modifier(n: number): string {
+  function getStatName(stat: StatType): string {
+    const names: Record<StatType, string> = {
+      attack: "ataque",
+      defence: "defensa",
+      damage: "daño",
+      aim: "puntería",
+      initiative: "iniciativa",
+      health: "vida",
+      totalHealth: "vida máxima",
+    }
+    return names[stat] || stat
+  }
+
+  function modifierValue(n: number): string {
     if (n > 0) {
       return `+${n}`
     }
