@@ -4,7 +4,6 @@
   import CrtScreen from "./CrtScreen.svelte"
   import Cursor from "./Cursor.svelte"
   import Loading from "./Loading.svelte"
-  import Player from "./Player.svelte"
   import { gameState } from "./state.svelte"
   import Vec2 from "./Vec2"
   import MapLayer from "./MapLayer.svelte"
@@ -12,6 +11,7 @@
   import InventoryExchange from "./InventoryExchange.svelte"
   import { disapearSound } from "./audio"
   import CursorPath from "./CursorPath.svelte"
+  import Players from "./Players.svelte"
 
   let clientWidth = $state(0)
   let stageScale = $derived(clientWidth / 512)
@@ -85,13 +85,11 @@
           </div>
 
           <div class="gameboard">
-            <Cursor position={gameState.cursorPosition} />
-
             <CursorPath />
 
-            {#each gameState.players as player}
-              <Player {player} />
-            {/each}
+            <Cursor position={gameState.cursorPosition} />
+
+            <Players />
 
             {#if gameState.openInventory}
               <InventoryExchange inventory={gameState.openInventory} />
