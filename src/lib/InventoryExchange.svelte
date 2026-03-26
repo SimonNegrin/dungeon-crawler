@@ -3,7 +3,12 @@
   import { gameState } from "./state.svelte"
   import type { Inventory, InventoryType } from "./types"
   import { onMount } from "svelte"
-  import { chestCloseSound, chestOpenSound, zipSound } from "./audio"
+  import {
+    chestCloseSound,
+    chestOpenSound,
+    penClickSound,
+    zipSound,
+  } from "./audio"
   import InventoryView from "./InventoryView.svelte"
   import OnkeydownCapture from "./OnkeydownCapture.svelte"
 
@@ -39,6 +44,7 @@
     }
     const [item] = from.items.splice(index, 1)
     to.items.push(item)
+    penClickSound()
   }
 
   function moveToRight(index: number): void {
