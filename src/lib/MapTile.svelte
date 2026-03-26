@@ -14,6 +14,7 @@
   class="tile"
   style:left="{tile.position.x * TILE_SIZE}px"
   style:top="{tile.position.y * TILE_SIZE}px"
+  style:animation-delay="{tile.position.magnitude() * 40}ms"
 >
   <img
     class="spritesheet"
@@ -30,9 +31,18 @@
     overflow: hidden;
     width: var(--tile-size);
     height: var(--tile-size);
+    opacity: 0;
+    animation-name: show;
+    animation-duration: 3000ms;
+    animation-fill-mode: forwards;
   }
   .spritesheet {
     position: absolute;
     image-rendering: pixelated;
+  }
+  @keyframes show {
+    100% {
+      opacity: 1;
+    }
   }
 </style>

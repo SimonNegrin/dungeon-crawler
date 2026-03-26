@@ -16,6 +16,10 @@ export default class Vec2 {
     return new Vec2(this.x + vec2.x, this.y + vec2.y)
   }
 
+  magnitude(): number {
+    return Math.hypot(this.x, this.y)
+  }
+
   isEqual(vec2: Vec2): boolean {
     return this.x === vec2.x && this.y === vec2.y
   }

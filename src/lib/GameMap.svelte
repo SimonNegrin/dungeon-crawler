@@ -137,7 +137,7 @@
     position: absolute;
     overflow: hidden;
     transition-property: top, left;
-    transition-duration: 200ms;
+    transition-duration: 750ms;
   }
   .layers {
     position: relative;
