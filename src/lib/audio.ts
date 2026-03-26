@@ -5,6 +5,7 @@ type AudioOptions = {
 const preloaded = new Set<string>()
 let stepRight = true
 
+export const zipSound = createAudioPreset("zip", { volume: 0.2 })
 export const doorUnlockSound = createAudioPreset("door_unlock", { volume: 0.2 })
 export const doorLockedSound = createAudioPreset("door_locked", { volume: 0.2 })
 export const tiredSound = createAudioPreset("tired", { volume: 0.4 })

@@ -20,6 +20,10 @@ export default class PlayerAction {
   }
 
   private async doAction(): Promise<void> {
+    if (await this.interactPlayer()) {
+      return
+    }
+
     if (await this.interactChest()) {
       return
     }
@@ -29,6 +33,32 @@ export default class PlayerAction {
     }
 
     await this.playerMove()
+  }
+
+  private async interactPlayer(): Promise<boolean> {
+    const player = gameState.players.find((player) => {
+      return player.position.isEqual(gameState.cursorPosition)
+    })
+
+    if (!player) {
+      return false
+    }
+
+    if (!gameState.currentPlayer.position.isRectAdjacent(player.position)) {
+      return false
+    }
+
+    // Check if the player has the initiative needed
+    // to interact with a chest
+    if (gameState.initiativeLeft < INITIATIVE_CHEST) {
+      tiredSound()
+      return true
+    }
+
+    gameState.initiativeLeft -= INITIATIVE_CHEST
+    gameState.openInventory = player
+
+    return true
   }
 
   private async interactChest(): Promise<boolean> {

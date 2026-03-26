@@ -1,9 +1,9 @@
 <script lang="ts">
   import { fade, fly } from "svelte/transition"
   import { gameState } from "./state.svelte"
-  import type { Inventory } from "./types"
+  import type { Inventory, InventoryType } from "./types"
   import { onMount } from "svelte"
-  import { chestCloseSound, chestOpenSound } from "./audio"
+  import { chestCloseSound, chestOpenSound, zipSound } from "./audio"
   import InventoryView from "./InventoryView.svelte"
   import OnkeydownCapture from "./OnkeydownCapture.svelte"
 
@@ -13,21 +13,34 @@
     inventory: Inventory
   } = $props()
 
-  let focusChest = $state(true)
+  const openSounds: Record<InventoryType, () => void> = {
+    chest: chestOpenSound,
+    player: zipSound,
+    enemy: zipSound,
+  }
+  const closeSounds: Record<InventoryType, () => void> = {
+    chest: chestCloseSound,
+    player: zipSound,
+    enemy: zipSound,
+  }
+
+  let focusRight = $state(true)
   let currentPlayer = $derived(gameState.currentPlayer)
   let indexLeft = $state(0)
   let indexRight = $state(0)
 
-  onMount(chestOpenSound)
+  onMount(() => {
+    openSounds[inventory.type]()
+  })
 
   function moveToRight(index: number): void {
-    const [item] = inventory.items.splice(index, 1)
-    currentPlayer.items.push(item)
+    const [item] = currentPlayer.items.splice(index, 1)
+    inventory.items.push(item)
   }
 
   function moveToLeft(index: number): void {
-    const [item] = currentPlayer.items.splice(index, 1)
-    inventory.items.push(item)
+    const [item] = inventory.items.splice(index, 1)
+    currentPlayer.items.push(item)
   }
 
   function onleft(index: number): void {
@@ -43,11 +56,11 @@
   }
 
   function toggleFocus(): void {
-    focusChest = !focusChest
+    focusRight = !focusRight
   }
 
   function close(): void {
-    chestCloseSound()
+    closeSounds[inventory.type]()
     gameState.openInventory = null
   }
 </script>
@@ -57,24 +70,24 @@
 <div class="inventory-exchange" transition:fade>
   <div class="inventories" transition:fly={{ y: 20 }}>
     <div class="inventory">
-      <div class="inventory-name">{inventory.name}</div>
+      <div class="inventory-name">{currentPlayer.name}</div>
       <div class="inventory-content">
         <InventoryView
           bind:selectedIndex={indexLeft}
-          {inventory}
-          focus={focusChest}
+          inventory={currentPlayer}
+          focus={!focusRight}
           onselect={moveToRight}
           {onright}
         />
       </div>
     </div>
     <div class="inventory">
-      <div class="inventory-name">{currentPlayer.name}</div>
+      <div class="inventory-name">{inventory.name}</div>
       <div class="inventory-content">
         <InventoryView
           bind:selectedIndex={indexRight}
-          inventory={currentPlayer}
-          focus={!focusChest}
+          {inventory}
+          focus={focusRight}
           onselect={moveToLeft}
           {onleft}
         />

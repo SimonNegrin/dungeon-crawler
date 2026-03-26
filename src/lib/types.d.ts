@@ -2,7 +2,10 @@ import type Vec2 from "./Vec2"
 
 export type Grid = (0 | 1)[][]
 
+export type InventoryType = "chest" | "player" | "enemy"
+
 export interface Inventory {
+  type: InventoryType
   name: string
   items: Item[]
 }
@@ -26,6 +29,7 @@ interface GameState {
 }
 
 export interface Character {
+  type: "player" | "enemy"
   spritePath: string
   name: string
   position: Vec2

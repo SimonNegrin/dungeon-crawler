@@ -5,6 +5,7 @@ import { itemsFactory } from "./items"
 
 const ladelbar: Character = {
   spritePath: "rogues/ladelbar",
+  type: "player",
   name: "Ladelbar",
   position: new Vec2(2, 2),
   stats: {
@@ -22,6 +23,7 @@ const ladelbar: Character = {
 
 const krom: Character = {
   spritePath: "rogues/krom",
+  type: "player",
   name: "Krom",
   position: new Vec2(3, 2),
   stats: {
