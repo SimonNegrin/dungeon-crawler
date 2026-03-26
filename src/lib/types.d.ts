@@ -108,13 +108,19 @@ export interface AttsChest {
   type: "chest"
   name: string
   isOpen: boolean
-  keyId?: string
+  keyName: string
   items: Item[]
 }
 
-export interface AttsSpawn {
+export interface AttsPlayerSpawn {
   type: "spawn"
-  spawnType: "player" | "npc"
+  spawnType: "player"
+}
+
+export interface AttsEnemySpawn {
+  type: "spawn"
+  spawnType: "enemy"
+  enemyName: string
 }
 
 /**

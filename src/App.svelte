@@ -4,10 +4,9 @@
   import Landing from "./lib/Landing.svelte"
   import GameMap from "./lib/GameMap.svelte"
   import { nextPlayer, TILE_SIZE } from "./lib/common"
-  import CurrentPlayer from "./lib/CurrentPlayer.svelte"
 
   function onStart(): void {
-    loadStage("stage_1")
+    loadStage("stage_2")
   }
 
   function onkeydown(event: KeyboardEvent) {
@@ -24,12 +23,14 @@
   <AspectRatio ratio={16 / 9}>
     {#if gameState.stage}
       <div class="game-container">
+        <div class="left-space"></div>
         <div class="screen-container">
           <GameMap />
         </div>
-        <div class="game-info">
+        <div class="right-space"></div>
+        <!-- <div class="game-info">
           <CurrentPlayer />
-        </div>
+        </div> -->
       </div>
     {:else}
       <Landing onclick={onStart} />
@@ -50,17 +51,16 @@
     width: 100%;
     height: 100%;
     display: flex;
-    padding: 25px;
-    gap: 24px;
   }
   .screen-container {
-    aspect-ratio: 16/12;
+    height: 100%;
+    aspect-ratio: 1;
     flex-shrink: 0;
   }
-  .game-info {
+  .left-space,
+  .right-space {
     min-width: 0;
     flex-shrink: 1;
     flex-grow: 1;
-    color: #fff;
   }
 </style>

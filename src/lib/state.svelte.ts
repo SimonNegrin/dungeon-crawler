@@ -1,13 +1,4 @@
-import type {
-  Character,
-  EffectHandlers,
-  GameState,
-  Item,
-  ItemMetadata,
-  MapTileAtts,
-  Stage,
-  StatModifier,
-} from "./types"
+import type { Character, GameState, Item, MapTileAtts, Stage } from "./types"
 import { loadSpritesheet } from "./common"
 import Vec2 from "./Vec2"
 import { createItem } from "./items"
@@ -80,10 +71,11 @@ export async function loadStage(name: string): Promise<void> {
   stage.layers.forEach((layer) => {
     layer.tiles.forEach((tile) => {
       if (tile.attributes.type === "chest") {
-        tile.attributes.items = tile.attributes.items.map((item): Item => {
-          const ref = item as unknown as ItemRef
-          return createItem(ref.name)
-        })
+        tile.attributes.items = tile.attributes.items.map(
+          (item: ItemRef): Item => {
+            return createItem(item.name)
+          },
+        )
       }
     })
   })

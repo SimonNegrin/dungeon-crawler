@@ -1,7 +1,5 @@
 <script lang="ts">
-  import AspectRatio from "./AspectRatio.svelte"
-  import { isInsideGameboard, removeFog, tileIsFog } from "./common"
-  import CrtScreen from "./CrtScreen.svelte"
+  import { isInsideGameboard, removeFog, TILE_SIZE, tileIsFog } from "./common"
   import Cursor from "./Cursor.svelte"
   import Loading from "./Loading.svelte"
   import { gameState } from "./state.svelte"
@@ -12,9 +10,28 @@
   import { disapearSound } from "./audio"
   import CursorPath from "./CursorPath.svelte"
   import Players from "./Players.svelte"
+  import type { Character, Stage } from "./types"
 
-  let clientWidth = $state(0)
-  let stageScale = $derived(clientWidth / 512)
+  const VIEWPORT_SIZE = 15
+
+  let stageOffset = $derived(
+    calcStageOffset(gameState.stage, gameState.currentPlayer),
+  )
+  let mapWidth = $state(0)
+  let containerWidth = $state(0)
+  let mapScale = $derived(mapWidth / containerWidth)
+
+  function calcStageOffset(stage: Stage | null, player: Character): Vec2 {
+    if (!stage) {
+      return new Vec2(0, 0)
+    }
+    const pad = Math.floor(VIEWPORT_SIZE / 2)
+    let padX = Math.min(0, pad - player.position.x)
+    let padY = Math.min(0, pad - player.position.y)
+    padX = Math.max(padX, VIEWPORT_SIZE - stage.mapWidth)
+    padY = Math.max(padY, VIEWPORT_SIZE - stage.mapHeight)
+    return new Vec2(padX, padY)
+  }
 
   function onkeydown(event: KeyboardEvent): void {
     if (event.defaultPrevented) return
@@ -63,43 +80,45 @@
 
 <svelte:window {onkeydown} />
 
-<AspectRatio ratio={16 / 12}>
-  <CrtScreen flickerOpacity={0} vhs={false}>
-    <div class="game-map" bind:clientWidth>
-      {#if !gameState.stage}
-        <Loading />
-      {:else}
-        <div
-          class="stage"
-          style="transform: scale({stageScale});"
-          style:--map-width={gameState.stage.mapWidth}
-          style:--map-height={gameState.stage.mapHeight}
-        >
-          <div class="layers">
-            {#each gameState.stage.layers as layer, index}
-              <MapLayer
-                {layer}
-                zIndex={gameState.stage.layers.length - index}
-              />
-            {/each}
-          </div>
-
-          <div class="gameboard">
-            <CursorPath />
-
-            <Cursor position={gameState.cursorPosition} />
-
-            <Players />
-
-            {#if gameState.openInventory}
-              <InventoryExchange inventory={gameState.openInventory} />
-            {/if}
-          </div>
+<div class="game-map" bind:clientWidth={mapWidth}>
+  <div
+    class="game-map-container"
+    bind:clientWidth={containerWidth}
+    style:width="{VIEWPORT_SIZE * TILE_SIZE}px"
+    style:height="{VIEWPORT_SIZE * TILE_SIZE}px"
+    style:transform="scale({mapScale})"
+  >
+    {#if !gameState.stage}
+      <Loading />
+    {:else}
+      <div
+        class="stage"
+        style:left="{stageOffset.x * TILE_SIZE}px"
+        style:top="{stageOffset.y * TILE_SIZE}px"
+        style:width="{gameState.stage.mapWidth * TILE_SIZE}px"
+        style:height="{gameState.stage.mapHeight * TILE_SIZE}px"
+      >
+        <div class="layers">
+          {#each gameState.stage.layers as layer, index}
+            <MapLayer {layer} zIndex={gameState.stage.layers.length - index} />
+          {/each}
         </div>
-      {/if}
-    </div>
-  </CrtScreen>
-</AspectRatio>
+
+        <div class="gameboard">
+          <CursorPath />
+
+          <Cursor position={gameState.cursorPosition} />
+
+          <Players />
+
+          {#if gameState.openInventory}
+            <InventoryExchange inventory={gameState.openInventory} />
+          {/if}
+        </div>
+      </div>
+    {/if}
+  </div>
+</div>
 
 <style>
   .game-map {
@@ -109,11 +128,16 @@
     justify-content: center;
     align-items: center;
   }
-  .stage {
-    position: relative;
+  .game-map-container {
     overflow: hidden;
-    width: calc(var(--map-width) * var(--tile-size));
-    height: calc(var(--map-height) * var(--tile-size));
+    position: relative;
+    background-color: rgb(22, 22, 22);
+  }
+  .stage {
+    position: absolute;
+    overflow: hidden;
+    transition-property: top, left;
+    transition-duration: 200ms;
   }
   .layers {
     position: relative;

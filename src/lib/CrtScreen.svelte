@@ -26,12 +26,9 @@
 
 <style>
   .crt-screen {
-    --border-radius: 15% 15% 15% 15% / 10% 10% 10% 10%;
-
     position: relative;
     width: 100%;
     height: 100%;
-    border-radius: var(--border-radius);
     overflow: hidden;
 
     &::before {
