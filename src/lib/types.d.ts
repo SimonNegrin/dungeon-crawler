@@ -1,6 +1,7 @@
 import type Vec2 from "./Vec2"
 
-export type Grid = (0 | 1)[][]
+export type GridValue = 0 | 1
+export type Grid = GridValue[][]
 
 export type InventoryType = "chest" | "player" | "enemy"
 
@@ -17,6 +18,7 @@ export interface Position {
 
 interface GameState {
   stage: Stage | null
+  fog: Vec2[]
   playerIndex: number
   currentPlayer: Character
   initiativeLeft: number
@@ -139,6 +141,7 @@ export interface Tile<TileAtts> {
 export interface Layer<TileAtts> {
   name: string
   tiles: Tile<TileAtts>[]
+  tilesMap: Record<string, Tile<TileAtts>>
   collider: boolean
 }
 

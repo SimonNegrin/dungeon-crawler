@@ -1,5 +1,6 @@
 import { doorLockedSound, doorUnlockSound, tiredSound } from "./audio"
 import {
+  clearFogAt,
   getCharacterPathTo,
   getTileTypeAt,
   INITIATIVE_CHEST,
@@ -161,6 +162,11 @@ export default class PlayerAction {
       await waitTime(200)
       gameState.cursorPath = gameState.cursorPath.slice(1)
     }
+
+    clearFogAt(gameState.currentPlayer.position)
+    // for (const step of path.slice(1)) {
+    //   clearFogAt(step)
+    // }
 
     nextPlayerIfExaust()
     return true

@@ -11,8 +11,9 @@
   import CursorPath from "./CursorPath.svelte"
   import Players from "./Players.svelte"
   import type { Character, Stage } from "./types"
+  import FogLayer from "./FogLayer.svelte"
 
-  const VIEWPORT_SIZE = 15
+  const VIEWPORT_SIZE = 13
 
   let stageOffset = $derived(
     calcStageOffset(gameState.stage, gameState.currentPlayer),
@@ -105,6 +106,8 @@
         </div>
 
         <div class="gameboard">
+          <FogLayer />
+
           <CursorPath />
 
           <Cursor position={gameState.cursorPosition} />

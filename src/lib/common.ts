@@ -1,7 +1,10 @@
 import EasyStar from "easystarjs"
 import type {
+  AttsDoor,
   Character,
   Grid,
+  GridValue,
+  Layer,
   MapTileAtts,
   Spritesheet,
   Stage,
@@ -13,10 +16,12 @@ import type {
 import Vec2 from "./Vec2"
 import { gameState } from "./state.svelte"
 import { nextSound } from "./audio"
+import VisionSystem from "./VisionSystem"
 
 export const TILE_SIZE = 32
 export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1
+export const VIEW_DISTANCE = 6
 
 export const INITIATIVE_DOOR = 2
 export const INITIATIVE_CHEST = 2
@@ -54,6 +59,12 @@ export async function loadSpritesheet<T>(
         attributes: tile.attributes || {},
       }
     })
+
+    layer.tilesMap = Object.fromEntries(
+      layer.tiles.map((tile) => {
+        return [tile.position.toString(), tile]
+      }),
+    )
   })
   return spritesheet
 }
@@ -330,3 +341,69 @@ export async function playAnimation(
   animationId: string,
   position: Vec2,
 ): Promise<void> {}
+
+export function createFogPositions(stage: Stage): Vec2[] {
+  const positions: Vec2[] = []
+  for (let y = 0; y < stage.mapWidth; y++) {
+    for (let x = 0; x < stage.mapHeight; x++) {
+      positions.push(new Vec2(x, y))
+    }
+  }
+  return positions
+}
+
+export function clearFogAt(position: Vec2): void {
+  if (!gameState.stage) {
+    return
+  }
+
+  const visionSystem = new VisionSystem(
+    gameState.stage.mapWidth,
+    gameState.stage.mapHeight,
+    VIEW_DISTANCE,
+  )
+
+  const walls = gameState.stage.layers.find((layer) => {
+    return layer.name === "walls"
+  })
+  if (walls) {
+    walls.tiles.forEach((tile) => {
+      visionSystem.addWall(tile.position)
+    })
+  }
+
+  const doors: Layer<AttsDoor> | undefined = gameState.stage.layers.find(
+    (layer) => {
+      return layer.name === "doors"
+    },
+  )
+  if (doors) {
+    doors.tiles.forEach((tile) => {
+      if (!tile.attributes.isOpen) {
+        visionSystem.addWall(tile.position)
+      }
+    })
+  }
+
+  const visibleTiles = visionSystem.getVisibleTiles(position)
+
+  gameState.fog = gameState.fog.filter((position) => {
+    return !visibleTiles.has(position.toString())
+  })
+}
+
+export function isWallAt(position: Vec2): boolean {
+  if (!gameState.stage) {
+    return false
+  }
+
+  const walls = gameState.stage.layers.find((layer) => {
+    return layer.name === "walls"
+  })
+
+  if (!walls) {
+    return false
+  }
+
+  return walls.tilesMap[position.toString()] !== undefined
+}

@@ -3,10 +3,13 @@
   import { loadStage, gameState } from "./lib/state.svelte"
   import Landing from "./lib/Landing.svelte"
   import GameMap from "./lib/GameMap.svelte"
-  import { nextPlayer, TILE_SIZE } from "./lib/common"
+  import { clearFogAt, nextPlayer, TILE_SIZE } from "./lib/common"
 
-  function onStart(): void {
-    loadStage("stage_2")
+  async function onStart(): Promise<void> {
+    await loadStage("stage_2")
+    gameState.players.forEach((player) => {
+      clearFogAt(player.position)
+    })
   }
 
   function onkeydown(event: KeyboardEvent) {

@@ -1,5 +1,5 @@
 import type { Character, GameState, Item, MapTileAtts, Stage } from "./types"
-import { loadSpritesheet } from "./common"
+import { createFogPositions, loadSpritesheet } from "./common"
 import Vec2 from "./Vec2"
 import { createItem } from "./items"
 
@@ -48,8 +48,13 @@ const krom: Character = {
   items: [],
 }
 
+export const debug = $state({
+  showCoords: false,
+})
+
 export const gameState = $state<GameState>({
   stage: null,
+  fog: [],
   playerIndex: 0,
   currentPlayer: ladelbar,
   initiativeLeft: ladelbar.stats.initiative,
@@ -81,6 +86,7 @@ export async function loadStage(name: string): Promise<void> {
   })
 
   gameState.stage = stage
+  gameState.fog = createFogPositions(stage)
   gameState.playerIndex = 0
   gameState.currentPlayer = gameState.players[gameState.playerIndex]
 }

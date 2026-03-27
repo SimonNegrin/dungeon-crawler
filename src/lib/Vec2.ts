@@ -5,7 +5,7 @@ export default class Vec2 {
   ) {}
 
   toString(): string {
-    return `[${this.x},${this.y}]`
+    return `${this.x},${this.y}`
   }
 
   up(): Vec2 {
@@ -18,6 +18,10 @@ export default class Vec2 {
 
   magnitude(): number {
     return Math.hypot(this.x, this.y)
+  }
+
+  angle(): number {
+    return Math.atan2(this.y, this.x)
   }
 
   isEqual(vec2: Vec2): boolean {

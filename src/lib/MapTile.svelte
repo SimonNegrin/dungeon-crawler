@@ -2,6 +2,7 @@
   import type { MapTileAtts, Tile } from "./types"
   import { gameState } from "./state.svelte"
   import { TILE_SIZE } from "./common"
+  import Coords from "./Coords.svelte"
 
   let {
     tile,
@@ -15,6 +16,7 @@
   style:left="{tile.position.x * TILE_SIZE}px"
   style:top="{tile.position.y * TILE_SIZE}px"
 >
+  <Coords vec2={tile.position} />
   <img
     class="spritesheet"
     src={gameState.stage!.spritesheetUrl}
