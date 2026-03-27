@@ -1,4 +1,9 @@
-import { doorLockedSound, doorUnlockSound, tiredSound } from "./audio"
+import {
+  doorLockedSound,
+  doorUnlockSound,
+  fogClearSound,
+  tiredSound,
+} from "./audio"
 import {
   clearFogAt,
   getCharacterPathTo,
@@ -6,7 +11,6 @@ import {
   INITIATIVE_CHEST,
   INITIATIVE_DOOR,
   INITIATIVE_STEP,
-  nextPlayerIfExaust,
   removeItemByName,
   spendInitiative,
   waitTime,
@@ -112,7 +116,6 @@ export default class PlayerAction {
       } else {
         tiredSound()
       }
-      nextPlayerIfExaust()
       return true
     }
 
@@ -130,14 +133,12 @@ export default class PlayerAction {
       } else {
         tiredSound()
       }
-      nextPlayerIfExaust()
       return true
     }
 
     // The player can't open the door but we return true
     // to indicate the interaction try
     doorLockedSound()
-    nextPlayerIfExaust()
     return true
   }
 
@@ -163,9 +164,9 @@ export default class PlayerAction {
       gameState.cursorPath = gameState.cursorPath.slice(1)
     }
 
-    clearFogAt(gameState.currentPlayer.position)
-
-    nextPlayerIfExaust()
+    if (clearFogAt(gameState.currentPlayer.position)) {
+      fogClearSound()
+    }
     return true
   }
 }

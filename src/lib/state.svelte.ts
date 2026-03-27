@@ -1,5 +1,5 @@
 import type { Character, GameState, Item, MapTileAtts, Stage } from "./types"
-import { createFogPositions, loadSpritesheet } from "./common"
+import { clearFogAt, createFogPositions, loadSpritesheet } from "./common"
 import Vec2 from "./Vec2"
 import { createItem } from "./items"
 
@@ -89,4 +89,8 @@ export async function loadStage(name: string): Promise<void> {
   gameState.fog = createFogPositions(stage)
   gameState.playerIndex = 0
   gameState.currentPlayer = gameState.players[gameState.playerIndex]
+
+  gameState.players.forEach((player) => {
+    clearFogAt(player.position)
+  })
 }

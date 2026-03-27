@@ -3,7 +3,6 @@ import type {
   AttsDoor,
   Character,
   Grid,
-  GridValue,
   Layer,
   MapTileAtts,
   Spritesheet,
@@ -284,14 +283,6 @@ export function waitTime(ms: number): Promise<void> {
   })
 }
 
-export function nextPlayerIfExaust(): void {
-  // We skip if the current player still have initiative
-  if (gameState.initiativeLeft > 0) {
-    return
-  }
-  nextPlayer()
-}
-
 export function nextPlayer(): void {
   const index = (gameState.playerIndex + 1) % gameState.players.length
   const player = gameState.players[index]
@@ -352,9 +343,9 @@ export function createFogPositions(stage: Stage): Vec2[] {
   return positions
 }
 
-export function clearFogAt(position: Vec2): void {
+export function clearFogAt(position: Vec2): boolean {
   if (!gameState.stage) {
-    return
+    return false
   }
 
   const visionSystem = new VisionSystem(
@@ -386,10 +377,13 @@ export function clearFogAt(position: Vec2): void {
   }
 
   const visibleTiles = visionSystem.getVisibleTiles(position)
+  const previousFog = gameState.fog.length
 
   gameState.fog = gameState.fog.filter((position) => {
     return !visibleTiles.has(position.toString())
   })
+
+  return gameState.fog.length < previousFog
 }
 
 export function isWallAt(position: Vec2): boolean {

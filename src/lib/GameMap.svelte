@@ -7,7 +7,7 @@
   import MapLayer from "./MapLayer.svelte"
   import PlayerAction from "./PlayerAction"
   import InventoryExchange from "./InventoryExchange.svelte"
-  import { disapearSound } from "./audio"
+  import { fogClearSound } from "./audio"
   import CursorPath from "./CursorPath.svelte"
   import Players from "./Players.svelte"
   import type { Character, Stage } from "./types"
@@ -74,7 +74,7 @@
     await action.execute()
     gameState.freezePath = false
     if (await removeFog(gameState.currentPlayer.position)) {
-      disapearSound()
+      fogClearSound()
     }
   }
 </script>
