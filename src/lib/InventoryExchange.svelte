@@ -125,10 +125,13 @@
     align-items: center;
   }
   .inventories {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
     pointer-events: all;
     display: flex;
-    width: 80%;
-    height: 80%;
     background-color: var(--color-font);
     border-radius: 10px;
   }

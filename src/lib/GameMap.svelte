@@ -6,7 +6,6 @@
   import Vec2 from "./Vec2"
   import MapLayer from "./MapLayer.svelte"
   import PlayerAction from "./PlayerAction"
-  import InventoryExchange from "./InventoryExchange.svelte"
   import { fogClearSound } from "./audio"
   import CursorPath from "./CursorPath.svelte"
   import Players from "./Players.svelte"
@@ -113,10 +112,6 @@
           <Cursor position={gameState.cursorPosition} />
 
           <Players />
-
-          {#if gameState.openInventory}
-            <InventoryExchange inventory={gameState.openInventory} />
-          {/if}
         </div>
       </div>
     {/if}

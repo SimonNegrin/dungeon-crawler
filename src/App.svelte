@@ -4,6 +4,7 @@
   import Landing from "./lib/Landing.svelte"
   import GameMap from "./lib/GameMap.svelte"
   import { clearFogAt, nextPlayer, TILE_SIZE } from "./lib/common"
+  import InventoryExchange from "./lib/InventoryExchange.svelte"
 
   async function onStart(): Promise<void> {
     await loadStage("stage_2")
@@ -29,11 +30,12 @@
         <div class="left-space"></div>
         <div class="screen-container">
           <GameMap />
+
+          {#if gameState.openInventory}
+            <InventoryExchange inventory={gameState.openInventory} />
+          {/if}
         </div>
         <div class="right-space"></div>
-        <!-- <div class="game-info">
-          <CurrentPlayer />
-        </div> -->
       </div>
     {:else}
       <Landing onclick={onStart} />
@@ -46,6 +48,7 @@
     width: 100vw;
     height: 100vh;
     display: flex;
+    overflow: hidden;
     justify-content: center;
     align-items: center;
     background-color: var(--main-background-color);
@@ -56,6 +59,7 @@
     display: flex;
   }
   .screen-container {
+    position: relative;
     height: 100%;
     aspect-ratio: 1;
     flex-shrink: 0;
