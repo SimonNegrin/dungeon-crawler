@@ -22,7 +22,10 @@
       <GameMap />
 
       {#if gameState.openInventory}
-        <InventoryExchange inventory={gameState.openInventory} />
+        <InventoryExchange
+          leftInventory={gameState.openInventory}
+          rightInventory={gameState.currentPlayer}
+        />
       {/if}
     </div>
     <div class="right-space"></div>

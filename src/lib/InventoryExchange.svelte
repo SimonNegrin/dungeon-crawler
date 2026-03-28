@@ -13,9 +13,11 @@
   import OnkeydownCapture from "./OnkeydownCapture.svelte"
 
   let {
-    inventory,
+    leftInventory,
+    rightInventory,
   }: {
-    inventory: Inventory
+    leftInventory: Inventory
+    rightInventory: Inventory
   } = $props()
 
   const openSounds: Record<InventoryType, () => void> = {
@@ -30,12 +32,11 @@
   }
 
   let focusRight = $state(true)
-  let currentPlayer = $derived(gameState.currentPlayer)
   let indexLeft = $state(0)
   let indexRight = $state(0)
 
   onMount(() => {
-    openSounds[inventory.type]()
+    openSounds[leftInventory.type]()
   })
 
   function moveItem(index: number, from: Inventory, to: Inventory): void {
@@ -47,12 +48,12 @@
     penClickSound()
   }
 
-  function moveToRight(index: number): void {
-    moveItem(index, currentPlayer, inventory)
+  function moveToLeft(index: number): void {
+    moveItem(index, rightInventory, leftInventory)
   }
 
-  function moveToLeft(index: number): void {
-    moveItem(index, inventory, currentPlayer)
+  function moveToRight(index: number): void {
+    moveItem(index, leftInventory, rightInventory)
   }
 
   function onleft(index: number): void {
@@ -72,7 +73,7 @@
   }
 
   function close(): void {
-    closeSounds[inventory.type]()
+    closeSounds[leftInventory.type]()
     gameState.openInventory = null
   }
 </script>
@@ -82,11 +83,11 @@
 <div class="inventory-exchange" transition:fade>
   <div class="inventories" transition:fly={{ y: 20 }}>
     <div class="inventory">
-      <div class="inventory-name">{currentPlayer.name}</div>
+      <div class="inventory-name">{leftInventory.name}</div>
       <div class="inventory-content">
         <InventoryView
           bind:selectedIndex={indexLeft}
-          inventory={currentPlayer}
+          inventory={leftInventory}
           focus={!focusRight}
           onselect={moveToRight}
           {onright}
@@ -94,11 +95,11 @@
       </div>
     </div>
     <div class="inventory">
-      <div class="inventory-name">{inventory.name}</div>
+      <div class="inventory-name">{rightInventory.name}</div>
       <div class="inventory-content">
         <InventoryView
           bind:selectedIndex={indexRight}
-          {inventory}
+          inventory={rightInventory}
           focus={focusRight}
           onselect={moveToLeft}
           {onleft}
