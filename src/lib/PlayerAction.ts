@@ -160,13 +160,11 @@ export default class PlayerAction {
       }
       gameState.initiativeLeft--
       gameState.currentPlayer.position = step
+      clearFogAt(step)
       await waitTime(200)
       gameState.cursorPath = gameState.cursorPath.slice(1)
     }
 
-    if (clearFogAt(gameState.currentPlayer.position)) {
-      fogClearSound()
-    }
     return true
   }
 }

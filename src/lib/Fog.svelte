@@ -7,6 +7,7 @@
   interface Star {
     x: number
     y: number
+    blink: boolean
     opacity: number
     blinkTime: string
   }
@@ -25,6 +26,7 @@
       stars.push({
         x: Math.random(),
         y: Math.random(),
+        blink: i < 3,
         opacity: 0.6 * Math.random(),
         blinkTime: `${1500 + 1500 * Math.random()}ms`,
       })
@@ -45,8 +47,10 @@
   {#each stars as star}
     <div
       class="star"
+      class:blink={star.blink}
       style:left="{star.x * 100}%"
       style:top="{star.y * 100}%"
+      style:opacity={star.opacity}
       style:--opacity={star.opacity}
       style:--blink-time={star.blinkTime}
     ></div>
@@ -67,10 +71,13 @@
     height: 2px;
     background-color: #fff;
     transform: translate(-50%, -50%);
-    animation-name: blink;
-    animation-iteration-count: infinite;
-    animation-duration: var(--blink-time);
-    animation-direction: normal;
+
+    &.blink {
+      animation-name: blink;
+      animation-iteration-count: infinite;
+      animation-duration: var(--blink-time);
+      animation-direction: normal;
+    }
   }
 
   @keyframes blink {
