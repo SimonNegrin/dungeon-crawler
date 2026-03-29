@@ -35,7 +35,7 @@
     }
 
     if (handlers[event.key]) {
-      event.preventDefault()
+      event.stopImmediatePropagation()
       handlers[event.key]()
     }
   }
@@ -78,25 +78,25 @@
     {/each}
   </div>
 
-  <div class="cursor">
-    {#if focus}
+  {#if focus}
+    <div class="cursor">
       <div class="pointer" style:left="calc(33% * var(--selected-index) + 13%)">
         <ArrowUpIcon color1="#a78a20" color2="#f5e9bc" />
       </div>
-    {/if}
-  </div>
+    </div>
 
-  <div class="selected-item">
-    {#if selectedItem}
-      <div>{selectedItem.name}</div>
-      <div>{selectedItem.desc}</div>
-      <div>
-        <ItemStats item={selectedItem} />
-      </div>
-    {:else}
-      <div class="empty">Vacio</div>
-    {/if}
-  </div>
+    <div class="selected-item">
+      {#if selectedItem}
+        <div>{selectedItem.name}</div>
+        <div>{selectedItem.desc}</div>
+        <div>
+          <ItemStats item={selectedItem} />
+        </div>
+      {:else}
+        <div class="empty">Vacio</div>
+      {/if}
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -139,7 +139,7 @@
   }
 
   .selected-item {
-    padding: 10px 5px;
+    padding: 10px;
     border: 2px solid var(--color-back);
     border-radius: 5px;
     text-align: left;
