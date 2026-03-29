@@ -27,10 +27,10 @@
       return new Vec2(0, 0)
     }
     const pad = Math.floor(VIEWPORT_SIZE / 2)
-    let padX = Math.min(0, pad - player.position.x)
-    let padY = Math.min(0, pad - player.position.y)
-    padX = Math.max(padX, VIEWPORT_SIZE - stage.mapWidth)
-    padY = Math.max(padY, VIEWPORT_SIZE - stage.mapHeight)
+    let padX = Math.max(0, player.position.x - pad)
+    let padY = Math.max(0, player.position.y - pad)
+    padX = Math.min(padX, stage.mapWidth - VIEWPORT_SIZE)
+    padY = Math.min(padY, stage.mapHeight - VIEWPORT_SIZE)
     return new Vec2(padX, padY)
   }
 
@@ -92,8 +92,8 @@
     {:else}
       <div
         class="stage"
-        style:left="{stageOffset.x * TILE_SIZE}px"
-        style:top="{stageOffset.y * TILE_SIZE}px"
+        style:left="{stageOffset.x * -TILE_SIZE}px"
+        style:top="{stageOffset.y * -TILE_SIZE}px"
         style:width="{gameState.stage.mapWidth * TILE_SIZE}px"
         style:height="{gameState.stage.mapHeight * TILE_SIZE}px"
       >
