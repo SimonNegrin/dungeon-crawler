@@ -1,10 +1,7 @@
 <!-- svelte-ignore state_referenced_locally -->
 <script lang="ts">
-  import { walkSound } from "./audio"
-  import { isEthereal, TILE_SIZE } from "./common"
-  import Sprite from "./Sprite.svelte"
-  import { gameState } from "./state.svelte"
-  import type { Character } from "./types"
+  import { walkSound } from "../../src/lib/audio"
+  import { isEthereal, TILE_SIZE } from "../../src/lib/constantsmport Sprite from ".././Sprite.svelte } from "./state.svelte"../../src/lib/state.svelte type { Character } from "./types"../../src/lib/types
 
   let {
     player,

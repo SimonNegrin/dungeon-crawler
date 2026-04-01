@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { getCharacterPathTo, TILE_SIZE } from "./common"
-  import { gameState } from "./state.svelte"
-  import type Vec2 from "./Vec2"
+  import { getCharacterPathTo, TILE_SIZE } from "../../src/lib/constants"
+  import { gameState } from "../../src/lib/state.svelte"
+  import type Vec2 from "../../src/lib/Vec2"
 
   type Step = {
     position: Vec2

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Layer, MapTileAtts } from "./types"
+  import type { Layer, MapTileAtts } from "../../src/lib/types"
   import Fog from "./Fog.svelte"
   import MapTile from "./MapTile.svelte"
 

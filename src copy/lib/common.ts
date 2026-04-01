@@ -14,9 +14,9 @@ import type {
   TileType,
   TileTypeMap,
 } from "./types"
-import Vec2 from "./Vec2"
-import { gameState } from "./state.svelte"
-import { nextSound, penClickSound } from "./audio"
+import Vec2 from "../../src/lib/Vec2"
+import { gameState } from "../../src/lib/state.svelte"
+import { nextSound, penClickSound } from "../../src/lib/audio"
 import VisionSystem from "./VisionSystem"
 
 export const TILE_SIZE = 32
@@ -408,17 +408,4 @@ export function isWallAt(position: Vec2): boolean {
   }
 
   return walls.tilesMap[position.toString()] !== undefined
-}
-
-export function moveInventoryItem(
-  index: number,
-  from: Inventory,
-  to: Inventory,
-): void {
-  if (to.items.length >= INVENTORY_SLOTS) {
-    return
-  }
-  const [item] = from.items.splice(index, 1)
-  to.items.push(item)
-  penClickSound()
 }

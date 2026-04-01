@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Item, StatType } from "./types"
+  import type { Item, StatType } from "../../src/lib/types"
 
   let {
     item,

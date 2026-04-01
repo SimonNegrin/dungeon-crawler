@@ -1,4 +1,4 @@
-import Vec2 from "./Vec2"
+import Vec2 from "../../src/lib/Vec2"
 
 export default class VisionSystem {
   private walls = new Set<string>() // Almacena posiciones de paredes como "x,y"

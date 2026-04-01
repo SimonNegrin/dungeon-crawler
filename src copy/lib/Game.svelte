@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TILE_SIZE, VIEWPORT_SIZE } from "./constants"
+  import { TILE_SIZE, VIEWPORT_SIZE } from "./common"
   import GameMap from "./GameMap.svelte"
   import InventoryExchange from "./InventoryExchange.svelte"
   import { gameState } from "./state.svelte"

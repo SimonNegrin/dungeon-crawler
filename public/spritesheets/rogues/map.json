@@ -10,25 +10,25 @@
           "id": "0",
           "x": 0,
           "y": 0,
-          "attributes": { "id": "krom" }
+          "attributes": { "key": "krom" }
         },
         {
           "id": "1",
           "x": 1,
           "y": 0,
-          "attributes": { "id": "ladelbar" }
+          "attributes": { "key": "ladelbar" }
         },
         {
           "id": "2",
           "x": 2,
           "y": 0,
-          "attributes": { "id": "rodolfo" }
+          "attributes": { "key": "rodolfo" }
         },
         {
           "id": "3",
           "x": 3,
           "y": 0,
-          "attributes": { "id": "paco" }
+          "attributes": { "key": "paco" }
         },
         { "id": "4", "x": 4, "y": 0 },
         { "id": "5", "x": 5, "y": 0 },

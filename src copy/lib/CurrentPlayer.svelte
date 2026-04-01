@@ -1,7 +1,5 @@
-<script lang="ts">
-  import { calcStat } from "./common"
-  import Sprite from "./Sprite.svelte"
-  import { gameState } from "./state.svelte"
+<../../src/lib/state.sveltescript lang="ts">
+  import { calcStat } from "../../src/lib/constantsmport Sprite from ".././Sprite.svelte } from "./state.svelte"
 </script>
 
 <div class="current-player">

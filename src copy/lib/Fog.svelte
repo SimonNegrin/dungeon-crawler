@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fly } from "svelte/transition"
-  import { TILE_SIZE } from "./common"
+  import { TILE_SIZE } from "./constants"
   import type Vec2 from "./Vec2"
   import Coords from "./Coords.svelte"
 

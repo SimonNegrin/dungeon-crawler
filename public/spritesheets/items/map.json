@@ -80,10 +80,10 @@
         { "id": "2", "x": 4, "y": 45 },
         { "id": "2", "x": 5, "y": 45 },
         { "id": "2", "x": 6, "y": 45 },
-        { "id": "10", "x": 3, "y": 0, "attributes": { "id": "sword" } },
-        { "id": "3", "x": 4, "y": 0, "attributes": { "id": "bastard_sword" } },
-        { "id": "11", "x": 5, "y": 0, "attributes": { "id": "big_sword" } },
-        { "id": "12", "x": 6, "y": 0, "attributes": { "id": "great_sword" } },
+        { "id": "10", "x": 3, "y": 0, "attributes": { "key": "sword" } },
+        { "id": "3", "x": 4, "y": 0, "attributes": { "key": "bastard_sword" } },
+        { "id": "11", "x": 5, "y": 0, "attributes": { "key": "big_sword" } },
+        { "id": "12", "x": 6, "y": 0, "attributes": { "key": "great_sword" } },
         { "id": "13", "x": 7, "y": 0 },
         { "id": "14", "x": 8, "y": 0 },
         { "id": "4", "x": 9, "y": 0 },
@@ -111,10 +111,10 @@
         { "id": "2", "x": 9, "y": 2 },
         { "id": "2", "x": 10, "y": 2 },
         { "id": "2", "x": 11, "y": 2 },
-        { "id": "29", "x": 1, "y": 3, "attributes": { "id": "axe" } },
-        { "id": "30", "x": 2, "y": 3, "attributes": { "id": "big_axe" } },
+        { "id": "29", "x": 1, "y": 3, "attributes": { "key": "axe" } },
+        { "id": "30", "x": 2, "y": 3, "attributes": { "key": "big_axe" } },
         { "id": "31", "x": 3, "y": 3 },
-        { "id": "32", "x": 4, "y": 3, "attributes": { "id": "great_axe" } },
+        { "id": "32", "x": 4, "y": 3, "attributes": { "key": "great_axe" } },
         { "id": "33", "x": 5, "y": 3 },
         { "id": "34", "x": 6, "y": 3 },
         { "id": "35", "x": 7, "y": 3 },
@@ -245,7 +245,7 @@
         { "id": "2", "x": 11, "y": 14 },
         { "id": "93", "x": 1, "y": 15 },
         { "id": "94", "x": 2, "y": 15 },
-        { "id": "95", "x": 3, "y": 15, "attributes": { "id": "wizzard_hat" } },
+        { "id": "95", "x": 3, "y": 15, "attributes": { "key": "wizzard_hat" } },
         { "id": "96", "x": 4, "y": 15 },
         { "id": "97", "x": 5, "y": 15 },
         { "id": "98", "x": 6, "y": 15 },
@@ -258,32 +258,37 @@
           "id": "101",
           "x": 1,
           "y": 16,
-          "attributes": { "id": "red_necklace" }
+          "attributes": { "key": "red_necklace" }
         },
-        { "id": "9", "x": 2, "y": 16, "attributes": { "id": "iron_necklace" } },
+        {
+          "id": "9",
+          "x": 2,
+          "y": 16,
+          "attributes": { "key": "iron_necklace" }
+        },
         {
           "id": "102",
           "x": 3,
           "y": 16,
-          "attributes": { "id": "crystal_necklace" }
+          "attributes": { "key": "crystal_necklace" }
         },
         {
           "id": "103",
           "x": 4,
           "y": 16,
-          "attributes": { "id": "wood_necklace" }
+          "attributes": { "key": "wood_necklace" }
         },
         {
           "id": "104",
           "x": 5,
           "y": 16,
-          "attributes": { "id": "sacred_necklace" }
+          "attributes": { "key": "sacred_necklace" }
         },
         {
           "id": "105",
           "x": 6,
           "y": 16,
-          "attributes": { "id": "damned_necklace" }
+          "attributes": { "key": "damned_necklace" }
         },
         { "id": "106", "x": 7, "y": 16 },
         { "id": "2", "x": 8, "y": 16 },
@@ -334,7 +339,7 @@
         { "id": "2", "x": 9, "y": 20 },
         { "id": "2", "x": 10, "y": 20 },
         { "id": "2", "x": 11, "y": 20 },
-        { "id": "129", "x": 1, "y": 21, "attributes": { "id": "parchment" } },
+        { "id": "129", "x": 1, "y": 21, "attributes": { "key": "parchment" } },
         { "id": "130", "x": 2, "y": 21 },
         { "id": "131", "x": 3, "y": 21 },
         { "id": "132", "x": 4, "y": 21 },
@@ -363,10 +368,10 @@
         { "id": "2", "x": 9, "y": 23 },
         { "id": "2", "x": 10, "y": 23 },
         { "id": "2", "x": 11, "y": 23 },
-        { "id": "141", "x": 1, "y": 24, "attributes": { "id": "coin" } },
+        { "id": "141", "x": 1, "y": 24, "attributes": { "key": "coin" } },
         { "id": "142", "x": 2, "y": 24, "attributes": { "id": "coins_1" } },
         { "id": "143", "x": 3, "y": 24, "attributes": { "id": "coins_2" } },
-        { "id": "144", "x": 4, "y": 24, "attributes": { "id": "coins_bag" } },
+        { "id": "144", "x": 4, "y": 24, "attributes": { "key": "coins_bag" } },
         { "id": "2", "x": 5, "y": 24 },
         { "id": "2", "x": 6, "y": 24 },
         { "id": "2", "x": 7, "y": 24 },
@@ -374,23 +379,23 @@
         { "id": "2", "x": 9, "y": 24 },
         { "id": "2", "x": 10, "y": 24 },
         { "id": "2", "x": 11, "y": 24 },
-        { "id": "145", "x": 1, "y": 25, "attributes": { "id": "cheese" } },
-        { "id": "146", "x": 2, "y": 25, "attributes": { "id": "bread" } },
-        { "id": "147", "x": 3, "y": 25, "attributes": { "id": "apple" } },
-        { "id": "148", "x": 4, "y": 25, "attributes": { "id": "wine" } },
-        { "id": "149", "x": 5, "y": 25, "attributes": { "id": "water" } },
+        { "id": "145", "x": 1, "y": 25, "attributes": { "key": "cheese" } },
+        { "id": "146", "x": 2, "y": 25, "attributes": { "key": "bread" } },
+        { "id": "147", "x": 3, "y": 25, "attributes": { "key": "apple" } },
+        { "id": "148", "x": 4, "y": 25, "attributes": { "key": "wine" } },
+        { "id": "149", "x": 5, "y": 25, "attributes": { "key": "water" } },
         { "id": "2", "x": 6, "y": 25 },
         { "id": "2", "x": 7, "y": 25 },
         { "id": "2", "x": 8, "y": 25 },
         { "id": "2", "x": 9, "y": 25 },
         { "id": "2", "x": 10, "y": 25 },
         { "id": "2", "x": 11, "y": 25 },
-        { "id": "5", "x": 1, "y": 22, "attributes": { "id": "brass_key" } },
-        { "id": "6", "x": 2, "y": 22, "attributes": { "id": "iron_key" } },
-        { "id": "7", "x": 3, "y": 22, "attributes": { "id": "silver_key" } },
-        { "id": "8", "x": 4, "y": 22, "attributes": { "id": "rusty_key" } },
-        { "id": "0", "x": 1, "y": 0, "attributes": { "id": "dagger" } },
-        { "id": "1", "x": 2, "y": 0, "attributes": { "id": "short_sword" } }
+        { "id": "5", "x": 1, "y": 22, "attributes": { "key": "brass_key" } },
+        { "id": "6", "x": 2, "y": 22, "attributes": { "key": "iron_key" } },
+        { "id": "7", "x": 3, "y": 22, "attributes": { "key": "silver_key" } },
+        { "id": "8", "x": 4, "y": 22, "attributes": { "key": "rusty_key" } },
+        { "id": "0", "x": 1, "y": 0, "attributes": { "key": "dagger" } },
+        { "id": "1", "x": 2, "y": 0, "attributes": { "key": "short_sword" } }
       ],
       "collider": false
     }

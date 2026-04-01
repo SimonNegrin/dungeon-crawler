@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { INVENTORY_SLOTS } from "./common"
+  import { INVENTORY_SLOTS } from "./constants"
   import ArrowUpIcon from "./icons/ArrowUpIcon.svelte"
-  import ItemSprite from "./ItemSprite.svelte"
+  import Item from "./Item.svelte"
   import ItemStats from "./ItemStats.svelte"
   import type { Inventory } from "./types"
 
@@ -72,10 +72,10 @@
     {#each Array(INVENTORY_SLOTS) as _, i}
       <div class="slot" class:selected={focus && selectedIndex === i}>
         {#if inventory.items[i]}
-          <ItemSprite id={inventory.items[i].spriteId} scale={1.5} />
+          <Item name={inventory.items[i].spriteName} />
         {/if}
       </div>
-    {/each}
+    {/each}spriteName
   </div>
 
   {#if focus}

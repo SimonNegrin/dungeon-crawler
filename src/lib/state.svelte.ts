@@ -1,7 +1,5 @@
-import type { Character, GameState, Item, MapTileAtts, Stage } from "./types"
-import { clearFogAt, createFogPositions, loadSpritesheet } from "./common"
+import type { Character, GameState } from "./types"
 import Vec2 from "./Vec2"
-import { createItem } from "./items"
 
 const ladelbar: Character = {
   spritePath: "rogues/ladelbar",
@@ -19,14 +17,14 @@ const ladelbar: Character = {
   },
   traits: [],
   items: [
-    {
-      name: "Colgante etéreo",
-      desc: "",
-      spriteId: "crystal_necklace",
-      metadata: {
-        ethereal: true,
-      },
-    },
+    // {
+    //   name: "Colgante etéreo",
+    //   desc: "",
+    //   spriteId: "crystal_necklace",
+    //   metadata: {
+    //     ethereal: true,
+    //   },
+    // },
   ],
 }
 
@@ -67,30 +65,26 @@ export const gameState = $state<GameState>({
 })
 
 export async function loadStage(name: string): Promise<void> {
-  const stage: Stage = await loadSpritesheet<MapTileAtts>(name)
-
-  type ItemRef = {
-    name: string
-  }
-
-  stage.layers.forEach((layer) => {
-    layer.tiles.forEach((tile) => {
-      if (tile.attributes.type === "chest") {
-        tile.attributes.items = tile.attributes.items.map(
-          (item: ItemRef): Item => {
-            return createItem(item.name)
-          },
-        )
-      }
-    })
-  })
-
-  gameState.stage = stage
-  gameState.fog = createFogPositions(stage)
-  gameState.playerIndex = 0
-  gameState.currentPlayer = gameState.players[gameState.playerIndex]
-
-  gameState.players.forEach((player) => {
-    clearFogAt(player.position)
-  })
+  //   const stage: Stage = await loadSpritesheet<MapTileAtts>(name)
+  //   type ItemRef = {
+  //     name: string
+  //   }
+  //   stage.layers.forEach((layer) => {
+  //     layer.tiles.forEach((tile) => {
+  //       if (tile.attributes.type === "chest") {
+  //         tile.attributes.items = tile.attributes.items.map(
+  //           (item: ItemRef): Item => {
+  //             return createItem(item.name)
+  //           },
+  //         )
+  //       }
+  //     })
+  //   })
+  //   gameState.stage = stage
+  //   gameState.fog = createFogPositions(stage)
+  //   gameState.playerIndex = 0
+  //   gameState.currentPlayer = gameState.players[gameState.playerIndex]
+  //   gameState.players.forEach((player) => {
+  //     clearFogAt(player.position)
+  //   })
 }

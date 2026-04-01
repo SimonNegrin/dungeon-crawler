@@ -1,6 +1,6 @@
 <script lang="ts" module>
   type SpriteAtts = {
-    id: string
+    key: string
   }
 
   const spritesheets = new Map<string, Promise<Spritesheet<SpriteAtts>>>()
@@ -15,7 +15,7 @@
 
     const spritesheet = await spritesheets.get(spritesheetId)!
     const tile = spritesheet.layers[0].tiles.find((tile) => {
-      return tile.attributes.id === spriteId
+      return tile.attributes.key === spriteId
     })
 
     if (!tile) {
@@ -27,9 +27,8 @@
 </script>
 
 <script lang="ts">
-  import { loadSpritesheet, TILE_SIZE } from "./common"
-  import type { Spritesheet } from "./types"
-  import Vec2 from "./Vec2"
+  import { loadSpritesheet, TILE_SIZE } from "../../src/lib/constantsmport type { Spritesheet } from "./t../../src/lib/types
+  import Ve../../src/lib/Vec2m "./Vec2"
 
   let {
     path,

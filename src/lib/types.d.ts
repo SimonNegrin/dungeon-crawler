@@ -1,3 +1,5 @@
+import type { ItemName } from "./Item.svelte"
+import type { TileName } from "./Tile.svelte"
 import type Vec2 from "./Vec2"
 
 export type GridValue = 0 | 1
@@ -72,7 +74,7 @@ export interface ItemMetadata {
 }
 
 export interface Item {
-  spriteId: string
+  spriteName: ItemName
   name: string
   desc: string
 
@@ -116,6 +118,8 @@ export interface AttsChest {
   items: Item[]
 }
 
+export interface AttsSpawn {}
+
 export interface AttsPlayerSpawn {
   type: "spawn"
   spawnType: "player"
@@ -127,35 +131,29 @@ export interface AttsEnemySpawn {
   enemyName: string
 }
 
+interface BaseTile {
+  position: Position
+  name: TileName
+}
+
+export interface FloorTile extends BaseTile {}
+
 /**
  * Representa un tile individual en el mapa
  */
-export interface Tile<TileAtts> {
-  id: string
-  sprite: Vec2
-  position: Vec2
+export interface MapTile {
+  position: Position
   attributes: TileAtts
 }
 
 /**
  * Representa una capa del mapa (ej: Collition, Decoration, Floor)
  */
-export interface Layer<TileAtts> {
+export interface Layer {
   name: string
   tiles: Tile<TileAtts>[]
   tilesMap: Record<string, Tile<TileAtts>>
   collider: boolean
 }
 
-/**
- * Representa la estructura completa del mapa del juego
- */
-export interface Spritesheet<TileAtts> {
-  spritesheetUrl: string
-  tileSize: number
-  mapWidth: number
-  mapHeight: number
-  layers: Layer<TileAtts>[]
-}
-
-export type Stage = Spritesheet<MapTileAtts>
+export interface Stage {}

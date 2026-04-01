@@ -1,34 +1,23 @@
 <script lang="ts">
   import AspectRatio from "./lib/AspectRatio.svelte"
-  import { loadStage, gameState } from "./lib/state.svelte"
-  import Landing from "./lib/Landing.svelte"
-  import { clearFogAt, nextPlayer, TILE_SIZE } from "./lib/common"
+  import { TILE_SIZE } from "./lib/constants"
   import Game from "./lib/Game.svelte"
+  import Landing from "./lib/Landing.svelte"
+  import { gameState } from "./lib/state.svelte"
 
-  async function onStart(): Promise<void> {
-    await loadStage("stage_2")
-    gameState.players.forEach((player) => {
-      clearFogAt(player.position)
-    })
-  }
-
-  function onkeydown(event: KeyboardEvent) {
-    if (event.defaultPrevented) return
-    if (event.key === "n") {
-      nextPlayer()
-    }
-  }
+  function onStart(): void {}
 </script>
 
 <svelte:window {onkeydown} />
 
 <main style:--tile-size="{TILE_SIZE}px">
   <AspectRatio ratio={16 / 9}>
-    {#if gameState.stage}
+    <Game />
+    <!-- {#if gameState.stage}
       <Game />
     {:else}
       <Landing onclick={onStart} />
-    {/if}
+    {/if} -->
   </AspectRatio>
 </main>
 

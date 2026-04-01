@@ -11,7 +11,7 @@
   } from "./audio"
   import InventoryView from "./InventoryView.svelte"
   import OnkeydownCapture from "./OnkeydownCapture.svelte"
-  import { INVENTORY_SLOTS, moveInventoryItem } from "./common"
+  import { INVENTORY_SLOTS } from "./constants"
 
   let {
     leftInventory,
@@ -46,6 +46,19 @@
 
   function moveToRight(index: number): void {
     moveInventoryItem(index, leftInventory, rightInventory)
+  }
+
+  function moveInventoryItem(
+    index: number,
+    from: Inventory,
+    to: Inventory,
+  ): void {
+    if (to.items.length >= INVENTORY_SLOTS) {
+      return
+    }
+    const [item] = from.items.splice(index, 1)
+    to.items.push(item)
+    penClickSound()
   }
 
   function onleft(): void {

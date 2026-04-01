@@ -3,7 +3,7 @@ import {
   doorUnlockSound,
   fogClearSound,
   tiredSound,
-} from "./audio"
+} from "../../src/lib/audio"
 import {
   clearFogAt,
   getCharacterPathTo,
@@ -15,7 +15,7 @@ import {
   spendInitiative,
   waitTime,
 } from "./common"
-import { gameState } from "./state.svelte"
+import { gameState } from "../../src/lib/state.svelte"
 
 export default class PlayerAction {
   async execute(): Promise<void> {
