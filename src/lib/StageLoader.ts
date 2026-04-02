@@ -4,10 +4,6 @@ import Vec2 from "./Vec2"
 
 export default class StageLoader {
   private data!: StageData
-  private left = Infinity
-  private right = -Infinity
-  private top = Infinity
-  private bottom = -Infinity
   private offset = new Vec2(0, 0)
   private stage: Stage = {
     width: 0,
@@ -47,22 +43,27 @@ export default class StageLoader {
   }
 
   private calcSize(): void {
+    let left = Infinity
+    let right = -Infinity
+    let top = Infinity
+    let bottom = -Infinity
+
     this.data.rects.forEach((rect) => {
-      this.left = Math.min(this.left, rect.x)
-      this.right = Math.max(this.right, rect.x)
-      this.top = Math.min(this.top, rect.y)
-      this.bottom = Math.max(this.bottom, rect.y)
+      left = Math.min(left, rect.x)
+      right = Math.max(right, rect.x + rect.w)
+      top = Math.min(top, rect.y)
+      bottom = Math.max(bottom, rect.y + rect.h)
     })
 
     // Increase all by one to give room to walls
-    this.left--
-    this.right++
-    this.top--
-    this.bottom++
-    this.offset = new Vec2(this.left * -1, this.top * -1)
+    left--
+    right++
+    top--
+    bottom++
 
-    this.stage.width = this.right - this.left
-    this.stage.height = this.bottom - this.top
+    this.offset = new Vec2(left * -1, top * -1)
+    this.stage.width = right - left
+    this.stage.height = bottom - top
   }
 
   private createSpawn(): void {
