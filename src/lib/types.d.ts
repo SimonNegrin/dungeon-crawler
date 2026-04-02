@@ -168,6 +168,7 @@ export interface Stage {
   walls: Surface
   doors: Surface
   spawn: Surface
+  seen: Record<string, Vec2>
   fog: Vec2[]
 }
 

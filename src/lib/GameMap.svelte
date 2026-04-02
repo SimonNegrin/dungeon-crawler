@@ -5,6 +5,7 @@
   import Tile, { type TileName } from "./Tile.svelte"
   import type { Position } from "./types"
   import Vec2 from "./Vec2"
+  import Fog from "./Fog.svelte"
 
   const floorTile = cheeslike(
     "blank floor (dark grey)",
@@ -78,6 +79,14 @@
     {#each gameState.stage.walls.tiles as position}
       <Tile {position} name={wallTileName(position)} />
     {/each}
+
+    {#each gameState.stage.doors.tiles as position}
+      <Tile {position} name="framed door 2 (shut)" />
+    {/each}
+
+    <!-- {#each gameState.stage.fog as position}
+      <Fog {position} />
+    {/each} -->
   </div>
 </div>
 

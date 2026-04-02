@@ -8,22 +8,11 @@ export default class StageLoader {
   private stage: Stage = {
     width: 0,
     height: 0,
-    floor: {
-      tiles: [],
-      map: {},
-    },
-    walls: {
-      tiles: [],
-      map: {},
-    },
-    doors: {
-      tiles: [],
-      map: {},
-    },
-    spawn: {
-      tiles: [],
-      map: {},
-    },
+    floor: { tiles: [], map: {} },
+    walls: { tiles: [], map: {} },
+    doors: { tiles: [], map: {} },
+    spawn: { tiles: [], map: {} },
+    seen: {},
     fog: [],
   }
 
@@ -37,6 +26,7 @@ export default class StageLoader {
     this.createSpawn()
     this.createFloor()
     this.createWalls()
+    this.createDoors()
     this.createFog()
 
     return this.stage
@@ -113,6 +103,18 @@ export default class StageLoader {
     this.stage.walls = {
       tiles: [...walls.values()],
       map: Object.fromEntries(walls),
+    }
+  }
+
+  private createDoors(): void {
+    const doors = new Map<string, Vec2>()
+    this.data.doors.forEach((door) => {
+      const position = this.offset.add(new Vec2(door.x, door.y))
+      doors.set(position.toString(), position)
+    })
+    this.stage.doors = {
+      tiles: [...doors.values()],
+      map: Object.fromEntries(doors),
     }
   }
 
