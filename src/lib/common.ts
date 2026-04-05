@@ -46,6 +46,12 @@ export function getCharacterPathTo(
       return resolve(null)
     }
 
+    // If some monster is in the target position
+    // is not posible to create a path
+    if (gameState.monsters.some((player) => player.position.isEqual(target))) {
+      return resolve(null)
+    }
+
     const grid = createGrid(gameState.stage, character)
     if (!grid) {
       return resolve(null)
@@ -198,7 +204,13 @@ export function createGrid(stage: Stage, character: Character): Grid | null {
     }
   })
 
-  // TODO: Block all tiles occupied by NPCs
+  // Block all tiles occupied by players
+  // except if they are ethereal
+  gameState.monsters.forEach((monster) => {
+    if (!isEthereal(monster)) {
+      grid[monster.position.y][monster.position.x] = TILE_BLOCK
+    }
+  })
 
   // Block all tiles from the collider layers
   stage.layers.forEach((layer) => {
