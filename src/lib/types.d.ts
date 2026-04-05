@@ -1,4 +1,5 @@
 import type { ItemName } from "./sprites/SpriteItem.svelte"
+import type { MonsterName } from './sprites/SpriteMonster.svelte'
 import type { RogueName } from "./sprites/SpriteRogue.svelte"
 import type Vec2 from "./Vec2"
 
@@ -49,8 +50,10 @@ export interface Player extends Character {
 
 export interface Monster extends Character {
   type: "monster"
-  sprite: RogueName
+  sprite: MonsterName
 }
+
+export type Actor = Player | Monster
 
 export type StatType =
   | "attack"

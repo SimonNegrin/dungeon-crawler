@@ -1,8 +1,8 @@
 <script lang="ts">
-  import PlayerAvatar from "./PlayerAvatar.svelte"
+  import Avatar from "./Avatar.svelte"
   import { gameState } from "./state.svelte"
 </script>
 
 {#each gameState.players as player}
-  <PlayerAvatar {player} />
+  <Avatar actor={player} highlight={gameState.currentPlayer === player} />
 {/each}
