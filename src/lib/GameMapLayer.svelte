@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Layer } from "./types"
   import Fog from "./Fog.svelte"
-  import GameMapTile from "./GameMapTile.svelte"
+  import GameMapTile from "./MapTile.svelte"
 
   let {
     layer,

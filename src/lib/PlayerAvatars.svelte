@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Player from "./Player.svelte"
+  import PlayerAvatar from "./PlayerAvatar.svelte"
   import { gameState } from "./state.svelte"
 </script>
 
 {#each gameState.players as player}
-  <Player {player} />
+  <PlayerAvatar {player} />
 {/each}

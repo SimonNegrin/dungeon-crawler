@@ -1,10 +1,10 @@
-import type { Character, GameState } from "./types"
+import type { Character, GameState, Monster, Player, Stage } from "./types"
 import { clearFogAt, createFogPositions } from "./common"
 import Vec2 from "./Vec2"
 import StageLoader from "./StageLoader"
 import { prefabsMap } from "./items"
 
-const ladelbar: Character = {
+const ladelbar: Player = {
   sprite: "bandit",
   type: "player",
   name: "Ladelbar",
@@ -20,18 +20,18 @@ const ladelbar: Character = {
   },
   traits: [],
   items: [
-    {
-      name: "Colgante etéreo",
-      desc: "",
-      sprite: "crystal pendant",
-      metadata: {
-        ethereal: true,
-      },
-    },
+    // {
+    //   name: "Colgante etéreo",
+    //   desc: "",
+    //   sprite: "crystal pendant",
+    //   metadata: {
+    //     ethereal: true,
+    //   },
+    // },
   ],
 }
 
-const krom: Character = {
+const krom: Player = {
   sprite: "farmer (pitchfork)",
   type: "player",
   name: "Krom",
@@ -65,6 +65,7 @@ export const gameState = $state<GameState>({
   cursorPath: [],
   freezePath: false,
   players: [ladelbar, krom],
+  monsters: [],
 })
 
 export async function loadStage(stageName: string): Promise<void> {
@@ -75,8 +76,13 @@ export async function loadStage(stageName: string): Promise<void> {
   gameState.fog = createFogPositions(stage)
   gameState.playerIndex = 0
   gameState.currentPlayer = gameState.players[gameState.playerIndex]
+  gameState.monsters = createMonsters(stage)
 
   gameState.players.forEach((player) => {
     clearFogAt(player.position)
   })
+}
+
+export function createMonsters(stage: Stage): Monster[] {
+  return []
 }

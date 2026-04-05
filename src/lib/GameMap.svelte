@@ -14,7 +14,7 @@
   import PlayerAction from "./PlayerAction"
   import { fogClearSound } from "./audio"
   import CursorPath from "./CursorPath.svelte"
-  import Players from "./Players.svelte"
+  import PlayerAvatars from "./PlayerAvatars.svelte"
   import type { Character, Stage } from "./types"
   import FogLayer from "./FogLayer.svelte"
 
@@ -113,7 +113,7 @@
 
           <Cursor />
 
-          <Players />
+          <PlayerAvatars />
         </div>
       </div>
     {/if}

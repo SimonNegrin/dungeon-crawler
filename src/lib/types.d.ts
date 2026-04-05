@@ -23,24 +23,33 @@ interface GameState {
   stage: Stage | null
   fog: Vec2[]
   playerIndex: number
-  currentPlayer: Character
+  currentPlayer: Player
   initiativeLeft: number
   initiativeRequired: number
   openInventory: Inventory | null
   freezePath: boolean
   cursorPosition: Vec2
   cursorPath: Vec2[]
-  players: Character[]
+  players: Player[]
+  monsters: Monster[]
 }
 
-export interface Character {
-  type: "player" | "enemy"
-  sprite: RogueName
+export abstract interface Character {
   name: string
   position: Vec2
   stats: Record<StatType, number>
   traits: Item[]
   items: Item[]
+}
+
+export interface Player extends Character {
+  type: "player"
+  sprite: RogueName
+}
+
+export interface Monster extends Character {
+  type: "monster"
+  sprite: RogueName
 }
 
 export type StatType =

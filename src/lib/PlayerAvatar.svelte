@@ -4,12 +4,12 @@
   import { isEthereal, TILE_SIZE } from "./common"
   import SpriteRogue from "./sprites/SpriteRogue.svelte"
   import { gameState } from "./state.svelte"
-  import type { Character } from "./types"
+  import type { Player } from "./types"
 
   let {
     player,
   }: {
-    player: Character
+    player: Player
   } = $props()
 
   let lastPosition = player.position
