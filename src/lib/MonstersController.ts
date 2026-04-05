@@ -1,10 +1,11 @@
-import { Tween, tweened } from "svelte/motion"
+import { Tween } from "svelte/motion"
 import {
   ATTACK_TIME,
   getCharacterPathTo,
   INITIATIVE_ATTACK,
   INITIATIVE_STEP,
   STEP_TIME,
+  TILE_SIZE,
   waitTime,
 } from "./common"
 import { gameState } from "./state.svelte"
@@ -12,11 +13,10 @@ import type { Monster, Player } from "./types"
 import Vec2 from "./Vec2"
 import { toStore } from "svelte/store"
 import { attackSword, walkSound } from "./audio"
-import { linear } from "svelte/easing"
 
 interface AttackPlan {
   monster: Monster
-  target: Player
+  player: Player
   path: Vec2[]
 }
 
@@ -49,8 +49,8 @@ export default class MonstersController {
   private async getAttackMonsterPath(): Promise<AttackPlan | undefined> {
     for (let i = 0; i < this.monstersPool.length; i++) {
       const monster = this.monstersPool[i]
-      for (const target of gameState.players) {
-        const path = await getCharacterPathTo(monster, target.position)
+      for (const player of gameState.players) {
+        const path = await getCharacterPathTo(monster, player.position)
 
         if (!path) {
           continue
@@ -65,27 +65,31 @@ export default class MonstersController {
         // Remove the monster from the pool
         this.monstersPool.splice(i, 1)
 
-        return { monster, target, path }
+        return { monster, player, path }
       }
     }
   }
 
   private async executeAttackPlan(attackPlan: AttackPlan): Promise<void> {
+    gameState.centerActor = attackPlan.player
+
     const nextToPath = attackPlan.path.slice(0, -1)
 
     await this.moveAlongPath(attackPlan.monster, nextToPath)
 
     while (attackPlan.monster.initiativeLeft >= INITIATIVE_ATTACK) {
-      await this.attack(attackPlan.monster, attackPlan.target)
+      await this.attack(attackPlan.monster, attackPlan.player)
     }
   }
 
   private async attack(monster: Monster, player: Player): Promise<void> {
     monster.initiativeLeft -= INITIATIVE_ATTACK
 
-    const displacement = player.position.sub(monster.position).multiply(0.5)
+    const displacement = player.position
+      .sub(monster.position)
+      .multiply(TILE_SIZE / 2)
 
-    const tween = new Tween(monster.position, {
+    const tween = new Tween(monster.offset, {
       duration: Math.floor(ATTACK_TIME / 2),
       interpolate: (a) => {
         return (t: number): Vec2 => {
@@ -96,19 +100,14 @@ export default class MonstersController {
 
     const store = toStore(() => tween.current)
 
-    store.subscribe((pos) => {
-      monster.position = pos
+    store.subscribe((offset) => {
+      monster.offset = offset
     })
 
-    const prevPosition = monster.position.clone()
-
-    await tween.set(monster.position.add(displacement))
+    await tween.set(monster.offset.add(displacement))
     attackSword()
-    await tween.set(prevPosition)
+    await tween.set(new Vec2(0, 0))
     await waitTime(200)
-
-    // Restore the previous position
-    monster.position = prevPosition
   }
 
   private async moveAlongPath(monster: Monster, path: Vec2[]): Promise<void> {

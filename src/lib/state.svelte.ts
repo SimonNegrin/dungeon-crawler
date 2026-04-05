@@ -20,6 +20,7 @@ const ladelbar: Player = {
   type: "player",
   name: "Ladelbar",
   position: new Vec2(2, 2),
+  offset: new Vec2(0, 0),
   initiativeLeft: 8,
   stats: {
     health: 0,
@@ -48,6 +49,7 @@ const krom: Player = {
   type: "player",
   name: "Krom",
   position: new Vec2(3, 2),
+  offset: new Vec2(0, 0),
   initiativeLeft: 8,
   stats: {
     health: 0,
@@ -71,6 +73,7 @@ export const gameState = $state<GameState>({
   fog: [],
   playerIndex: 0,
   currentPlayer: ladelbar,
+  centerActor: ladelbar,
   initiativeLeft: ladelbar.stats.initiative,
   initiativeRequired: 0,
   openInventory: null,
@@ -113,6 +116,7 @@ export async function nextPlayer(): Promise<void> {
 
   const player = gameState.players[index]
   gameState.currentPlayer = player
+  gameState.centerActor = player
   gameState.playerIndex = index
   gameState.cursorPosition = player.position
   gameState.initiativeLeft = calcStat("initiative", player)
@@ -155,6 +159,7 @@ class MonstersGenerator {
       name: "Monster",
       sprite: monsterSprite,
       position: pos,
+      offset: new Vec2(0, 0),
       initiativeLeft: 8,
       items: [],
       traits: [],

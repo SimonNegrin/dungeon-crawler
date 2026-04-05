@@ -28,6 +28,7 @@ interface GameState {
   turn: Turn
   playerIndex: number
   currentPlayer: Player
+  centerActor: Actor
   initiativeLeft: number
   initiativeRequired: number
   openInventory: Inventory | null
@@ -41,6 +42,7 @@ interface GameState {
 export abstract interface Character {
   name: string
   position: Vec2
+  offset: Vec2
   initiativeLeft: number
   stats: Record<StatType, number>
   traits: Item[]

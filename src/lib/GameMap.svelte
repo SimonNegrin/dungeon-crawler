@@ -15,20 +15,20 @@
   import { fogClearSound } from "./audio"
   import CursorPath from "./CursorPath.svelte"
   import Avatars from "./Avatars.svelte"
-  import type { Character, Stage } from "./types"
+  import type { Actor, Character, Stage } from "./types"
   import FogLayer from "./FogLayer.svelte"
 
   let stageOffset = $derived(
-    calcStageOffset(gameState.stage, gameState.currentPlayer),
+    calcStageOffset(gameState.stage, gameState.centerActor),
   )
 
-  function calcStageOffset(stage: Stage | null, player: Character): Vec2 {
+  function calcStageOffset(stage: Stage | null, actor: Actor): Vec2 {
     if (!stage) {
       return new Vec2(0, 0)
     }
     const pad = Math.floor(VIEWPORT_SIZE / 2)
-    let padX = Math.max(0, player.position.x - pad)
-    let padY = Math.max(0, player.position.y - pad)
+    let padX = Math.max(0, actor.position.x - pad)
+    let padY = Math.max(0, actor.position.y - pad)
     padX = Math.min(padX, stage.mapWidth - VIEWPORT_SIZE)
     padY = Math.min(padY, stage.mapHeight - VIEWPORT_SIZE)
     return new Vec2(padX, padY)

@@ -31,8 +31,8 @@
 <div
   class="avatar"
   class:ethereal={isEthereal(actor)}
-  style:left="{actor.position.x * TILE_SIZE}px"
-  style:top="{actor.position.y * TILE_SIZE}px"
+  style:left="{actor.position.x * TILE_SIZE + actor.offset.x}px"
+  style:top="{actor.position.y * TILE_SIZE + actor.offset.y}px"
 >
   {#if highlight}
     <div class="highlight"></div>
