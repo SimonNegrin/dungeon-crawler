@@ -14,18 +14,18 @@
     highlight?: boolean
   } = $props()
 
-  // let lastPosition = actor.position
+  let lastPosition = actor.position
   let lookRight = $state(false)
 
-  // $effect(() => {
-  //   if (actor.position.x !== lastPosition.x) {
-  //     lookRight = actor.position.x > lastPosition.x
-  //   }
-  //   if (!lastPosition.isEqual(actor.position)) {
-  //     walkSound()
-  //     lastPosition = actor.position
-  //   }
-  // })
+  $effect(() => {
+    if (actor.position.x !== lastPosition.x) {
+      lookRight = actor.position.x > lastPosition.x
+    }
+    if (!lastPosition.isEqual(actor.position)) {
+      walkSound()
+      lastPosition = actor.position
+    }
+  })
 </script>
 
 <div

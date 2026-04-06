@@ -33,14 +33,14 @@ const ladelbar: Player = {
   },
   traits: [],
   items: [
-    {
-      name: "Colgante etéreo",
-      desc: "",
-      sprite: "crystal pendant",
-      metadata: {
-        ethereal: true,
-      },
-    },
+    // {
+    //   name: "Colgante etéreo",
+    //   desc: "",
+    //   sprite: "crystal pendant",
+    //   metadata: {
+    //     ethereal: true,
+    //   },
+    // },
   ],
 }
 
@@ -67,6 +67,26 @@ const krom: Player = {
 export const debug = $state({
   showCoords: false,
 })
+
+const orc: Monster = {
+  type: "monster",
+  sprite: "orc",
+  name: "Orc",
+  position: new Vec2(5, 6),
+  offset: new Vec2(0, 0),
+  initiativeLeft: 0,
+  stats: {
+    attack: 0,
+    defence: 0,
+    damage: 0,
+    aim: 0,
+    initiative: 8,
+    health: 0,
+    totalHealth: 0,
+  },
+  traits: [],
+  items: [],
+}
 
 export const gameState = $state<GameState>({
   stage: null,

@@ -33,6 +33,14 @@ export const INITIATIVE_CHEST = 2
 export const INITIATIVE_ATTACK = 2
 export const INITIATIVE_STEP = 1
 
+export function getAllCharacters(): Character[] {
+  return [...gameState.players, ...gameState.monsters]
+}
+
+export function getCharacterAt(pos: Vec2): Character | undefined {
+  return getAllCharacters().find((character) => character.position.isEqual(pos))
+}
+
 export function getCharacterPathTo(
   character: Character,
   target: Vec2,
@@ -42,7 +50,8 @@ export function getCharacterPathTo(
       return resolve(null)
     }
 
-    const grid = createGrid(gameState.stage, character)
+    const targetCharacter = getCharacterAt(target)
+    const grid = createGrid(gameState.stage, character, targetCharacter)
     if (!grid) {
       return resolve(null)
     }
@@ -186,7 +195,14 @@ export async function removeFog(position: Vec2): Promise<boolean> {
 }
 
 // Creates a ad-hoc grid for the given character
-export function createGrid(stage: Stage, character: Character): Grid | null {
+// If targetCharacters is passed in its position
+// will be taken into account as available (not wall or blocked)
+// This aim to get a valid path when calculating path for attack
+export function createGrid(
+  stage: Stage,
+  character: Character,
+  targetCharacter?: Character,
+): Grid | null {
   // Create a grid with the dimensions of the stage with
   // all tiles available to be occupied
   const grid: Grid = []
@@ -200,19 +216,11 @@ export function createGrid(stage: Stage, character: Character): Grid | null {
     return grid
   }
 
-  // Block all tiles occupied by players
+  // Block all tiles occupied by characters
   // except if they are ethereal
-  gameState.players.forEach((player) => {
-    if (!isEthereal(player)) {
-      grid[player.position.y][player.position.x] = TILE_BLOCK
-    }
-  })
-
-  // Block all tiles occupied by players
-  // except if they are ethereal
-  gameState.monsters.forEach((monster) => {
-    if (!isEthereal(monster)) {
-      grid[monster.position.y][monster.position.x] = TILE_BLOCK
+  getAllCharacters().forEach((character) => {
+    if (targetCharacter !== character && !isEthereal(character)) {
+      grid[character.position.y][character.position.x] = TILE_BLOCK
     }
   })
 
