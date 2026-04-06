@@ -77,18 +77,10 @@ export default class MonstersController {
           continue
         }
 
-        let path = await getCharacterPathTo(monster, player.position)
+        const path = await getCharacterPathTo(monster, player.position)
 
         if (!path) {
           continue
-        }
-
-        // Skip the first step because is the current monster position
-        path = path.slice(1)
-
-        // If the last step is the position of a character we skip it
-        if (path.length > 1 && isCharacterAtPositon(path.at(-1)!)) {
-          path = path.slice(0, -1)
         }
 
         await this.moveAlongPath(monster, path)
@@ -129,9 +121,7 @@ export default class MonstersController {
   private async executeAttackPlan(attackPlan: AttackPlan): Promise<void> {
     gameState.centerActor = attackPlan.player
 
-    const nextToPath = attackPlan.path.slice(0, -1)
-
-    await this.moveAlongPath(attackPlan.monster, nextToPath)
+    await this.moveAlongPath(attackPlan.monster, attackPlan.path)
 
     while (attackPlan.monster.initiativeLeft >= INITIATIVE_ATTACK) {
       await this.attackPlayer(attackPlan.monster, attackPlan.player)
@@ -172,6 +162,15 @@ export default class MonstersController {
   // Move the monster along the path until the end is reached
   // or the monster has enough initiative
   private async moveAlongPath(monster: Monster, path: Vec2[]): Promise<void> {
+    // Skip the first step because is the current monster position
+    path = path.slice(1)
+
+    // If the last step is the position of a character we skip it
+    // to prevent occupy the same position
+    if (path.length > 0 && isCharacterAtPositon(path.at(-1)!)) {
+      path = path.slice(0, -1)
+    }
+
     for (const step of path) {
       if (monster.initiativeLeft < INITIATIVE_STEP) {
         break
