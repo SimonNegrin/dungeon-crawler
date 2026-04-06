@@ -3,6 +3,7 @@ import {
   calcStat,
   clearFogAt,
   createFogPositions,
+  LAYER_WALLS,
   VIEW_DISTANCE,
 } from "./common"
 import Vec2 from "./Vec2"
@@ -14,6 +15,7 @@ import {
 } from "./sprites/SpriteMonster.svelte"
 import { nextSound } from "./audio"
 import MonstersController from "./MonstersController"
+import VisionSystem from "./VisionSystem"
 
 const ladelbar: Player = {
   sprite: "bandit",
@@ -145,7 +147,7 @@ export async function nextPlayer(): Promise<void> {
 }
 
 class MonstersGenerator {
-  private layersToRemove = ["walls", "doors"]
+  private layersToRemove = [LAYER_WALLS, "doors"]
 
   private monstersDensity = 0.1
 

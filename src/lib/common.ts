@@ -15,6 +15,8 @@ import { gameState } from "./state.svelte"
 import { penClickSound } from "./audio"
 import VisionSystem from "./VisionSystem"
 
+export const LAYER_WALLS = "walls"
+
 export const STEP_TIME = 200
 export const ATTACK_TIME = 200
 export const TILE_SIZE = 32
@@ -33,6 +35,30 @@ export const INITIATIVE_CHEST = 2
 export const INITIATIVE_ATTACK = 2
 export const INITIATIVE_STEP = 1
 
+export function createVisionSystem(): VisionSystem {
+  if (!gameState.stage) {
+    throw new Error("VisionSystem can't be created if there is no stage")
+  }
+
+  const visionSystem = new VisionSystem(
+    gameState.stage!.mapWidth,
+    gameState.stage!.mapHeight,
+    VIEW_DISTANCE,
+  )
+
+  const walls = gameState.stage.layers.find((layer) => {
+    return layer.name === LAYER_WALLS
+  })
+
+  if (walls) {
+    walls.tiles.forEach((tile) => {
+      visionSystem.addWall(tile.position)
+    })
+  }
+
+  return visionSystem
+}
+
 export function getAllCharacters(): Character[] {
   return [...gameState.players, ...gameState.monsters]
 }
@@ -50,8 +76,7 @@ export function getCharacterPathTo(
       return resolve(null)
     }
 
-    const targetCharacter = getCharacterAt(target)
-    const grid = createGrid(gameState.stage, character, targetCharacter)
+    const grid = createGrid(gameState.stage, character, target)
     if (!grid) {
       return resolve(null)
     }
@@ -195,13 +220,12 @@ export async function removeFog(position: Vec2): Promise<boolean> {
 }
 
 // Creates a ad-hoc grid for the given character
-// If targetCharacters is passed in its position
+// If targetPosition is passed in this position
 // will be taken into account as available (not wall or blocked)
-// This aim to get a valid path when calculating path for attack
 export function createGrid(
   stage: Stage,
   character: Character,
-  targetCharacter?: Character,
+  targetPosition?: Vec2,
 ): Grid | null {
   // Create a grid with the dimensions of the stage with
   // all tiles available to be occupied
@@ -217,11 +241,21 @@ export function createGrid(
   }
 
   // Block all tiles occupied by characters
-  // except if they are ethereal
+  // except if they are ethereal or they are in the target position
   getAllCharacters().forEach((character) => {
-    if (targetCharacter !== character && !isEthereal(character)) {
-      grid[character.position.y][character.position.x] = TILE_BLOCK
+    // If the character is in the target position
+    // it not will block the path
+    if (targetPosition?.isEqual(character.position)) {
+      return
     }
+
+    // If the character is ethereal his position is able to be occupied
+    if (isEthereal(character)) {
+      return
+    }
+
+    // The character blocks this position
+    grid[character.position.y][character.position.x] = TILE_BLOCK
   })
 
   // Block all tiles from the collider layers
@@ -321,20 +355,7 @@ export function clearFogAt(position: Vec2): boolean {
     return false
   }
 
-  const visionSystem = new VisionSystem(
-    gameState.stage.mapWidth,
-    gameState.stage.mapHeight,
-    VIEW_DISTANCE,
-  )
-
-  const walls = gameState.stage.layers.find((layer) => {
-    return layer.name === "walls"
-  })
-  if (walls) {
-    walls.tiles.forEach((tile) => {
-      visionSystem.addWall(tile.position)
-    })
-  }
+  const visionSystem = createVisionSystem()
 
   const doors: Layer | undefined = gameState.stage.layers.find((layer) => {
     return layer.name === "doors"
@@ -363,7 +384,7 @@ export function isWallAt(position: Vec2): boolean {
   }
 
   const walls = gameState.stage.layers.find((layer) => {
-    return layer.name === "walls"
+    return layer.name === LAYER_WALLS
   })
 
   if (!walls) {

@@ -1,11 +1,14 @@
 import { Tween } from "svelte/motion"
 import {
   ATTACK_TIME,
+  createVisionSystem,
   getCharacterPathTo,
   INITIATIVE_ATTACK,
   INITIATIVE_STEP,
+  isCharacterAtPositon,
   STEP_TIME,
   TILE_SIZE,
+  VIEW_DISTANCE,
   waitTime,
 } from "./common"
 import { gameState } from "./state.svelte"
@@ -22,6 +25,7 @@ interface AttackPlan {
 
 export default class MonstersController {
   private monstersPool: Monster[] = []
+  private visionSystem = createVisionSystem()
 
   async execute(): Promise<void> {
     this.restoreMonstersInitiative()
@@ -33,15 +37,63 @@ export default class MonstersController {
     // will have finished
     this.monstersPool = gameState.monsters.slice(0)
 
+    await this.attackPhase()
+    await this.movePhase()
+  }
+
+  private async attackPhase(): Promise<void> {
     let monsterPath: AttackPlan | undefined
     // 1. Get a monster that can see a player and can attack
     while ((monsterPath = await this.getAttackMonsterPath())) {
       await this.executeAttackPlan(monsterPath)
     }
-    // Divide them in two groups
-    // Those that can attack and those that not
-    // Attack with monsters that can do it
-    // Move the rest to get best positions
+  }
+
+  private monsterCanViewPlayer(monster: Monster, player: Player): boolean {
+    // The distance must be lower or equal than VIEW_DISTANCE
+    if (monster.position.distanceTo(player.position) > VIEW_DISTANCE) {
+      return false
+    }
+
+    if (
+      !this.visionSystem.hasLineOfSight(
+        monster.position.x,
+        monster.position.y,
+        player.position.x,
+        player.position.y,
+      )
+    ) {
+      return false
+    }
+
+    return true
+  }
+
+  private async movePhase(): Promise<void> {
+    let monster: Monster | undefined
+    while ((monster = this.monstersPool.shift())) {
+      for (const player of gameState.players) {
+        if (!this.monsterCanViewPlayer(monster, player)) {
+          continue
+        }
+
+        let path = await getCharacterPathTo(monster, player.position)
+
+        if (!path) {
+          continue
+        }
+
+        // Skip the first step because is the current monster position
+        path = path.slice(1)
+
+        // If the last step is the position of a character we skip it
+        if (path.length > 1 && isCharacterAtPositon(path.at(-1)!)) {
+          path = path.slice(0, -1)
+        }
+
+        await this.moveAlongPath(monster, path)
+      }
+    }
   }
 
   // Return a monster that can see a player
@@ -50,6 +102,10 @@ export default class MonstersController {
     for (let i = 0; i < this.monstersPool.length; i++) {
       const monster = this.monstersPool[i]
       for (const player of gameState.players) {
+        if (!this.monsterCanViewPlayer(monster, player)) {
+          continue
+        }
+
         const path = await getCharacterPathTo(monster, player.position)
 
         if (!path) {
@@ -78,11 +134,14 @@ export default class MonstersController {
     await this.moveAlongPath(attackPlan.monster, nextToPath)
 
     while (attackPlan.monster.initiativeLeft >= INITIATIVE_ATTACK) {
-      await this.attack(attackPlan.monster, attackPlan.player)
+      await this.attackPlayer(attackPlan.monster, attackPlan.player)
     }
   }
 
-  private async attack(monster: Monster, player: Player): Promise<void> {
+  private async attackPlayer(monster: Monster, player: Player): Promise<void> {
+    if (monster.initiativeLeft < INITIATIVE_ATTACK) {
+      return
+    }
     monster.initiativeLeft -= INITIATIVE_ATTACK
 
     const displacement = player.position
@@ -110,8 +169,13 @@ export default class MonstersController {
     await waitTime(200)
   }
 
+  // Move the monster along the path until the end is reached
+  // or the monster has enough initiative
   private async moveAlongPath(monster: Monster, path: Vec2[]): Promise<void> {
     for (const step of path) {
+      if (monster.initiativeLeft < INITIATIVE_STEP) {
+        break
+      }
       monster.position = step
       await waitTime(STEP_TIME)
       walkSound()

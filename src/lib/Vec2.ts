@@ -24,6 +24,10 @@ export default class Vec2 {
     return new Vec2(this.x - vec2.x, this.y - vec2.y)
   }
 
+  distanceTo(vec2: Vec2): number {
+    return Math.hypot(Math.abs(this.x - vec2.x), Math.abs(this.y - vec2.y))
+  }
+
   multiply(factor: number): Vec2 {
     return new Vec2(this.x * factor, this.y * factor)
   }
