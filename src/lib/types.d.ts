@@ -59,6 +59,8 @@ export interface Monster extends Character {
   sprite: MonsterSpriteName
 }
 
+export type ActorType = "player" | "monster"
+
 export type Actor = Player | Monster
 
 export type StatType =

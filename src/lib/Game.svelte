@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ActorStats from "./ActorStats.svelte"
   import { TILE_SIZE, VIEWPORT_SIZE } from "./common"
   import GameMap from "./GameMap.svelte"
   import InventoryExchange from "./InventoryExchange.svelte"
@@ -17,7 +18,13 @@
     style:height="{naturalHeight}px"
     style:transform="scale({scale})"
   >
-    <div class="left-space"></div>
+    <div class="left-space">
+      <div class="players-list">
+        {#each gameState.players as player}
+          <ActorStats actor={player} />
+        {/each}
+      </div>
+    </div>
     <div class="screen-container">
       <GameMap />
 
@@ -28,7 +35,7 @@
         />
       {/if}
     </div>
-    <div class="right-space"></div>
+    <div class="right-space">Hey</div>
   </div>
 </div>
 
@@ -52,7 +59,14 @@
   .left-space,
   .right-space {
     min-width: 0;
-    flex-shrink: 1;
+    flex-shrink: 0;
     flex-grow: 1;
+  }
+
+  .players-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 4px;
   }
 </style>

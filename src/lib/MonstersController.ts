@@ -6,6 +6,7 @@ import {
   INITIATIVE_ATTACK,
   INITIATIVE_STEP,
   isCharacterAtPositon,
+  physicAttack,
   STEP_TIME,
   TILE_SIZE,
   VIEW_DISTANCE,
@@ -154,7 +155,13 @@ export default class MonstersController {
     })
 
     await tween.set(monster.offset.add(displacement))
-    attackSword()
+
+    if (physicAttack.attack(monster, player)) {
+      attackSword()
+    } else {
+      // TODO: Parry sound
+    }
+
     await tween.set(new Vec2(0, 0))
     await waitTime(200)
   }

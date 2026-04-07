@@ -14,6 +14,8 @@ import Vec2 from "./Vec2"
 import { gameState } from "./state.svelte"
 import { penClickSound } from "./audio"
 import VisionSystem from "./VisionSystem"
+import PhysicAttack from "./PhysicAttack"
+import Dice from "./Dice"
 
 export const LAYER_WALLS = "walls"
 
@@ -34,6 +36,9 @@ export const INITIATIVE_DOOR = 2
 export const INITIATIVE_CHEST = 2
 export const INITIATIVE_ATTACK = 2
 export const INITIATIVE_STEP = 1
+
+export const dice6 = new Dice(6)
+export const physicAttack = new PhysicAttack(dice6)
 
 export function createVisionSystem(): VisionSystem {
   if (!gameState.stage) {
