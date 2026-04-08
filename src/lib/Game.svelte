@@ -20,7 +20,7 @@
   >
     <div class="left-space">
       <div class="players-list">
-        {#each gameState.allPlayers as player}
+        {#each gameState.players as player}
           <ActorStats actor={player} />
         {/each}
       </div>

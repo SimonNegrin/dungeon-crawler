@@ -94,7 +94,6 @@ export const gameState = $state<GameState>({
   cursorPath: [],
   freezePath: false,
   players: [ladelbar, krom],
-  allPlayers: [ladelbar, krom],
   monsters: [],
   turn: TURN_PLAYERS,
 })

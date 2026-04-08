@@ -10,7 +10,7 @@
   } = $props()
 </script>
 
-<div class="character-stats">
+<div class="character-stats" class:dead={!actor.isAlive}>
   <div>
     <SpriteActor {actor} />
   </div>
@@ -28,6 +28,10 @@
     padding: 4px;
     background-color: antiquewhite;
     border-radius: 4px;
+
+    &.dead {
+      filter: grayscale(1);
+    }
   }
   .info {
     flex: 1 0 0;

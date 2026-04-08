@@ -35,7 +35,6 @@ interface GameState {
   cursorPosition: Vec2
   cursorPath: Vec2[]
   players: Player[]
-  allPlayers: Player[]
   monsters: Monster[]
 }
 

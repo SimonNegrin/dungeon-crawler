@@ -39,10 +39,10 @@ export default class MonstersController {
   }
 
   private async attackPhase(): Promise<void> {
-    let monsterPath: AttackPlan | undefined
+    let attackPlan: AttackPlan | undefined
     // 1. Get a monster that can see a player and can attack
-    while ((monsterPath = await this.getAttackMonsterPath())) {
-      await this.executeAttackPlan(monsterPath)
+    while ((attackPlan = await this.getAttackPlan())) {
+      await this.executeAttackPlan(attackPlan)
     }
   }
 
@@ -70,6 +70,10 @@ export default class MonstersController {
     let monster: Monster | undefined
     while ((monster = this.monstersPool.shift())) {
       for (const player of gameState.players) {
+        if (!player.isAlive) {
+          continue
+        }
+
         if (!this.monsterCanViewPlayer(monster, player)) {
           continue
         }
@@ -87,10 +91,14 @@ export default class MonstersController {
 
   // Return a monster that can see a player
   // and is close enough to attack
-  private async getAttackMonsterPath(): Promise<AttackPlan | undefined> {
+  private async getAttackPlan(): Promise<AttackPlan | undefined> {
     for (let i = 0; i < this.monstersPool.length; i++) {
       const monster = this.monstersPool[i]
       for (const player of gameState.players) {
+        if (!player.isAlive) {
+          continue
+        }
+
         if (!this.monsterCanViewPlayer(monster, player)) {
           continue
         }

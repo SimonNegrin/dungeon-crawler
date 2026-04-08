@@ -30,21 +30,22 @@ export function createDice(faces: number): () => number {
 export async function killActor(actor: Actor): Promise<void> {
   actor.isAlive = false
 
-  switch (actor.type) {
-    case "monster":
-      gameState.monsters = gameState.monsters.filter((m) => {
-        return m !== actor
-      })
-      monsterDeathSound()
-      break
-    case "player":
-      gameState.players = gameState.players.filter((m) => {
-        return m !== actor
-      })
-      monsterDeathSound()
-      break
-  }
+  // switch (actor.type) {
+  //   case "monster":
+  //     gameState.monsters = gameState.monsters.filter((m) => {
+  //       return m !== actor
+  //     })
+  //     monsterDeathSound()
+  //     break
+  //   case "player":
+  //     gameState.players = gameState.players.filter((m) => {
+  //       return m !== actor
+  //     })
+  //     monsterDeathSound()
+  //     break
+  //   }
 
+  monsterDeathSound()
   await waitTime(1000)
 }
 
