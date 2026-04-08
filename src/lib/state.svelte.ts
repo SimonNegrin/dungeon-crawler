@@ -106,6 +106,7 @@ export async function loadStage(stageName: string): Promise<void> {
   gameState.fog = createFogPositions(stage)
   gameState.playerIndex = 0
   gameState.currentPlayer = gameState.players[gameState.playerIndex]
+  gameState.centerActor = gameState.currentPlayer
   gameState.monsters = populateMonsters(gameState)
 
   // Clear fog at players positions
