@@ -4,6 +4,7 @@ import StageLoader from "./StageLoader"
 import { prefabsMap } from "./helpers/items"
 import { populateMonsters } from "./helpers/monsters"
 import { clearFogAt, createFogPositions } from "./helpers/fog"
+import { TURN_PLAYERS } from "./helpers/game"
 
 const ladelbar: Player = {
   isAlive: true,
@@ -95,7 +96,7 @@ export const gameState = $state<GameState>({
   players: [ladelbar, krom],
   allPlayers: [ladelbar, krom],
   monsters: [],
-  turn: "players",
+  turn: TURN_PLAYERS,
 })
 
 export async function loadStage(stageName: string): Promise<void> {
@@ -108,6 +109,7 @@ export async function loadStage(stageName: string): Promise<void> {
   gameState.currentPlayer = gameState.players[gameState.playerIndex]
   gameState.centerActor = gameState.currentPlayer
   gameState.monsters = populateMonsters(gameState)
+  gameState.turn = TURN_PLAYERS
 
   // Clear fog at players positions
   gameState.players.forEach((player) => {

@@ -3,10 +3,14 @@ import MonstersController from "../controllers/MonstersController"
 import { gameState } from "../state.svelte"
 import { calcStat } from "./common"
 
+export const TURN_PLAYERS = "players"
+export const TURN_MONSTERS = "monsters"
+
 export async function nextPlayer(): Promise<void> {
   const index = (gameState.playerIndex + 1) % gameState.players.length
 
   if (index === 0) {
+    gameState.turn = TURN_MONSTERS
     const monstersController = new MonstersController()
     await monstersController.execute()
     restorePlayersInitiative()
@@ -18,6 +22,7 @@ export async function nextPlayer(): Promise<void> {
   gameState.playerIndex = index
   gameState.cursorPosition = player.position
   gameState.openInventory = null
+  gameState.turn = TURN_PLAYERS
   nextSound()
 }
 

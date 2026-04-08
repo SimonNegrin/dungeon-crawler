@@ -1,10 +1,11 @@
 <script lang="ts">
   import { isEthereal, isWallAt } from "./common"
+  import { TURN_PLAYERS } from "./helpers/game"
   import { gameState } from "./state.svelte"
   import type Vec2 from "./Vec2"
 
   let invalidPosition = $derived(
-    isTooFar(gameState.cursorPath, gameState.initiativeLeft) ||
+    isTooFar(gameState.cursorPath, gameState.currentPlayer.initiativeLeft) ||
       isWallAtPosition(gameState.cursorPosition),
   )
 
@@ -21,12 +22,14 @@
   }
 </script>
 
-<div
-  class="cursor"
-  class:invalid-position={invalidPosition}
-  style:--x={gameState.cursorPosition.x}
-  style:--y={gameState.cursorPosition.y}
-></div>
+{#if gameState.turn === TURN_PLAYERS}
+  <div
+    class="cursor"
+    class:invalid-position={invalidPosition}
+    style:--x={gameState.cursorPosition.x}
+    style:--y={gameState.cursorPosition.y}
+  ></div>
+{/if}
 
 <style>
   .cursor {
