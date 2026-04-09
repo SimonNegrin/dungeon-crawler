@@ -16,8 +16,12 @@ import {
 } from "./common"
 import { gameState } from "../state.svelte"
 import { clearFogAt } from "./fog"
-import { getCharacterPathTo, isCharacterAtPositon } from "./stage"
-import { getActorAtPosition, getAdjacentActors } from "./common"
+import {
+  getActorAtPosition,
+  getAdjacentActors,
+  getCharacterPathTo,
+  isActorAtPositon,
+} from "./stage"
 import type { Player } from "../types"
 import { combat, physicAttack } from "./combat"
 
@@ -158,7 +162,7 @@ async function playerMove(): Promise<boolean> {
 
   const player = gameState.currentPlayer
 
-  if (isCharacterAtPositon(gameState.cursorPosition)) {
+  if (isActorAtPositon(gameState.cursorPosition)) {
     return false
   }
 

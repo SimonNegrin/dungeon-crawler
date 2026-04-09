@@ -1,9 +1,8 @@
 import EasyStar from "easystarjs"
 import { TILE_FLOOR, isEthereal, TILE_BLOCK, LAYER_WALLS } from "./common"
-import type { Character, Grid, Tile } from "../types"
+import type { Actor, ActorType, Character, Grid, Tile } from "../types"
 import Vec2 from "../Vec2"
 import { gameState } from "../state.svelte"
-import { getAllActors } from "./common"
 
 export function getCharacterPathTo(
   character: Character,
@@ -67,7 +66,7 @@ export function createGrid(
 
   // Block all tiles occupied by characters
   // except if they are ethereal or they are in the target position
-  getAllActors().forEach((actor) => {
+  getAllAliveActors().forEach((actor) => {
     // We don't take into account dead actors
     if (!actor.isAlive) {
       return
@@ -118,11 +117,42 @@ export function isInsideGameboard(position: Vec2): boolean {
   )
 }
 
-// Return if there is an alive character at certain position
-export function isCharacterAtPositon(position: Vec2): boolean {
-  return getAllActors().some((actor) => {
-    return actor.isAlive && actor.position.isEqual(position)
+export function getRectAdjacents(pos: Vec2): Vec2[] {
+  return [
+    pos.add(new Vec2(0, -1)), // left
+    pos.add(new Vec2(0, 1)), // right
+    pos.add(new Vec2(-1, 0)), // up
+    pos.add(new Vec2(1, 0)), // down
+  ]
+}
+
+export function getAllAliveActors(): Actor[] {
+  return [...gameState.players, ...gameState.monsters].filter((actor) => {
+    return actor.isAlive
   })
+}
+
+export function getActorAtPosition(pos: Vec2): Actor | undefined {
+  return getAllAliveActors().find((character) =>
+    character.position.isEqual(pos),
+  )
+}
+
+export function getAdjacentActors(pos: Vec2, actorType?: ActorType): Actor[] {
+  const rectAdjacents = getRectAdjacents(pos)
+  const actors: Actor[] = []
+  rectAdjacents.forEach((adjacent) => {
+    const actor = getActorAtPosition(adjacent)
+    if (actor && (!actorType || actor.type === actorType)) {
+      actors.push(actor)
+    }
+  })
+  return actors
+}
+
+// Return if there is an alive character at certain position
+export function isActorAtPositon(position: Vec2): boolean {
+  return Boolean(getActorAtPosition(position))
 }
 
 export function isWallAt(position: Vec2): boolean {

@@ -10,9 +10,13 @@ import { gameState } from "../state.svelte"
 import type { Monster, Player } from "../types"
 import Vec2 from "../Vec2"
 import { walkSound } from "./audio"
-import { getCharacterPathTo, isCharacterAtPositon } from "./stage"
+import {
+  getActorAtPosition,
+  getAdjacentActors,
+  getCharacterPathTo,
+  isActorAtPositon,
+} from "./stage"
 import { combat, physicAttack } from "./combat"
-import { getActorAtPosition, getAdjacentActors } from "./common"
 
 interface AttackPlan {
   monster: Monster
@@ -202,7 +206,7 @@ export default class MonstersController {
 
     // If the last step is the position of a character we skip it
     // to prevent occupy the same position
-    if (path.length > 0 && isCharacterAtPositon(path.at(-1)!)) {
+    if (path.length > 0 && isActorAtPositon(path.at(-1)!)) {
       path = path.slice(0, -1)
     }
 
