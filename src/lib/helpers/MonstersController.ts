@@ -20,10 +20,12 @@ export default class MonstersController {
   private visionSystem = createVisionSystem()
 
   async execute(): Promise<void> {
+    gameState.ignoreInput = true
     this.restoreMonstersInitiative()
     this.loadMonstersPool()
     await this.attackPhase()
     await this.movePhase()
+    gameState.ignoreInput = false
   }
 
   // Create a monsters pool

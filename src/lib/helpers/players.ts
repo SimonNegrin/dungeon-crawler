@@ -29,6 +29,12 @@ import { combat, physicAttack } from "./combat"
 import type Vec2 from "../Vec2"
 
 export async function currentPlayerAction(): Promise<void> {
+  gameState.ignoreInput = true
+  await executePlayerAction()
+  gameState.ignoreInput = false
+}
+
+async function executePlayerAction(): Promise<void> {
   if (await interactPlayer()) {
     return
   }

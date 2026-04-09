@@ -23,6 +23,7 @@ export interface Position {
 export type Turn = "players" | "monsters"
 
 interface GameState {
+  ignoreInput: boolean
   stage: Stage | null
   fog: Vec2[]
   turn: Turn

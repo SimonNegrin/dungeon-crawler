@@ -34,7 +34,7 @@
   }
 
   async function onkeydown(event: KeyboardEvent): Promise<void> {
-    if (event.defaultPrevented) return
+    if (gameState.ignoreInput || event.defaultPrevented) return
     if (event.key === " ") {
       await currentPlayerAction()
       return

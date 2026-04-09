@@ -84,6 +84,7 @@ const orc: Monster = {
 }
 
 export const gameState = $state<GameState>({
+  ignoreInput: false,
   stage: null,
   fog: [],
   playerIndex: 0,

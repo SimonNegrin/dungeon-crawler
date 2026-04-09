@@ -11,7 +11,7 @@
   }
 
   function onkeydown(event: KeyboardEvent) {
-    if (event.defaultPrevented) return
+    if (gameState.ignoreInput || event.defaultPrevented) return
     if (event.key === "n") {
       nextPlayer()
     }
