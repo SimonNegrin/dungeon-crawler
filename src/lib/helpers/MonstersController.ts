@@ -188,7 +188,6 @@ export default class MonstersController {
       const adjacentPlayers = getAdjacentActors(monster.position, "player")
       for (const adjacentPlayer of adjacentPlayers) {
         await physicAttack(adjacentPlayer, monster)
-        await waitTime(100)
       }
 
       if (!monster.isAlive) {

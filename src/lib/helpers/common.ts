@@ -19,6 +19,7 @@ export const LAYER_WALLS = "walls"
 
 export const STEP_TIME = 200
 export const ATTACK_TIME = 200
+export const TIME_AFTER_ATTACK = 200
 export const TILE_SIZE = 32
 export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1

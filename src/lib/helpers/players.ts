@@ -192,7 +192,6 @@ async function walkTo(player: Player, path: Vec2[]): Promise<void> {
     const adjacentMonsters = getAdjacentActors(player.position, "monster")
     for (const adjacentMonster of adjacentMonsters) {
       await physicAttack(adjacentMonster, player)
-      await waitTime(100)
     }
 
     if (!player.isAlive) {
