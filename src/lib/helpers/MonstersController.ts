@@ -1,4 +1,5 @@
 import {
+  createAttackPlan,
   createVisionSystem,
   INITIATIVE_ATTACK,
   INITIATIVE_STEP,
@@ -7,22 +8,11 @@ import {
   waitTime,
 } from "./common"
 import { gameState } from "../state.svelte"
-import type { Monster, Player } from "../types"
+import type { AttackPlan, Monster, Player } from "../types"
 import Vec2 from "../Vec2"
 import { walkSound } from "./audio"
-import {
-  getActorAtPosition,
-  getAdjacentActors,
-  getCharacterPathTo,
-  isActorAtPositon,
-} from "./stage"
+import { getAdjacentActors, getCharacterPathTo } from "./stage"
 import { combat, physicAttack } from "./combat"
-
-interface AttackPlan {
-  monster: Monster
-  player: Player
-  path: Vec2[]
-}
 
 export default class MonstersController {
   private monstersPool: Monster[] = []
@@ -123,12 +113,12 @@ export default class MonstersController {
 
   private selectBestAttackPlan(attackPlans: AttackPlan[]): AttackPlan {
     const [attackPlan] = attackPlans.toSorted((a, b) => {
-      const healthPointsA = a.player.stats.totalHealth - a.player.stats.health
-      const healthPointsB = b.player.stats.totalHealth - b.player.stats.health
+      const healthPointsA = a.target.stats.totalHealth - a.target.stats.health
+      const healthPointsB = b.target.stats.totalHealth - b.target.stats.health
       const pathPointsA =
-        a.monster.stats.initiative - (a.path.length - 2) * INITIATIVE_STEP
+        a.attacker.stats.initiative - a.path.length * INITIATIVE_STEP
       const pathPointsB =
-        b.monster.stats.initiative - (b.path.length - 2) * INITIATIVE_STEP
+        b.attacker.stats.initiative - b.path.length * INITIATIVE_STEP
 
       return healthPointsA + pathPointsA - (healthPointsB + pathPointsB)
     })
@@ -147,37 +137,15 @@ export default class MonstersController {
       return
     }
 
-    const path = await getCharacterPathTo(monster, player.position)
-
-    if (!path) {
-      return
-    }
-
-    const initiativeNeeded =
-      (path.length - 2) * INITIATIVE_STEP + INITIATIVE_ATTACK
-
-    if (initiativeNeeded > monster.initiativeLeft) {
-      return
-    }
-
-    // The penultimate step is rect adjacent to the
-    // target player position and is the place that will occupy the monster
-    // but is posible that this positon is occupied by an ethereal character
-    // because is posible to move through them, so we need
-    // to check if there is sombebody in this position
-    const penultimate = path.at(-2)
-    if (path.length > 2 && getActorAtPosition(penultimate!)) {
-      return
-    }
-
-    return { monster, player, path }
+    return createAttackPlan(monster, player)
   }
 
   private async executeAttackPlan(attackPlan: AttackPlan): Promise<void> {
-    const { monster, player } = attackPlan
+    const monster = attackPlan.attacker as Monster
+    const player = attackPlan.target as Player
     gameState.centerActor = player
 
-    await this.moveAlongPath(monster, attackPlan.path)
+    await this.moveAlongPath(monster as Monster, attackPlan.path)
 
     while (
       monster.isAlive &&
@@ -201,14 +169,14 @@ export default class MonstersController {
   // Move the monster along the path until the end is reached
   // or the monster has enough initiative
   private async moveAlongPath(monster: Monster, path: Vec2[]): Promise<void> {
-    // Skip the first step because is the current monster position
-    path = path.slice(1)
+    // // Skip the first step because is the current monster position
+    // path = path.slice(1)
 
-    // If the last step is the position of a character we skip it
-    // to prevent occupy the same position
-    if (path.length > 0 && isActorAtPositon(path.at(-1)!)) {
-      path = path.slice(0, -1)
-    }
+    // // If the last step is the position of a character we skip it
+    // // to prevent occupy the same position
+    // if (path.length > 0 && isActorAtPositon(path.at(-1)!)) {
+    //   path = path.slice(0, -1)
+    // }
 
     for (const step of path) {
       if (monster.initiativeLeft < INITIATIVE_STEP) {

@@ -172,3 +172,9 @@ export interface Stage {
   mapHeight: number
   layers: Layer[]
 }
+
+export interface AttackPlan {
+  attacker: Actor
+  target: Actor
+  path: Vec2[]
+}

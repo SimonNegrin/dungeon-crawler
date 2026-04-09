@@ -8,9 +8,11 @@ import type {
   Tile,
   TileType,
   TileTypeMap,
+  AttackPlan,
 } from "../types"
 import Vec2 from "../Vec2"
 import { monsterDeathSound, penClickSound } from "./audio"
+import { getCharacterPathTo, getActorAtPosition } from "./stage"
 import VisionSystem from "./VisionSystem"
 
 export const LAYER_WALLS = "walls"
@@ -134,4 +136,43 @@ export function moveInventoryItem(
   const [item] = from.items.splice(index, 1)
   to.items.push(item)
   penClickSound()
+}
+
+export async function createAttackPlan(
+  attacker: Actor,
+  target: Actor,
+): Promise<AttackPlan | undefined> {
+  if (!target.isAlive) {
+    return
+  }
+
+  let path = await getCharacterPathTo(attacker, target.position)
+
+  if (!path) {
+    return
+  }
+
+  // Remove the first and the last steps because they are
+  // the current positions of the attacker and the target
+  path = path.slice(1, -1)
+
+  // Calc the initiative required to go through the path
+  // and attack at least once
+  const initiativeNeeded =
+    Math.max(0, path.length - 2) * INITIATIVE_STEP + INITIATIVE_ATTACK
+
+  if (initiativeNeeded > attacker.initiativeLeft) {
+    return
+  }
+
+  // The last step is rect adjacent to the
+  // target position and is the place that will occupy the attacker
+  // but is posible that this positon is occupied by an ethereal character
+  // because is posible to move through them, so we need
+  // to check if there is sombebody in this position
+  if (path.length > 0 && getActorAtPosition(path.at(-1)!)) {
+    return
+  }
+
+  return { attacker, target, path }
 }

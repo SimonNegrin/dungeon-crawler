@@ -13,6 +13,7 @@ import {
   waitTime,
   STEP_TIME,
   INITIATIVE_ATTACK,
+  createAttackPlan,
 } from "./common"
 import { gameState } from "../state.svelte"
 import { clearFogAt } from "./fog"
@@ -22,8 +23,9 @@ import {
   getCharacterPathTo,
   isActorAtPositon,
 } from "./stage"
-import type { Player } from "../types"
+import type { Monster, Player } from "../types"
 import { combat, physicAttack } from "./combat"
+import type Vec2 from "../Vec2"
 
 export async function currentPlayerAction(): Promise<void> {
   if (await interactPlayer()) {
@@ -172,7 +174,13 @@ async function playerMove(): Promise<boolean> {
     return false
   }
 
-  for (const step of path.slice(1)) {
+  await walkTo(player, path.slice(1))
+
+  return true
+}
+
+async function walkTo(player: Player, path: Vec2[]): Promise<void> {
+  for (const step of path) {
     // Check if the player has the initiative needed to walk
     if (!spendInitiative(player, INITIATIVE_STEP)) {
       tiredSound()
@@ -197,8 +205,6 @@ async function playerMove(): Promise<boolean> {
     walkSound()
     gameState.cursorPath = gameState.cursorPath.slice(1)
   }
-
-  return true
 }
 
 async function attackMonster(): Promise<boolean> {
@@ -209,9 +215,13 @@ async function attackMonster(): Promise<boolean> {
     return false
   }
 
-  if (!player.position.isRectAdjacent(monster.position)) {
+  const attackPlan = await createAttackPlan(player, monster)
+
+  if (!attackPlan) {
     return false
   }
+
+  await walkTo(player, attackPlan.path)
 
   if (!spendInitiative(player, INITIATIVE_ATTACK)) {
     tiredSound()
