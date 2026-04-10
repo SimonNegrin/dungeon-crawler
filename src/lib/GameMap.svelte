@@ -16,6 +16,7 @@
     moveCursorUp,
   } from "./helpers/cursor"
   import { TILE_SIZE, VIEWPORT_SIZE } from "./helpers/common"
+  import Hurts from "./Hurts.svelte"
 
   let stageOffset = $derived(
     calcStageOffset(gameState.stage, gameState.centerActor),
@@ -83,6 +84,7 @@
         <div class="gameboard">
           <Avatars />
           <FogLayer />
+          <Hurts />
           <CursorPath />
           <Cursor />
         </div>

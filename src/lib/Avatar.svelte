@@ -34,7 +34,6 @@
 {#if actor.isAlive}
   <div
     class="avatar"
-    class:ethereal={isEthereal(actor)}
     style:left="{actor.position.x * TILE_SIZE + actor.offset.x}px"
     style:top="{actor.position.y * TILE_SIZE + actor.offset.y}px"
   >
@@ -46,11 +45,13 @@
       <div class="highlight"></div>
     {/if}
 
-    {#if actor.type === "player"}
-      <SpriteRogue name={actor.sprite} invert={lookRight} />
-    {:else}
-      <SpriteMonster name={actor.sprite} invert={lookRight} />
-    {/if}
+    <div class="sprite-wrapper" class:ethereal={isEthereal(actor)}>
+      {#if actor.type === "player"}
+        <SpriteRogue name={actor.sprite} invert={lookRight} />
+      {:else}
+        <SpriteMonster name={actor.sprite} invert={lookRight} />
+      {/if}
+    </div>
   </div>
 {/if}
 
@@ -61,6 +62,12 @@
     transition-duration: 200ms;
     width: var(--tile-size);
     height: var(--tile-size);
+  }
+
+  .sprite-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
 
     &.ethereal {
       filter: drop-shadow(0 0 1px white);

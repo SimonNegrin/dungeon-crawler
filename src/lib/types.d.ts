@@ -22,9 +22,15 @@ export interface Position {
 
 export type Turn = "players" | "monsters"
 
+export interface Hurt {
+  damage: number
+  position: Vec2
+}
+
 interface GameState {
   ignoreInput: boolean
   stage: Stage | null
+  hurts: Hurt[]
   fog: Vec2[]
   turn: Turn
   playerIndex: number
