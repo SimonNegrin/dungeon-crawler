@@ -45,6 +45,15 @@ interface GameState {
   monsters: Monster[]
 }
 
+export interface CharacterStats {
+  attack: number
+  aim: number
+  magic: number
+  defence: number
+  movement: number
+  actions: number
+}
+
 export interface Character {
   isAlive: boolean
   name: string
@@ -52,6 +61,11 @@ export interface Character {
   offset: Vec2
   initiativeLeft: number
   stats: Record<StatType, number>
+
+  baseStats: CharacterStats
+  totalStats: CharacterStats
+  currentStats: CharacterStats
+
   traits: Item[]
   items: Item[]
 }

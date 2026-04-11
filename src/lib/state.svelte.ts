@@ -1,4 +1,4 @@
-import type { GameState, Monster, Player } from "./types"
+import type { CharacterStats, GameState, Monster, Player } from "./types"
 import Vec2 from "./Vec2"
 import StageLoader from "./helpers/StageLoader"
 import { prefabsMap } from "./helpers/items"
@@ -14,6 +14,32 @@ const ladelbar: Player = {
   position: new Vec2(2, 2),
   offset: new Vec2(0, 0),
   initiativeLeft: 8,
+
+  baseStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
+  totalStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
+  currentStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
+
   stats: {
     health: 6,
     totalHealth: 6,
@@ -53,6 +79,32 @@ const krom: Player = {
     damage: 1,
     aim: 0,
   },
+
+  baseStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
+  totalStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
+  currentStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
+
   traits: [],
   items: [],
 }
@@ -76,6 +128,30 @@ const trancos: Player = {
   },
   traits: [],
   items: [],
+  baseStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
+  totalStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
+  currentStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
 }
 
 const legolas: Player = {
@@ -97,33 +173,36 @@ const legolas: Player = {
   },
   traits: [],
   items: [],
+  baseStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
+  totalStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
+  currentStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+  },
 }
 
 export const debug = $state({
   showCoords: false,
   showHealth: false,
 })
-
-const orc: Monster = {
-  isAlive: true,
-  type: "monster",
-  sprite: "orc",
-  name: "Orc",
-  position: new Vec2(5, 6),
-  offset: new Vec2(0, 0),
-  initiativeLeft: 0,
-  stats: {
-    attack: 0,
-    defence: 0,
-    damage: 0,
-    aim: 0,
-    initiative: 8,
-    health: 0,
-    totalHealth: 0,
-  },
-  traits: [],
-  items: [],
-}
 
 export const gameState = $state<GameState>({
   ignoreInput: false,

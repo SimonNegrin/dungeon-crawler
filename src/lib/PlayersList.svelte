@@ -17,7 +17,7 @@
 <div class="players-list">
   {#each players as player}
     <div
-      class="stat"
+      class="player"
       class:left={side === "left"}
       class:right={side === "right"}
       class:current-player={gameState.turn === TURN_PLAYERS &&
@@ -38,13 +38,8 @@
     padding: 0 4px;
     height: 100%;
   }
-  .stat {
+  .player {
     height: 33%;
-    filter: grayscale(1);
     transition-duration: 400ms;
-
-    &.current-player {
-      filter: grayscale(0);
-    }
   }
 </style>

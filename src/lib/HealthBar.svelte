@@ -26,6 +26,7 @@
     padding: 2px;
     border: 2px solid #5e3b10;
     border-radius: 9999px;
+    background-color: antiquewhite;
   }
   .health {
     background-color: red;

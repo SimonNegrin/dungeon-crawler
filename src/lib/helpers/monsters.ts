@@ -43,6 +43,30 @@ function createMonster(pos: Vec2): Monster {
       health: 2,
       totalHealth: 2,
     },
+    baseStats: {
+      attack: 0,
+      aim: 0,
+      magic: 0,
+      defence: 0,
+      movement: 0,
+      actions: 0,
+    },
+    totalStats: {
+      attack: 0,
+      aim: 0,
+      magic: 0,
+      defence: 0,
+      movement: 0,
+      actions: 0,
+    },
+    currentStats: {
+      attack: 0,
+      aim: 0,
+      magic: 0,
+      defence: 0,
+      movement: 0,
+      actions: 0,
+    },
   }
 }
 
