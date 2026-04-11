@@ -1,7 +1,12 @@
 import { getMonsterSpriteNames } from "../sprites/SpriteMonster.svelte"
 import type { Monster, Layer, GameState } from "../types"
 import Vec2 from "../Vec2"
-import { getRandomFromArray, LAYER_WALLS, VIEW_DISTANCE } from "./common"
+import {
+  getRandomFromArray,
+  LAYER_WALLS,
+  setBaseStat,
+  VIEW_DISTANCE,
+} from "./common"
 
 const LAYERS_TO_REMOVE = [LAYER_WALLS, "doors"]
 const MONSTERS_DENSITY = 0.1
@@ -24,25 +29,15 @@ export function populateMonsters(gameState: GameState): Monster[] {
 function createMonster(pos: Vec2): Monster {
   const monsterSpriteNames = getMonsterSpriteNames()
   const monsterSprite = getRandomFromArray(monsterSpriteNames)
-  return {
+  const monster: Monster = {
     isAlive: true,
     type: "monster",
     name: monsterSprite,
     sprite: monsterSprite,
     position: pos,
     offset: new Vec2(0, 0),
-    initiativeLeft: 8,
     items: [],
     traits: [],
-    stats: {
-      attack: 1,
-      defence: 1,
-      damage: 1,
-      aim: 1,
-      initiative: 8,
-      health: 2,
-      totalHealth: 2,
-    },
     baseStats: {
       attack: 0,
       aim: 0,
@@ -50,6 +45,7 @@ function createMonster(pos: Vec2): Monster {
       defence: 0,
       movement: 0,
       actions: 0,
+      health: 0,
     },
     totalStats: {
       attack: 0,
@@ -58,6 +54,7 @@ function createMonster(pos: Vec2): Monster {
       defence: 0,
       movement: 0,
       actions: 0,
+      health: 0,
     },
     currentStats: {
       attack: 0,
@@ -66,8 +63,19 @@ function createMonster(pos: Vec2): Monster {
       defence: 0,
       movement: 0,
       actions: 0,
+      health: 0,
     },
   }
+
+  setBaseStat("actions", 2, monster)
+  setBaseStat("movement", 8, monster)
+  setBaseStat("attack", 1, monster)
+  setBaseStat("defence", 1, monster)
+  setBaseStat("aim", 0, monster)
+  setBaseStat("magic", 0, monster)
+  setBaseStat("health", 2, monster)
+
+  return monster
 }
 
 function getValidPositions(gameState: GameState): Vec2[] {

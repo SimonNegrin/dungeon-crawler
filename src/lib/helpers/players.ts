@@ -69,12 +69,12 @@ async function interactPlayer(): Promise<boolean> {
 
   // Check if the player has the initiative needed
   // to interact with a chest
-  if (gameState.currentPlayer.initiativeLeft < INITIATIVE_CHEST) {
+  if (gameState.currentPlayer.currentStats.actions <= 0) {
     tiredSound()
     return true
   }
 
-  gameState.currentPlayer.initiativeLeft -= INITIATIVE_CHEST
+  gameState.currentPlayer.currentStats.actions--
   gameState.openInventory = player
 
   return true
@@ -93,12 +93,12 @@ async function interactChest(): Promise<boolean> {
 
   // Check if the player has the initiative needed
   // to interact with a chest
-  if (gameState.currentPlayer.initiativeLeft < INITIATIVE_CHEST) {
+  if (gameState.currentPlayer.currentStats.actions <= 0) {
     tiredSound()
     return true
   }
 
-  gameState.currentPlayer.initiativeLeft -= INITIATIVE_CHEST
+  gameState.currentPlayer.currentStats.actions--
   gameState.openInventory = chest.attributes
 
   return true
@@ -125,7 +125,8 @@ async function interactDoor(): Promise<boolean> {
 
   // If the door does not need key we open the door inmediatly
   if (!door.attributes.keyName) {
-    if (spendInitiative(currentPlayer, INITIATIVE_STEP)) {
+    if (currentPlayer.currentStats.actions > 0) {
+      currentPlayer.currentStats.actions--
       door.attributes.isOpen = true
       doorUnlockSound()
     } else {
@@ -137,12 +138,12 @@ async function interactDoor(): Promise<boolean> {
   // To open the door the player needs the key
   const { keyName } = door.attributes
   if (currentPlayer.items.some((item) => item.name === keyName)) {
-    if (spendInitiative(currentPlayer, INITIATIVE_DOOR)) {
+    if (currentPlayer.currentStats.actions > 0) {
       // Open the door with key
       door.attributes.isOpen = true
       // Remove key from player inventory
       removeItemByName(currentPlayer, keyName)
-      gameState.currentPlayer.initiativeLeft -= INITIATIVE_DOOR
+      gameState.currentPlayer.currentStats.actions--
       doorUnlockSound()
     } else {
       tiredSound()
@@ -153,14 +154,6 @@ async function interactDoor(): Promise<boolean> {
   // The player can't open the door but we return true
   // to indicate the interaction try
   doorLockedSound()
-  return true
-}
-
-function spendInitiative(player: Player, initiative: number): boolean {
-  if (player.initiativeLeft < initiative) {
-    return false
-  }
-  player.initiativeLeft -= initiative
   return true
 }
 
@@ -189,10 +182,11 @@ async function playerMove(): Promise<boolean> {
 async function walkTo(player: Player, path: Vec2[]): Promise<void> {
   for (const step of path) {
     // Check if the player has the initiative needed to walk
-    if (!spendInitiative(player, INITIATIVE_STEP)) {
+    if (player.currentStats.movement <= 0) {
       tiredSound()
       break
     }
+    player.currentStats.movement--
 
     // If the player current position is rect adjacent to a monster
     // the monster has an oportunity to attack the player
@@ -230,11 +224,12 @@ async function attackMonster(): Promise<boolean> {
 
   await walkTo(player, attackPlan.path)
 
-  if (!spendInitiative(player, INITIATIVE_ATTACK)) {
+  if (player.currentStats.actions <= 0) {
     tiredSound()
     return false
   }
 
+  player.currentStats.actions--
   await combat(player, monster)
   return true
 }

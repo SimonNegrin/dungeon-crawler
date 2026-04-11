@@ -1,10 +1,11 @@
-import type { CharacterStats, GameState, Monster, Player } from "./types"
+import type { GameState, Player } from "./types"
 import Vec2 from "./Vec2"
 import StageLoader from "./helpers/StageLoader"
 import { prefabsMap } from "./helpers/items"
 import { populateMonsters } from "./helpers/monsters"
 import { clearFogAt, createFogPositions } from "./helpers/fog"
 import { TURN_PLAYERS } from "./helpers/game"
+import { setBaseStat } from "./helpers/common"
 
 const ladelbar: Player = {
   isAlive: true,
@@ -13,8 +14,6 @@ const ladelbar: Player = {
   name: "Ladelbar",
   position: new Vec2(2, 2),
   offset: new Vec2(0, 0),
-  initiativeLeft: 8,
-
   baseStats: {
     attack: 0,
     aim: 0,
@@ -22,6 +21,7 @@ const ladelbar: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
   totalStats: {
     attack: 0,
@@ -30,6 +30,7 @@ const ladelbar: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
   currentStats: {
     attack: 0,
@@ -38,16 +39,7 @@ const ladelbar: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
-  },
-
-  stats: {
-    health: 6,
-    totalHealth: 6,
-    initiative: 8,
-    attack: 3,
-    defence: 2,
-    damage: 1,
-    aim: 0,
+    health: 0,
   },
   traits: [],
   items: [
@@ -69,17 +61,6 @@ const krom: Player = {
   name: "Krom",
   position: new Vec2(3, 2),
   offset: new Vec2(0, 0),
-  initiativeLeft: 8,
-  stats: {
-    health: 6,
-    totalHealth: 6,
-    initiative: 8,
-    attack: 3,
-    defence: 3,
-    damage: 1,
-    aim: 0,
-  },
-
   baseStats: {
     attack: 0,
     aim: 0,
@@ -87,6 +68,7 @@ const krom: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
   totalStats: {
     attack: 0,
@@ -95,6 +77,7 @@ const krom: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
   currentStats: {
     attack: 0,
@@ -103,6 +86,7 @@ const krom: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
 
   traits: [],
@@ -116,16 +100,6 @@ const trancos: Player = {
   name: "Trancos",
   position: new Vec2(3, 3),
   offset: new Vec2(0, 0),
-  initiativeLeft: 8,
-  stats: {
-    health: 6,
-    totalHealth: 6,
-    initiative: 8,
-    attack: 3,
-    defence: 3,
-    damage: 1,
-    aim: 0,
-  },
   traits: [],
   items: [],
   baseStats: {
@@ -135,6 +109,7 @@ const trancos: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
   totalStats: {
     attack: 0,
@@ -143,6 +118,7 @@ const trancos: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
   currentStats: {
     attack: 0,
@@ -151,6 +127,7 @@ const trancos: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
 }
 
@@ -161,16 +138,6 @@ const legolas: Player = {
   name: "Legolas",
   position: new Vec2(4, 3),
   offset: new Vec2(0, 0),
-  initiativeLeft: 8,
-  stats: {
-    health: 6,
-    totalHealth: 6,
-    initiative: 8,
-    attack: 3,
-    defence: 3,
-    damage: 1,
-    aim: 0,
-  },
   traits: [],
   items: [],
   baseStats: {
@@ -180,6 +147,7 @@ const legolas: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
   totalStats: {
     attack: 0,
@@ -188,6 +156,7 @@ const legolas: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
   currentStats: {
     attack: 0,
@@ -196,8 +165,17 @@ const legolas: Player = {
     defence: 0,
     movement: 0,
     actions: 0,
+    health: 0,
   },
 }
+
+setBaseStat("actions", 2, trancos, legolas, ladelbar, krom)
+setBaseStat("movement", 8, trancos, legolas, ladelbar, krom)
+setBaseStat("attack", 2, trancos, legolas, ladelbar, krom)
+setBaseStat("defence", 2, trancos, legolas, ladelbar, krom)
+setBaseStat("aim", 2, trancos, legolas, ladelbar, krom)
+setBaseStat("magic", 2, trancos, legolas, ladelbar, krom)
+setBaseStat("health", 8, trancos, legolas, ladelbar, krom)
 
 export const debug = $state({
   showCoords: false,

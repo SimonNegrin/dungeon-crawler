@@ -4,7 +4,7 @@ import { attackFailSound, attackSwordSound } from "./audio"
 import { TILE_SIZE, ATTACK_TIME, waitTime, TIME_AFTER_ATTACK } from "./common"
 import type { Actor, Character } from "../types"
 import Vec2 from "../Vec2"
-import { calcStat, createDice, killActor } from "./common"
+import { createDice, killActor } from "./common"
 import { gameState } from "../state.svelte"
 
 const dice6 = createDice(6)
@@ -30,14 +30,11 @@ export async function physicAttack(from: Actor, target: Actor): Promise<void> {
 
   const attackMovement = new AttackMovement(from, target)
 
-  const attack = calcStat("attack", from)
-  const defence = calcStat("defence", target)
-
   const attackRoll = dice6()
   const defenceRoll = dice6()
 
-  const attackTotal = attack + attackRoll
-  const defenceTotal = defence + defenceRoll
+  const attackTotal = from.currentStats.attack + attackRoll
+  const defenceTotal = target.currentStats.defence + defenceRoll
 
   await attackMovement.advance()
 
@@ -52,14 +49,14 @@ export async function physicAttack(from: Actor, target: Actor): Promise<void> {
 }
 
 function damage(from: Actor, target: Actor): void {
-  const damage = calcStat("damage", from)
-  target.stats.health -= damage
+  const damage = 1
+  target.currentStats.health -= damage
   gameState.hurts.push({
     damage: damage * -1,
     position: target.position,
   })
 
-  if (target.stats.health <= 0) {
+  if (target.currentStats.health <= 0) {
     killActor(target)
   }
 }

@@ -10,7 +10,10 @@
   }
 
   let steps = $derived(
-    updateSteps(gameState.cursorPath, gameState.currentPlayer.initiativeLeft),
+    updateSteps(
+      gameState.cursorPath,
+      gameState.currentPlayer.currentStats.movement,
+    ),
   )
 
   $effect(() => {
@@ -28,12 +31,12 @@
     )
   })
 
-  function updateSteps(cursorPath: Vec2[], initiativeLeft: number): Step[] {
+  function updateSteps(cursorPath: Vec2[], movement: number): Step[] {
     const steps: Step[] = []
     for (let i = 1; i + 1 < cursorPath.length; i++) {
       steps.push({
         position: cursorPath[i],
-        tooFar: i > initiativeLeft,
+        tooFar: i > movement,
       })
     }
     return steps

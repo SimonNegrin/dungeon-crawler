@@ -1,14 +1,13 @@
 import { gameState } from "../state.svelte"
 import type {
-  StatType,
   Character,
   Actor,
-  ActorType,
   Inventory,
   Tile,
   TileType,
   TileTypeMap,
   AttackPlan,
+  CharacterStats,
 } from "../types"
 import Vec2 from "../Vec2"
 import { monsterDeathSound, penClickSound } from "./audio"
@@ -39,18 +38,6 @@ export const INITIATIVE_STEP = 1
 export function getRandomFromArray<T>(items: T[]): T {
   const index = Math.floor(items.length * Math.random())
   return items[index]
-}
-
-export function calcStat(stat: StatType, character: Character): number {
-  let value = character.stats[stat]
-  ;[...character.traits, ...character.items].forEach((item) => {
-    item.statModifiers?.forEach((item) => {
-      if (item.stat === stat) {
-        value += item.value
-      }
-    })
-  })
-  return value
 }
 
 export function createDice(faces: number): () => number {
@@ -157,12 +144,8 @@ export async function createAttackPlan(
   // the current positions of the attacker and the target
   path = path.slice(1, -1)
 
-  // Calc the initiative required to go through the path
-  // and attack at least once
-  const initiativeNeeded =
-    Math.max(0, path.length - 2) * INITIATIVE_STEP + INITIATIVE_ATTACK
-
-  if (initiativeNeeded > attacker.initiativeLeft) {
+  // Check if the target is too far
+  if (path.length > attacker.currentStats.movement) {
     return
   }
 
@@ -176,4 +159,16 @@ export async function createAttackPlan(
   }
 
   return { attacker, target, path }
+}
+
+export function setBaseStat(
+  stat: keyof CharacterStats,
+  value: number,
+  ...characters: Character[]
+): void {
+  characters.forEach((character) => {
+    character.baseStats[stat] = value
+    character.totalStats[stat] = value
+    character.currentStats[stat] = value
+  })
 }

@@ -6,12 +6,14 @@
   import type Vec2 from "./Vec2"
 
   let invalidPosition = $derived(
-    isTooFar(gameState.cursorPath, gameState.currentPlayer.initiativeLeft) ||
-      isWallAtPosition(gameState.cursorPosition),
+    isTooFar(
+      gameState.cursorPath,
+      gameState.currentPlayer.currentStats.movement,
+    ) || isWallAtPosition(gameState.cursorPosition),
   )
 
-  function isTooFar(cursorPath: Vec2[], initiativeLeft: number): boolean {
-    return cursorPath.length - 1 > initiativeLeft
+  function isTooFar(cursorPath: Vec2[], movement: number): boolean {
+    return cursorPath.length - 1 > movement
   }
 
   function isWallAtPosition(cursorPosition: Vec2): boolean {

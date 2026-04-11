@@ -1,7 +1,6 @@
 import { nextSound } from "./audio"
 import MonstersController from "./MonstersController"
 import { gameState } from "../state.svelte"
-import { calcStat } from "./common"
 
 export const TURN_PLAYERS = "players"
 export const TURN_MONSTERS = "monsters"
@@ -19,7 +18,7 @@ export async function nextPlayer(): Promise<void> {
     gameState.turn = TURN_MONSTERS
     const monstersController = new MonstersController()
     await monstersController.execute()
-    restorePlayersInitiative()
+    restorePlayersStats()
   }
 
   //If next index player we need to find again an alive player
@@ -63,8 +62,9 @@ function nextAlivePlayerIndex(): number {
   return (nextIndex + next) % players.length
 }
 
-function restorePlayersInitiative(): void {
+function restorePlayersStats(): void {
   gameState.players.forEach((player) => {
-    player.initiativeLeft = calcStat("initiative", player)
+    player.currentStats.movement = player.totalStats.movement
+    player.currentStats.actions = player.totalStats.actions
   })
 }

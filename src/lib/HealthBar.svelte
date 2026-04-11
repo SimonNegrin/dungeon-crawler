@@ -8,7 +8,7 @@
   } = $props()
 
   let health = $derived(
-    calcHealth(character.stats.health, character.stats.totalHealth),
+    calcHealth(character.currentStats.health, character.totalStats.health),
   )
 
   function calcHealth(health: number, totalHealth: number): number {

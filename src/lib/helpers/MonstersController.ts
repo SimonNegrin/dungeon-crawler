@@ -1,8 +1,6 @@
 import {
   createAttackPlan,
   createVisionSystem,
-  INITIATIVE_ATTACK,
-  INITIATIVE_STEP,
   STEP_TIME,
   TIME_AFTER_ATTACK,
   VIEW_DISTANCE,
@@ -21,7 +19,7 @@ export default class MonstersController {
 
   async execute(): Promise<void> {
     gameState.ignoreInput = true
-    this.restoreMonstersInitiative()
+    this.restoreMonstersStats()
     this.loadMonstersPool()
     await this.attackPhase()
     await this.movePhase()
@@ -142,8 +140,8 @@ export default class MonstersController {
     const [attackPlan] = attackPlans.toSorted((a, b) => {
       const inPathA = playersInPath.get(a.attacker as Monster)!
       const inPathB = playersInPath.get(b.attacker as Monster)!
-      const healthCostA = a.target.stats.health * healthFactor
-      const healthCostB = b.target.stats.health * healthFactor
+      const healthCostA = a.target.currentStats.health * healthFactor
+      const healthCostB = b.target.currentStats.health * healthFactor
       const pathCostA = a.path.length * stepsFactor
       const pathCostB = b.path.length * stepsFactor
       const totalA = healthCostA + pathCostA + inPathA
@@ -182,18 +180,14 @@ export default class MonstersController {
     while (
       monster.isAlive &&
       player.isAlive &&
-      monster.initiativeLeft >= INITIATIVE_ATTACK
+      monster.currentStats.actions > 0
     ) {
+      monster.currentStats.actions--
       await this.attackPlayer(monster, player)
     }
   }
 
   private async attackPlayer(monster: Monster, player: Player): Promise<void> {
-    if (monster.initiativeLeft < INITIATIVE_ATTACK) {
-      return
-    }
-    monster.initiativeLeft -= INITIATIVE_ATTACK
-
     await combat(monster, player)
     await waitTime(200)
   }
@@ -202,7 +196,7 @@ export default class MonstersController {
   // or the monster has enough initiative
   private async moveAlongPath(monster: Monster, path: Vec2[]): Promise<void> {
     for (const step of path) {
-      if (monster.initiativeLeft < INITIATIVE_STEP) {
+      if (monster.currentStats.movement <= 0) {
         break
       }
 
@@ -221,13 +215,13 @@ export default class MonstersController {
       monster.position = step
       await waitTime(STEP_TIME)
       walkSound()
-      monster.initiativeLeft -= INITIATIVE_STEP
+      monster.currentStats.movement--
     }
   }
 
-  private restoreMonstersInitiative(): void {
+  private restoreMonstersStats(): void {
     gameState.monsters.forEach((monster) => {
-      monster.initiativeLeft = monster.stats.initiative
+      monster.currentStats = { ...monster.totalStats }
     })
   }
 }

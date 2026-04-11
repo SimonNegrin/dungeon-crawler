@@ -101,8 +101,6 @@
     display: flex;
     align-items: center;
     background-color: antiquewhite;
-    /* border-radius: 4px; */
-    /* box-shadow: inset 2px 2px 2px #666; */
     border: 2px inset rgb(253, 233, 207);
   }
 

@@ -40,7 +40,7 @@
     out:fade
   >
     {#if debug.showHealth}
-      <Health health={actor.stats.health} />
+      <Health health={actor.currentStats.health} />
     {/if}
 
     {#if gameState.turn === TURN_PLAYERS && highlight}

@@ -366,96 +366,96 @@ const itemPrefabs: Item[] = [
     desc: "Una bolsa llena de monedas",
     // Currency, no stat modifiers
   },
-  {
-    sprite: "cheese",
-    name: "Queso",
-    desc: "Un trozo de queso",
-    metadata: {
-      uses: 1,
-    },
-    effectHandlers: {
-      onUse: async (character: Character, item: Item) => {
-        const amount = 2
-        const { health, totalHealth } = character.stats
-        character.stats.health = Math.min(health + amount, totalHealth)
+  // {
+  //   sprite: "cheese",
+  //   name: "Queso",
+  //   desc: "Un trozo de queso",
+  //   metadata: {
+  //     uses: 1,
+  //   },
+  //   effectHandlers: {
+  //     onUse: async (character: Character, item: Item) => {
+  //       const amount = 2
+  //       const { health, totalHealth } = character.stats
+  //       character.stats.health = Math.min(health + amount, totalHealth)
 
-        removeItemByName(character, item.name)
-        await playAnimation("health", character.position)
-      },
-    },
-  },
-  {
-    sprite: "bread",
-    name: "Pan",
-    desc: "Una hogaza de pan",
-    metadata: {
-      uses: 1,
-    },
-    effectHandlers: {
-      onUse: async (character: Character, item: Item) => {
-        const amount = 3
-        const { health, totalHealth } = character.stats
-        character.stats.health = Math.min(health + amount, totalHealth)
+  //       removeItemByName(character, item.name)
+  //       await playAnimation("health", character.position)
+  //     },
+  //   },
+  // },
+  // {
+  //   sprite: "bread",
+  //   name: "Pan",
+  //   desc: "Una hogaza de pan",
+  //   metadata: {
+  //     uses: 1,
+  //   },
+  //   effectHandlers: {
+  //     onUse: async (character: Character, item: Item) => {
+  //       const amount = 3
+  //       const { health, totalHealth } = character.stats
+  //       character.stats.health = Math.min(health + amount, totalHealth)
 
-        removeItemByName(character, item.name)
-        await playAnimation("health", character.position)
-      },
-    },
-  },
-  {
-    sprite: "apple",
-    name: "Manzana",
-    desc: "Una manzana fresca",
-    metadata: {
-      uses: 1,
-    },
-    effectHandlers: {
-      onUse: async (character: Character, item: Item) => {
-        const amount = 1
-        const { health, totalHealth } = character.stats
-        character.stats.health = Math.min(health + amount, totalHealth)
+  //       removeItemByName(character, item.name)
+  //       await playAnimation("health", character.position)
+  //     },
+  //   },
+  // },
+  // {
+  //   sprite: "apple",
+  //   name: "Manzana",
+  //   desc: "Una manzana fresca",
+  //   metadata: {
+  //     uses: 1,
+  //   },
+  //   effectHandlers: {
+  //     onUse: async (character: Character, item: Item) => {
+  //       const amount = 1
+  //       const { health, totalHealth } = character.stats
+  //       character.stats.health = Math.min(health + amount, totalHealth)
 
-        removeItemByName(character, item.name)
-        await playAnimation("health", character.position)
-      },
-    },
-  },
-  {
-    sprite: "bottle of beer",
-    name: "Vino",
-    desc: "Una botella de vino",
-    metadata: {
-      uses: 1,
-    },
-    effectHandlers: {
-      onUse: async (character: Character, item: Item) => {
-        const amount = 2
-        const { health, totalHealth } = character.stats
-        character.stats.health = Math.min(health + amount, totalHealth)
+  //       removeItemByName(character, item.name)
+  //       await playAnimation("health", character.position)
+  //     },
+  //   },
+  // },
+  // {
+  //   sprite: "bottle of beer",
+  //   name: "Vino",
+  //   desc: "Una botella de vino",
+  //   metadata: {
+  //     uses: 1,
+  //   },
+  //   effectHandlers: {
+  //     onUse: async (character: Character, item: Item) => {
+  //       const amount = 2
+  //       const { health, totalHealth } = character.stats
+  //       character.stats.health = Math.min(health + amount, totalHealth)
 
-        removeItemByName(character, item.name)
-        await playAnimation("health", character.position)
-      },
-    },
-  },
-  {
-    sprite: "bottle of water",
-    name: "Agua",
-    desc: "Una botella de agua",
-    metadata: {
-      uses: 1,
-    },
-    effectHandlers: {
-      onUse: async (character: Character, item: Item) => {
-        const amount = 1
-        const { health, totalHealth } = character.stats
-        character.stats.health = Math.min(health + amount, totalHealth)
+  //       removeItemByName(character, item.name)
+  //       await playAnimation("health", character.position)
+  //     },
+  //   },
+  // },
+  // {
+  //   sprite: "bottle of water",
+  //   name: "Agua",
+  //   desc: "Una botella de agua",
+  //   metadata: {
+  //     uses: 1,
+  //   },
+  //   effectHandlers: {
+  //     onUse: async (character: Character, item: Item) => {
+  //       const amount = 1
+  //       const { health, totalHealth } = character.stats
+  //       character.stats.health = Math.min(health + amount, totalHealth)
 
-        removeItemByName(character, item.name)
-        await playAnimation("health", character.position)
-      },
-    },
-  },
+  //       removeItemByName(character, item.name)
+  //       await playAnimation("health", character.position)
+  //     },
+  //   },
+  // },
   {
     sprite: "gold key",
     name: "Llave de latón",
@@ -480,33 +480,33 @@ const itemPrefabs: Item[] = [
     desc: "Una llave vieja y oxidada",
     // Key item, no stat modifiers
   },
-  {
-    sprite: "red potion",
-    name: "Poción de vida",
-    desc: "Genial para la resaca",
-    metadata: {
-      uses: 1,
-    },
-    effectHandlers: {
-      onUse: async (character: Character, item: Item) => {
-        if (typeof item.metadata?.uses !== "number") {
-          removeItemByName(character, item.name)
-          return
-        }
+  // {
+  //   sprite: "red potion",
+  //   name: "Poción de vida",
+  //   desc: "Genial para la resaca",
+  //   metadata: {
+  //     uses: 1,
+  //   },
+  //   effectHandlers: {
+  //     onUse: async (character: Character, item: Item) => {
+  //       if (typeof item.metadata?.uses !== "number") {
+  //         removeItemByName(character, item.name)
+  //         return
+  //       }
 
-        const amount = Math.floor(1 + 2 * Math.random())
-        const { health, totalHealth } = character.stats
-        character.stats.health = Math.min(health + amount, totalHealth)
+  //       const amount = Math.floor(1 + 2 * Math.random())
+  //       const { health, totalHealth } = character.stats
+  //       character.stats.health = Math.min(health + amount, totalHealth)
 
-        item.metadata.uses--
-        if (item.metadata.uses <= 0) {
-          removeItemByName(character, item.name)
-        }
+  //       item.metadata.uses--
+  //       if (item.metadata.uses <= 0) {
+  //         removeItemByName(character, item.name)
+  //       }
 
-        await playAnimation("health", character.position)
-      },
-    },
-  },
+  //       await playAnimation("health", character.position)
+  //     },
+  //   },
+  // },
 ]
 
 export const prefabsMap = new Map<string, Item>(

@@ -52,6 +52,7 @@ export interface CharacterStats {
   defence: number
   movement: number
   actions: number
+  health: number
 }
 
 export interface Character {
@@ -59,13 +60,9 @@ export interface Character {
   name: string
   position: Vec2
   offset: Vec2
-  initiativeLeft: number
-  stats: Record<StatType, number>
-
   baseStats: CharacterStats
   totalStats: CharacterStats
   currentStats: CharacterStats
-
   traits: Item[]
   items: Item[]
 }
