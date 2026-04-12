@@ -8,7 +8,11 @@
   import Avatars from "./Avatars.svelte"
   import type { Actor, Stage } from "./types"
   import FogLayer from "./FogLayer.svelte"
-  import { currentPlayerAction, shootMonster } from "./helpers/players"
+  import {
+    attackMonster,
+    currentPlayerAction,
+    shootMonster,
+  } from "./helpers/players"
   import {
     moveCursorRight,
     moveCursorLeft,
@@ -39,6 +43,10 @@
     if (gameState.ignoreInput || event.defaultPrevented) return
     if (event.key === " ") {
       await currentPlayerAction()
+      return
+    }
+    if (event.key === "a") {
+      await attackMonster()
       return
     }
     if (event.key === "s") {

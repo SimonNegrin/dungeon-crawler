@@ -45,10 +45,6 @@ async function executePlayerAction(): Promise<void> {
     return
   }
 
-  if (await attackMonster()) {
-    return
-  }
-
   await playerMove()
 }
 
@@ -206,7 +202,7 @@ async function walkTo(player: Player, path: Vec2[]): Promise<void> {
   }
 }
 
-async function attackMonster(): Promise<boolean> {
+export async function attackMonster(): Promise<boolean> {
   const player = gameState.currentPlayer
   const monster = getActorAtPosition(gameState.cursorPosition)
 
