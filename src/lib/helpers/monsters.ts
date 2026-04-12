@@ -1,6 +1,7 @@
 import { getMonsterSpriteNames } from "../sprites/SpriteMonster.svelte"
 import type { Monster, Layer, GameState } from "../types"
 import Vec2 from "../Vec2"
+import { monsterHurtRandomSound } from "./audio"
 import {
   getRandomFromArray,
   LAYER_WALLS,
@@ -38,6 +39,10 @@ function createMonster(pos: Vec2): Monster {
     offset: new Vec2(0, 0),
     items: [],
     traits: [],
+    sounds: {
+      hurt: monsterHurtRandomSound,
+      death: monsterHurtRandomSound,
+    },
     baseStats: {
       attack: 0,
       aim: 0,

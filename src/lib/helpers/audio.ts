@@ -26,9 +26,49 @@ export const attackSwordSound = createAudioPreset("attack_sword", {
 export const attackFailSound = createAudioPreset("attack_fail", { volume: 0.2 })
 
 // Monster
+export const monsterHurtRandomSound = createRandomSound([
+  createAudioPreset("monster_hurt_1", {
+    volume: 0.2,
+  }),
+  createAudioPreset("monster_hurt_2", {
+    volume: 0.2,
+  }),
+  createAudioPreset("monster_hurt_3", {
+    volume: 0.2,
+  }),
+  createAudioPreset("monster_hurt_4", {
+    volume: 0.2,
+  }),
+  createAudioPreset("monster_hurt_5", {
+    volume: 0.2,
+  }),
+  createAudioPreset("monster_hurt_6", {
+    volume: 0.2,
+  }),
+  createAudioPreset("monster_hurt_7", {
+    volume: 0.2,
+  }),
+  createAudioPreset("monster_hurt_8", {
+    volume: 0.2,
+  }),
+])
 export const monsterDeathSound = createAudioPreset("monster_death", {
   volume: 0.2,
 })
+
+// Character
+export const maleHurtSound = createRandomSound([
+  createAudioPreset("male_hurt_1", { volume: 0.2 }),
+  createAudioPreset("male_hurt_2", { volume: 0.2 }),
+])
+
+export const femaleHurtSound = createRandomSound([
+  createAudioPreset("female_hurt_1", { volume: 0.2 }),
+  createAudioPreset("female_hurt_2", { volume: 0.2 }),
+])
+
+// Weapons
+export const arrowShootSound = createAudioPreset("arrow_shoot", { volume: 0.2 })
 
 export function walkSound(): void {
   stepRight = !stepRight
@@ -88,4 +128,11 @@ function createAudioPreset(
 
 function getSrc(audioName: string): string {
   return `/sounds/${audioName}.mp3`
+}
+
+function createRandomSound(sounds: Array<() => void>): () => void {
+  return () => {
+    const index = Math.floor(sounds.length * Math.random())
+    sounds[index]()
+  }
 }

@@ -10,7 +10,7 @@ import type {
   CharacterStats,
 } from "../types"
 import Vec2 from "../Vec2"
-import { monsterDeathSound, penClickSound } from "./audio"
+import { penClickSound } from "./audio"
 import { getCharacterPathTo, getActorAtPosition } from "./stage"
 import VisionSystem from "./VisionSystem"
 
@@ -18,7 +18,7 @@ export const LAYER_WALLS = "walls"
 
 export const STEP_TIME = 200
 export const ATTACK_TIME = 200
-export const TIME_AFTER_ATTACK = 200
+export const TIME_AFTER_ATTACK = 300
 export const TILE_SIZE = 32
 export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1
@@ -46,7 +46,7 @@ export function createDice(faces: number): () => number {
 
 export async function killActor(actor: Actor): Promise<void> {
   actor.isAlive = false
-  monsterDeathSound()
+  actor.sounds.death()
   await waitTime(1000)
 }
 

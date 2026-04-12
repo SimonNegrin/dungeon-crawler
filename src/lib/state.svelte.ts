@@ -6,6 +6,7 @@ import { populateMonsters } from "./helpers/monsters"
 import { clearFogAt, createFogPositions } from "./helpers/fog"
 import { TURN_PLAYERS } from "./helpers/game"
 import { setBaseStat } from "./helpers/common"
+import { femaleHurtSound, maleHurtSound } from "./helpers/audio"
 
 const ladelbar: Player = {
   isAlive: true,
@@ -14,6 +15,10 @@ const ladelbar: Player = {
   name: "Ladelbar",
   position: new Vec2(2, 2),
   offset: new Vec2(0, 0),
+  sounds: {
+    hurt: femaleHurtSound,
+    death: femaleHurtSound,
+  },
   baseStats: {
     attack: 0,
     aim: 0,
@@ -61,6 +66,10 @@ const krom: Player = {
   name: "Krom",
   position: new Vec2(3, 2),
   offset: new Vec2(0, 0),
+  sounds: {
+    hurt: maleHurtSound,
+    death: maleHurtSound,
+  },
   baseStats: {
     attack: 0,
     aim: 0,
@@ -102,6 +111,10 @@ const trancos: Player = {
   offset: new Vec2(0, 0),
   traits: [],
   items: [],
+  sounds: {
+    hurt: maleHurtSound,
+    death: maleHurtSound,
+  },
   baseStats: {
     attack: 0,
     aim: 0,
@@ -140,6 +153,10 @@ const legolas: Player = {
   offset: new Vec2(0, 0),
   traits: [],
   items: [],
+  sounds: {
+    hurt: maleHurtSound,
+    death: maleHurtSound,
+  },
   baseStats: {
     attack: 0,
     aim: 0,

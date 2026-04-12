@@ -1,6 +1,6 @@
 import { Tween } from "svelte/motion"
 import { toStore } from "svelte/store"
-import { attackFailSound, attackSwordSound } from "./audio"
+import { arrowShootSound, attackFailSound, attackSwordSound } from "./audio"
 import { TILE_SIZE, ATTACK_TIME, waitTime, TIME_AFTER_ATTACK } from "./common"
 import type { Actor, Arrow, Character } from "../types"
 import Vec2 from "../Vec2"
@@ -52,6 +52,8 @@ function damage(from: Actor, target: Actor): void {
 
   if (target.currentStats.health <= 0) {
     killActor(target)
+  } else {
+    target.sounds.hurt()
   }
 }
 
@@ -103,6 +105,8 @@ export async function arrowTo(from: Actor, target: Actor): Promise<void> {
     target,
     hit: hitRoll(from.currentStats.aim, target.currentStats.defence),
   }
+
+  arrowShootSound()
 
   gameState.arrows.push(arrow)
 

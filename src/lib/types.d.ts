@@ -56,11 +56,19 @@ export interface CharacterStats {
   health: number
 }
 
+export type SoundFn = () => void
+
+export interface CharacterSounds {
+  hurt: SoundFn
+  death: SoundFn
+}
+
 export interface Character {
   isAlive: boolean
   name: string
   position: Vec2
   offset: Vec2
+  sounds: CharacterSounds
   baseStats: CharacterStats
   totalStats: CharacterStats
   currentStats: CharacterStats
