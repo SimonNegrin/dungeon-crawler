@@ -1,14 +1,33 @@
 import { Tween } from "svelte/motion"
 import { toStore } from "svelte/store"
 import { arrowShootSound, attackFailSound, attackSwordSound } from "./audio"
-import { TILE_SIZE, ATTACK_TIME, waitTime, TIME_AFTER_ATTACK } from "./common"
-import type { Actor, Character, IProjectile } from "../types"
+import {
+  TILE_SIZE,
+  ATTACK_TIME,
+  waitTime,
+  TIME_AFTER_ATTACK,
+  events,
+} from "./common"
+import type {
+  Actor,
+  Character,
+  IProjectile,
+  IProjectileConfig,
+  ProjectileComponent,
+  ProjectileType,
+} from "../types"
 import Vec2 from "../Vec2"
 import { createDice, killActor } from "./common"
 import { gameState } from "../state.svelte"
 import ProjectileArrow from "../ProjectileArrow.svelte"
+import ProjectileMagicFireball from "../ProjectileMagicFireball.svelte"
 
 const dice6 = createDice(6)
+
+export const projectilesMap: Record<ProjectileType, ProjectileComponent> = {
+  arrow: ProjectileArrow,
+  fireball: ProjectileMagicFireball,
+}
 
 export async function combat(from: Actor, target: Actor): Promise<void> {
   // from attack first
@@ -45,7 +64,7 @@ export async function physicAttack(from: Actor, target: Actor): Promise<void> {
   await attackMovement.back()
 }
 
-function damage(target: Actor, hits: number): void {
+export function damage(target: Actor, hits: number): void {
   const health = Math.max(0, target.currentStats.health - hits)
   target.currentStats.health = health
 
@@ -99,41 +118,20 @@ class AttackMovement {
   }
 }
 
-export async function projectileTo(from: Actor, target: Actor): Promise<void> {
-  const { promise, resolve } = Promise.withResolvers<void>()
-
-  const hits = attackRoll(from.currentStats.aim, target.currentStats.defence)
-
-  const projectile: IProjectile = {
-    id: Symbol(),
-    resolve,
-    from,
-    target,
-    hits,
-    bullet: ProjectileArrow,
-  }
-
-  arrowShootSound()
-
-  // Addig the projectile to the projectiles array will produce
-  // the projectile animation in the map
-  gameState.projectiles.push(projectile)
-
-  // Await until the projectile reach the target
-  await promise
-
-  // Remove projectile from the projectiles array
-  gameState.projectiles = gameState.projectiles.filter((p) => {
-    return p.id !== projectile.id
+export async function projectileTo(config: IProjectileConfig): Promise<void> {
+  return new Promise((resolve) => {
+    const unsubscribe = events.shootCompleted.subscribe((completed) => {
+      if (completed.id === config.id) {
+        unsubscribe()
+        resolve()
+      }
+    })
+    events.shoot.emit(config)
   })
-
-  if (projectile.hits) {
-    damage(target, projectile.hits)
-  }
 }
 
 // Roll attack and defence dices and return the number of hits
-function attackRoll(attack: number, defence: number): number {
+export function attackRoll(attack: number, defence: number): number {
   const attackDices = rollDices(attack).toSorted(sortAscent)
   const defenceDices = rollDices(defence).toSorted(sortDescent)
 

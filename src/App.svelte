@@ -5,6 +5,7 @@
   import Game from "./lib/Game.svelte"
   import { nextPlayer } from "./lib/helpers/game"
   import { TILE_SIZE, VIEWPORT_SIZE } from "./lib/helpers/common"
+  import ProjectileMagicFireball from "./lib/ProjectileMagicFireball.svelte"
 
   async function onStart(): Promise<void> {
     await loadStage("stage_2")

@@ -8,10 +8,12 @@ import type {
   TileTypeMap,
   AttackPlan,
   CharacterStats,
+  IProjectileConfig,
 } from "../types"
 import Vec2 from "../Vec2"
 import { penClickSound } from "./audio"
-import { getCharacterPathTo, getActorAtPosition } from "./stage"
+import EventBus from "./EventBus"
+import { getCharacterPathTo, getAliveActorAtPosition } from "./stage"
 import VisionSystem from "./VisionSystem"
 
 export const LAYER_WALLS = "walls"
@@ -32,6 +34,11 @@ export const VIEWPORT_SIZE = 13
 
 // Shoot and magic distance
 export const SHOOT_DISTANCE = 6
+
+export const events = {
+  shoot: new EventBus<IProjectileConfig>(),
+  shootCompleted: new EventBus<IProjectileConfig>(),
+}
 
 export function getRandomFromArray<T>(items: T[]): T {
   const index = Math.floor(items.length * Math.random())
@@ -152,7 +159,7 @@ export async function createAttackPlan(
   // but is posible that this positon is occupied by an ethereal character
   // because is posible to move through them, so we need
   // to check if there is sombebody in this position
-  if (path.length > 0 && getActorAtPosition(path.at(-1)!)) {
+  if (path.length > 0 && getAliveActorAtPosition(path.at(-1)!)) {
     return
   }
 

@@ -16,7 +16,7 @@ export interface Inventory {
   items: Item[]
 }
 
-export interface Position {
+export interface Point {
   x: number
   y: number
 }
@@ -32,7 +32,6 @@ interface GameState {
   ignoreInput: boolean
   stage: Stage | null
   hurts: Hurt[]
-  projectiles: IProjectile[]
   fog: Vec2[]
   turn: Turn
   playerIndex: number
@@ -136,7 +135,7 @@ export interface Item {
   metadata?: ItemMetadata
 }
 
-export interface Position {
+export interface Point {
   x: number
   y: number
 }
@@ -214,4 +213,14 @@ export interface IProjectile {
   hits: number
   bullet: Component<{ projectile: IProjectile }>
   resolve: () => void
+}
+
+export type ProjectileType = "arrow" | "fireball"
+export type ProjectileComponent = Component<{ config: IProjectileConfig }>
+
+export interface IProjectileConfig {
+  id: Symbol
+  from: Actor
+  target: Actor
+  type: ProjectileType
 }

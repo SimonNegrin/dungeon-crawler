@@ -131,7 +131,7 @@ export function getAllAliveActors(): Actor[] {
   })
 }
 
-export function getActorAtPosition(pos: Vec2): Actor | undefined {
+export function getAliveActorAtPosition(pos: Vec2): Actor | undefined {
   return getAllAliveActors().find((character) =>
     character.position.isEqual(pos),
   )
@@ -144,7 +144,7 @@ export function getRectAdjacentActors(
   const rectAdjacents = getRectAdjacents(pos)
   const actors: Actor[] = []
   rectAdjacents.forEach((adjacent) => {
-    const actor = getActorAtPosition(adjacent)
+    const actor = getAliveActorAtPosition(adjacent)
     if (actor && (!actorType || actor.type === actorType)) {
       actors.push(actor)
     }
@@ -154,7 +154,7 @@ export function getRectAdjacentActors(
 
 // Return if there is an alive character at certain position
 export function isActorAtPositon(position: Vec2): boolean {
-  return Boolean(getActorAtPosition(position))
+  return Boolean(getAliveActorAtPosition(position))
 }
 
 export function isWallAt(position: Vec2): boolean {

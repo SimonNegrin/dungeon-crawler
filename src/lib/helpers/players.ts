@@ -17,7 +17,7 @@ import {
 import { gameState } from "../state.svelte"
 import { clearFogAt } from "./fog"
 import {
-  getActorAtPosition,
+  getAliveActorAtPosition,
   getRectAdjacentActors,
   getCharacterPathTo,
   isActorAtPositon,
@@ -25,6 +25,8 @@ import {
 import type { Player } from "../types"
 import { projectileTo, combat, physicAttack } from "./combat"
 import type Vec2 from "../Vec2"
+import ProjectileArrow from "../ProjectileArrow.svelte"
+import ProjectileMagicFireball from "../ProjectileMagicFireball.svelte"
 
 export async function currentPlayerAction(): Promise<void> {
   gameState.ignoreInput = true
@@ -204,7 +206,13 @@ async function walkTo(player: Player, path: Vec2[]): Promise<void> {
 
 export async function attackMonster(): Promise<boolean> {
   const player = gameState.currentPlayer
-  const monster = getActorAtPosition(gameState.cursorPosition)
+
+  // Check if the player has actions to attack
+  if (player.currentStats.actions <= 0) {
+    return false
+  }
+
+  const monster = getAliveActorAtPosition(gameState.cursorPosition)
 
   if (!monster?.isAlive || monster.type !== "monster") {
     return false
@@ -236,9 +244,9 @@ export async function shootMonster(): Promise<boolean> {
     return false
   }
 
-  const monster = getActorAtPosition(gameState.cursorPosition)
+  const monster = getAliveActorAtPosition(gameState.cursorPosition)
 
-  if (!monster?.isAlive || monster.type !== "monster") {
+  if (monster?.type !== "monster") {
     return false
   }
 
@@ -269,7 +277,62 @@ export async function shootMonster(): Promise<boolean> {
   player.currentStats.actions--
 
   // Shoot monster
-  await projectileTo(player, monster)
+  await projectileTo({
+    id: Symbol(),
+    from: player,
+    target: monster,
+    type: "arrow",
+  })
+
+  return true
+}
+
+export async function magickAttack(): Promise<boolean> {
+  const player = gameState.currentPlayer
+
+  // Check if the player have magic ability
+  if (player.currentStats.magic <= 0) {
+    return false
+  }
+
+  const monster = getAliveActorAtPosition(gameState.cursorPosition)
+
+  if (monster?.type !== "monster") {
+    return false
+  }
+
+  // Check if the player has actions to do magic
+  if (player.currentStats.actions <= 0) {
+    tiredSound()
+    return false
+  }
+
+  // Check if the monster is near enough to shoot
+  if (monster.position.distanceTo(player.position) > SHOOT_DISTANCE) {
+    return false
+  }
+
+  // Check if we have line of sight
+  const visionSystem = createVisionSystem()
+  if (
+    !visionSystem.hasLineOfSight(
+      player.position.x,
+      player.position.y,
+      monster.position.x,
+      monster.position.y,
+    )
+  ) {
+    return false
+  }
+
+  player.currentStats.actions--
+
+  await projectileTo({
+    id: Symbol(),
+    from: player,
+    target: monster,
+    type: "fireball",
+  })
 
   return true
 }

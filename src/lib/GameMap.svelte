@@ -11,6 +11,7 @@
   import {
     attackMonster,
     currentPlayerAction,
+    magickAttack,
     shootMonster,
   } from "./helpers/players"
   import {
@@ -51,6 +52,10 @@
     }
     if (event.key === "s") {
       await shootMonster()
+      return
+    }
+    if (event.key === "d") {
+      await magickAttack()
       return
     }
     moveCursor(event)

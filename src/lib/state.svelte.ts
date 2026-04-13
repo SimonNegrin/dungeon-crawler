@@ -8,6 +8,48 @@ import { TURN_PLAYERS } from "./helpers/game"
 import { setBaseStat } from "./helpers/common"
 import { femaleHurtSound, maleHurtSound } from "./helpers/audio"
 
+const gandalf: Player = {
+  isAlive: true,
+  sprite: "male wizard",
+  type: "player",
+  name: "Gandalf",
+  position: new Vec2(3, 3),
+  offset: new Vec2(0, 0),
+  sounds: {
+    hurt: femaleHurtSound,
+    death: femaleHurtSound,
+  },
+  baseStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+    health: 0,
+  },
+  totalStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+    health: 0,
+  },
+  currentStats: {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+    health: 0,
+  },
+  traits: [],
+  items: [],
+}
+
 const ladelbar: Player = {
   isAlive: true,
   sprite: "bandit",
@@ -107,7 +149,7 @@ const trancos: Player = {
   sprite: "male fighter",
   type: "player",
   name: "Trancos",
-  position: new Vec2(3, 3),
+  position: new Vec2(5, 3),
   offset: new Vec2(0, 0),
   traits: [],
   items: [],
@@ -186,13 +228,17 @@ const legolas: Player = {
   },
 }
 
-setBaseStat("actions", 2, trancos, legolas, ladelbar, krom)
-setBaseStat("movement", 8, trancos, legolas, ladelbar, krom)
+setBaseStat("actions", 2, trancos, legolas, ladelbar, krom, gandalf)
+setBaseStat("movement", 8, trancos, legolas, ladelbar, krom, gandalf)
+
 setBaseStat("attack", 2, trancos, legolas, ladelbar, krom)
 setBaseStat("defence", 2, trancos, legolas, ladelbar, krom)
+setBaseStat("attack", 1, gandalf)
+setBaseStat("defence", 1, gandalf)
+
 setBaseStat("aim", 2, legolas, ladelbar)
-setBaseStat("magic", 2, trancos, legolas, krom)
-setBaseStat("health", 8, trancos, legolas, ladelbar, krom)
+setBaseStat("magic", 2, trancos, legolas, krom, gandalf)
+setBaseStat("health", 8, trancos, legolas, ladelbar, krom, gandalf)
 
 export const debug = $state({
   showCoords: false,
@@ -203,7 +249,6 @@ export const gameState = $state<GameState>({
   ignoreInput: false,
   stage: null,
   hurts: [],
-  projectiles: [],
   fog: [],
   playerIndex: 0,
   currentPlayer: ladelbar,
@@ -213,7 +258,7 @@ export const gameState = $state<GameState>({
   cursorPosition: ladelbar.position,
   cursorPath: [],
   freezePath: false,
-  players: [trancos, legolas, ladelbar, krom],
+  players: [gandalf, legolas, trancos, ladelbar, krom],
   monsters: [],
   turn: TURN_PLAYERS,
 })

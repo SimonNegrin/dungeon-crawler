@@ -1,30 +1,31 @@
 <script lang="ts">
   import type { TransitionConfig } from "svelte/transition"
-  import type { IProjectile } from "./types"
+  import type { IProjectileConfig } from "./types"
   import { TILE_SIZE } from "./helpers/common"
+  import type { Snippet } from "svelte"
 
   let {
-    projectile,
+    config,
+    children,
+    ontarget,
   }: {
-    projectile: IProjectile
+    config: IProjectileConfig
+    children: Snippet
+    ontarget: () => void
   } = $props()
-
-  let Component = $derived(projectile.bullet)
 
   function animation(
     node: HTMLElement,
-    projectile: IProjectile,
+    config: IProjectileConfig,
   ): TransitionConfig {
-    const distance = projectile.from.position.distanceTo(
-      projectile.target.position,
-    )
+    const distance = config.from.position.distanceTo(config.target.position)
 
-    const diff = projectile.target.position.sub(projectile.from.position)
+    const diff = config.target.position.sub(config.from.position)
 
     return {
       duration: distance * 150,
       tick: (t: number) => {
-        const pos = projectile.from.position.add(diff.multiply(t))
+        const pos = config.from.position.add(diff.multiply(t))
         node.style.left = `${TILE_SIZE * pos.x}px`
         node.style.top = `${TILE_SIZE * pos.y}px`
       },
@@ -34,12 +35,12 @@
 
 <div
   class="projectile"
-  in:animation={projectile}
-  style:left="{TILE_SIZE * projectile.from.position.x}px"
-  style:top="{TILE_SIZE * projectile.from.position.y}px"
-  onintroend={() => projectile.resolve()}
+  in:animation={config}
+  style:left="{TILE_SIZE * config.from.position.x}px"
+  style:top="{TILE_SIZE * config.from.position.y}px"
+  onintroend={() => ontarget()}
 >
-  <Component {projectile} />
+  {@render children()}
 </div>
 
 <style>
