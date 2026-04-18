@@ -1,3 +1,4 @@
+import type { Subscriber, Writable } from "svelte/store"
 import { gameState } from "../state.svelte"
 import type {
   Character,
@@ -26,6 +27,32 @@ export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1
 export const VIEW_DISTANCE = 6
 export const INVENTORY_SLOTS = 3
+
+export const ICE_SERVERS: RTCIceServer[] = [
+  {
+    urls: "stun:stun.relay.metered.ca:80",
+  },
+  {
+    urls: "turn:global.relay.metered.ca:80",
+    username: "a0240ef79f4aab6adcbcd492",
+    credential: "sivvkdvgYch7X1z4",
+  },
+  {
+    urls: "turn:global.relay.metered.ca:80?transport=tcp",
+    username: "a0240ef79f4aab6adcbcd492",
+    credential: "sivvkdvgYch7X1z4",
+  },
+  {
+    urls: "turn:global.relay.metered.ca:443",
+    username: "a0240ef79f4aab6adcbcd492",
+    credential: "sivvkdvgYch7X1z4",
+  },
+  {
+    urls: "turns:global.relay.metered.ca:443?transport=tcp",
+    username: "a0240ef79f4aab6adcbcd492",
+    credential: "sivvkdvgYch7X1z4",
+  },
+]
 
 // Size of the game map in tiles
 // Set a odd number to be able to keep centered
@@ -176,4 +203,49 @@ export function setBaseStat(
     character.totalStats[stat] = value
     character.currentStats[stat] = value
   })
+}
+
+export function createStateMachine<T extends Record<string, (keyof T)[]>>(
+  state: keyof T,
+  machine: T,
+): Writable<keyof T> {
+  const subscribers = new Set<Subscriber<keyof T>>()
+
+  const set = (newState: keyof T) => {
+    // If state not change return
+    if (newState === state) {
+      console.warn(
+        `Invalid state machine chage from "${String(state)}" to "${String(newState)}"`,
+      )
+      return
+    }
+
+    // Check if the machine allow the state change
+    if (!machine[state].includes(newState)) {
+      console.warn(
+        `Invalid state machine chage from "${String(state)}" to "${String(newState)}"`,
+      )
+      return
+    }
+
+    // Change status
+    state = newState
+    subscribers.forEach((subscriber) => subscriber(state))
+  }
+
+  const subscribe = (subscriber: Subscriber<keyof T>) => {
+    subscribers.add(subscriber)
+    subscriber(state)
+    return () => subscribers.delete(subscriber)
+  }
+
+  const update = (updater: (state: keyof T) => keyof T) => {
+    set(updater(state))
+  }
+
+  return {
+    set,
+    subscribe,
+    update,
+  }
 }

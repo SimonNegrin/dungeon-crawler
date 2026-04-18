@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "easystarjs": "^0.4.4",
-    "parse-tmx": "^2.19.2"
+    "parse-tmx": "^2.19.2",
+    "qr-creator": "^1.0.0"
   }
 }

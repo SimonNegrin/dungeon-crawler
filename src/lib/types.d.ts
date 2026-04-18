@@ -224,3 +224,9 @@ export interface IProjectileConfig {
   target: Actor
   type: ProjectileType
 }
+
+export interface PlayerConnection {
+  playerId: string
+  connection: RTCPeerConnection
+  channel: RTCDataChannel
+}
