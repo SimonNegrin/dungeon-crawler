@@ -4,17 +4,20 @@
   let {
     children,
     flickerOpacity = 0.55,
-    vhs = false,
+    vhs = true,
+    crt = true,
   }: {
     children: Snippet
     flickerOpacity?: number
-    vhs: boolean
+    vhs?: boolean
+    crt?: boolean
   } = $props()
 </script>
 
 <div
   class="crt-screen"
   class:flicker={flickerOpacity > 0}
+  class:crt
   style:--flicker-opacity={flickerOpacity}
 >
   <div class="inner-shadow"></div>
@@ -31,7 +34,7 @@
     height: 100%;
     overflow: hidden;
 
-    &::before {
+    &.crt::before {
       content: "";
       display: block;
       position: absolute;

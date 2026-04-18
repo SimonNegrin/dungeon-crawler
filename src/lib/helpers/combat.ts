@@ -1,6 +1,6 @@
 import { Tween } from "svelte/motion"
 import { toStore } from "svelte/store"
-import { arrowShootSound, attackFailSound, attackSwordSound } from "./audio"
+import { attackFailSound, attackSwordSound } from "./audio"
 import {
   TILE_SIZE,
   ATTACK_TIME,
@@ -11,7 +11,6 @@ import {
 import type {
   Actor,
   Character,
-  IProjectile,
   IProjectileConfig,
   ProjectileComponent,
   ProjectileType,

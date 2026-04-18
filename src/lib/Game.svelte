@@ -1,4 +1,5 @@
 <script lang="ts">
+  import CrtScreen from "./CrtScreen.svelte"
   import GameMap from "./GameMap.svelte"
   import { TILE_SIZE, VIEWPORT_SIZE } from "./helpers/common"
   import InventoryExchange from "./InventoryExchange.svelte"
@@ -12,35 +13,43 @@
 </script>
 
 <div class="game" bind:clientWidth={gameWidth}>
-  <div
-    class="game-scaled"
-    style:width="{naturalWidth}px"
-    style:height="{naturalHeight}px"
-    style:transform="scale({scale})"
-  >
-    <div class="left-space">
-      <PlayersList side="left" />
-    </div>
-    <div class="screen-container">
-      <GameMap />
+  <CrtScreen vhs={false} flickerOpacity={0}>
+    <div class="center">
+      <div
+        class="game-scaled"
+        style:width="{naturalWidth}px"
+        style:height="{naturalHeight}px"
+        style:transform="scale({scale})"
+      >
+        <div class="left-space">
+          <PlayersList side="left" />
+        </div>
+        <div class="screen-container">
+          <GameMap />
 
-      {#if gameState.openInventory}
-        <InventoryExchange
-          leftInventory={gameState.openInventory}
-          rightInventory={gameState.currentPlayer}
-        />
-      {/if}
+          {#if gameState.openInventory}
+            <InventoryExchange
+              leftInventory={gameState.openInventory}
+              rightInventory={gameState.currentPlayer}
+            />
+          {/if}
+        </div>
+        <div class="right-space">
+          <PlayersList side="right" />
+        </div>
+      </div>
     </div>
-    <div class="right-space">
-      <PlayersList side="right" />
-    </div>
-  </div>
+  </CrtScreen>
 </div>
 
 <style>
   .game {
     width: 100%;
     aspect-ratio: 16 / 9;
+  }
+  .center {
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
