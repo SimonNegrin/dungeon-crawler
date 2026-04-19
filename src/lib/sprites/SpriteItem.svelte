@@ -8,10 +8,12 @@
   let {
     name,
     invert,
+    scale,
   }: {
     name: ItemName
     invert?: boolean
+    scale?: number
   } = $props()
 </script>
 
-<Sprite pos={rogues[name]} {spritesheet} {invert} />
+<Sprite pos={rogues[name]} {spritesheet} {invert} {scale} />

@@ -5,14 +5,16 @@
     spritesheet,
     pos,
     invert = false,
+    scale = 1,
   }: {
     spritesheet: string
     pos: number[]
     invert?: boolean
+    scale?: number
   } = $props()
 </script>
 
-<div class="sprite" class:invert>
+<div class="sprite" class:invert style:transform="scale({scale})">
   <img
     style:left="{pos[0] * -TILE_SIZE}px"
     style:top="{pos[1] * -TILE_SIZE}px"

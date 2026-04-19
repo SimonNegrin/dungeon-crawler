@@ -1,9 +1,15 @@
 <script lang="ts">
-  import { onMount } from "svelte"
+  import { onDestroy, onMount } from "svelte"
   import Qr from "./Qr.svelte"
   import SignalingConnection from "./helpers/SignalingConnection"
-  import { createStateMachine, ICE_SERVERS } from "./helpers/common"
-  import type { PlayerConnection } from "./types"
+  import {
+    createStateMachine,
+    ICE_SERVERS,
+    PKT_PLAYER_CONFIG,
+  } from "./helpers/common"
+  import type { PlayerConnection, IPlayerPreset } from "./types"
+  import SpriteRogue from "./sprites/SpriteRogue.svelte"
+  import PlayerPreset from "./PlayerPreset.svelte"
 
   let {
     playerId,
@@ -26,14 +32,19 @@
   let dataChannel: RTCDataChannel
   let signalingConnection: SignalingConnection
   let gamepadUrl = $state("")
+  let preset: IPlayerPreset | undefined = $state()
 
   onMount(() => {
     joinRoom()
-    return clearConnection
+  })
+
+  onDestroy(() => {
+    dataChannel?.removeEventListener("message", onMessage)
   })
 
   async function joinRoom(): Promise<void> {
-    const roomId = crypto.randomUUID()
+    // const roomId = crypto.randomUUID()
+    const roomId = "04355560-13c7-4378-917d-f46e84fc876b"
     signalingConnection = new SignalingConnection(
       import.meta.env.VITE_SIGNALING_SERVER,
     )
@@ -93,6 +104,8 @@
 
     dataChannel = peerConnection.createDataChannel("controlDatachannel")
 
+    dataChannel.addEventListener("message", onMessage)
+
     dataChannel.addEventListener(
       "open",
       () => {
@@ -127,23 +140,39 @@
     await peerConnection.setLocalDescription(offer)
     signalingConnection.sendOffer(offer)
   }
+
+  function onMessage(event: MessageEvent): void {
+    const data = new Uint8Array(event.data)
+
+    if (data[0] !== PKT_PLAYER_CONFIG) {
+      return
+    }
+
+    const decoder = new TextDecoder()
+    const json = decoder.decode(data.slice(1))
+    preset = JSON.parse(json)
+  }
 </script>
 
 <div class="player-binding">
   {#if $componentState === "CREATING_ROOM"}
     <div>Creando sala...</div>
   {:else if $componentState === "WAITING_PLAYER"}
-    <Qr content={gamepadUrl} size={300} />
+    <Qr content={gamepadUrl} size={100} />
   {:else if $componentState === "SIGNALING"}
     <div>Conectando...</div>
   {:else if $componentState === "CONNECTED"}
-    <div>Conectado</div>
+    {#if preset}
+      <PlayerPreset {preset} />
+    {:else}
+      <div>Waiting preset...</div>
+    {/if}
   {/if}
 </div>
 
 <style>
   .player-binding {
-    --size: 320px;
+    --size: 120px;
     width: var(--size);
     height: var(--size);
     display: flex;

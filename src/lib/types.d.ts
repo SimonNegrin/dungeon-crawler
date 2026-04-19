@@ -230,3 +230,16 @@ export interface PlayerConnection {
   connection: RTCPeerConnection
   channel: RTCDataChannel
 }
+
+export interface IPlayerPreset {
+  sprite: RogueName
+  name: string
+  genre: "male" | "female"
+  points: number
+  movement: number
+  actions: number
+  attack: number
+  defence: number
+  aim: number
+  magic: number
+}

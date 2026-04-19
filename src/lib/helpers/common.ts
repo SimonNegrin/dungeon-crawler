@@ -28,6 +28,10 @@ export const TILE_BLOCK = 1
 export const VIEW_DISTANCE = 6
 export const INVENTORY_SLOTS = 3
 
+export const PKT_GAMEPAD_STATE = 1
+export const PKT_MENU = 2
+export const PKT_PLAYER_CONFIG = 3
+
 export const ICE_SERVERS: RTCIceServer[] = [
   {
     urls: "stun:stun.relay.metered.ca:80",
