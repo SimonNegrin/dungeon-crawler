@@ -39,7 +39,7 @@ npm run preview
 
 ## 📁 Estructura del proyecto
 
-```
+```txt
 rogue-tv/
 ├── public/           # Assets estáticos
 │   ├── spritesheets/ # Sprites del juego
@@ -56,11 +56,38 @@ rogue-tv/
 └── package.json      # Dependencias y scripts
 ```
 
+## 🧙‍♂️ Fases del jugador
+
+### Landing
+
+- Esperando -> PlayerBinding
+- Vinculando -> PlayerBinding
+- Configurando -> PlayerPreset
+- Preparado -> PlayerReady
+
+### Game
+
+- Jugando -> PlayerStats
+
+<!-- ## 🪜 Estados de la App
+
+- Esperando jugadores -> Landing
+- Todos los jugadores están listos -> Cuenta atrás
+- -->
+
 ## 🎯 Controles
 
 - **N**: Cambiar al siguiente personaje
 - **Click**: Interactuar con el entorno
 - **Drag & Drop**: Mover objetos en el inventario
+
+## 🎮 Vincular Gamepad
+
+- Leer el código QR
+- El jugador configura su personaje
+- El jugador está preparado
+  - Cuando todos los personajes están preparados se inicia la cuenta atrás de 5 segundos
+- Comienza el juego
 
 ## 🎨 Assets
 

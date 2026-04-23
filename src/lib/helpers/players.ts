@@ -3,6 +3,8 @@ import {
   doorUnlockSound,
   doorLockedSound,
   walkSound,
+  maleHurtSound,
+  femaleHurtSound,
 } from "./audio"
 import {
   getTileTypeAt,
@@ -22,11 +24,12 @@ import {
   getCharacterPathTo,
   isActorAtPositon,
 } from "./stage"
-import type { Player } from "../types"
+import type { CharacterStats, IPlayer, PlayerGenre } from "../types"
 import { projectileTo, combat, physicAttack } from "./combat"
-import type Vec2 from "../Vec2"
+import Vec2 from "../Vec2"
 import ProjectileArrow from "../ProjectileArrow.svelte"
 import ProjectileMagicFireball from "../ProjectileMagicFireball.svelte"
+import type { RogueName } from "../sprites/SpriteRogue.svelte"
 
 export async function currentPlayerAction(): Promise<void> {
   gameState.ignoreInput = true
@@ -51,6 +54,8 @@ async function executePlayerAction(): Promise<void> {
 }
 
 async function interactPlayer(): Promise<boolean> {
+  const currentPlayer = gameState.currentPlayer!
+
   const player = gameState.players.find((player) => {
     return player.position.isEqual(gameState.cursorPosition)
   })
@@ -59,49 +64,50 @@ async function interactPlayer(): Promise<boolean> {
     return false
   }
 
-  if (!gameState.currentPlayer.position.isRectAdjacent(player.position)) {
+  if (!currentPlayer.position.isRectAdjacent(player.position)) {
     return false
   }
 
   // Check if the player has the initiative needed
   // to interact with a chest
-  if (gameState.currentPlayer.currentStats.actions <= 0) {
+  if (currentPlayer.currentStats.actions <= 0) {
     tiredSound()
     return true
   }
 
-  gameState.currentPlayer.currentStats.actions--
+  currentPlayer.currentStats.actions--
   gameState.openInventory = player
 
   return true
 }
 
 async function interactChest(): Promise<boolean> {
+  const currentPlayer = gameState.currentPlayer!
   const chest = getTileTypeAt("chest", gameState.cursorPosition)
 
   if (!chest) {
     return false
   }
 
-  if (!gameState.currentPlayer.position.isRectAdjacent(chest.position)) {
+  if (!currentPlayer.position.isRectAdjacent(chest.position)) {
     return false
   }
 
   // Check if the player has the initiative needed
   // to interact with a chest
-  if (gameState.currentPlayer.currentStats.actions <= 0) {
+  if (currentPlayer.currentStats.actions <= 0) {
     tiredSound()
     return true
   }
 
-  gameState.currentPlayer.currentStats.actions--
+  currentPlayer.currentStats.actions--
   gameState.openInventory = chest.attributes
 
   return true
 }
 
 async function interactDoor(): Promise<boolean> {
-  const currentPlayer = gameState.currentPlayer
+  const currentPlayer = gameState.currentPlayer!
 
   const door = getTileTypeAt("door", gameState.cursorPosition)
 
@@ -139,7 +145,7 @@ async function interactDoor(): Promise<boolean> {
       door.attributes.isOpen = true
       // Remove key from player inventory
       removeItemByName(currentPlayer, keyName)
-      gameState.currentPlayer.currentStats.actions--
+      gameState.currentPlayer!.currentStats.actions--
       doorUnlockSound()
     } else {
       tiredSound()
@@ -158,7 +164,7 @@ async function playerMove(): Promise<boolean> {
     return false
   }
 
-  const player = gameState.currentPlayer
+  const player = gameState.currentPlayer!
 
   if (isActorAtPositon(gameState.cursorPosition)) {
     return false
@@ -175,7 +181,7 @@ async function playerMove(): Promise<boolean> {
   return true
 }
 
-async function walkTo(player: Player, path: Vec2[]): Promise<void> {
+async function walkTo(player: IPlayer, path: Vec2[]): Promise<void> {
   for (const step of path) {
     // Check if the player has the initiative needed to walk
     if (player.currentStats.movement <= 0) {
@@ -205,7 +211,7 @@ async function walkTo(player: Player, path: Vec2[]): Promise<void> {
 }
 
 export async function attackMonster(): Promise<boolean> {
-  const player = gameState.currentPlayer
+  const player = gameState.currentPlayer!
 
   // Check if the player has actions to attack
   if (player.currentStats.actions <= 0) {
@@ -237,7 +243,7 @@ export async function attackMonster(): Promise<boolean> {
 }
 
 export async function shootMonster(): Promise<boolean> {
-  const player = gameState.currentPlayer
+  const player = gameState.currentPlayer!
 
   // Check if the player have the ability of shoot arrows
   if (player.currentStats.aim <= 0) {
@@ -288,7 +294,7 @@ export async function shootMonster(): Promise<boolean> {
 }
 
 export async function magickAttack(): Promise<boolean> {
-  const player = gameState.currentPlayer
+  const player = gameState.currentPlayer!
 
   // Check if the player have magic ability
   if (player.currentStats.magic <= 0) {
@@ -335,4 +341,39 @@ export async function magickAttack(): Promise<boolean> {
   })
 
   return true
+}
+
+export function createPlayerActor(
+  playerId: string,
+  sprite: RogueName,
+  genre: PlayerGenre,
+): IPlayer {
+  const hurtSound = genre === "male" ? maleHurtSound : femaleHurtSound
+  const stats: CharacterStats = {
+    attack: 0,
+    aim: 0,
+    magic: 0,
+    defence: 0,
+    movement: 0,
+    actions: 0,
+    health: 0,
+  }
+  return {
+    id: playerId,
+    type: "player",
+    sprite: sprite,
+    isAlive: false,
+    name: "",
+    position: new Vec2(0, 0),
+    offset: new Vec2(0, 0),
+    sounds: {
+      hurt: hurtSound,
+      death: hurtSound,
+    },
+    baseStats: { ...stats },
+    totalStats: { ...stats },
+    currentStats: { ...stats },
+    traits: [],
+    items: [],
+  }
 }

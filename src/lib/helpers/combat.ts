@@ -10,7 +10,7 @@ import {
 } from "./common"
 import type {
   Actor,
-  Character,
+  ICharacter,
   IProjectileConfig,
   ProjectileComponent,
   ProjectileType,
@@ -83,8 +83,8 @@ class AttackMovement {
   private tween: Tween<Vec2>
 
   constructor(
-    private from: Character,
-    private target: Character,
+    private from: ICharacter,
+    private target: ICharacter,
   ) {
     const tween = new Tween(from.offset, {
       duration: Math.floor(ATTACK_TIME / 2),

@@ -1,5 +1,5 @@
 import { removeItemByName } from "./common"
-import type { Character, Item } from "../types"
+import type { ICharacter, Item } from "../types"
 import { playAnimation } from "./animations"
 
 const itemPrefabs: Item[] = [

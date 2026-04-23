@@ -1,7 +1,7 @@
 import type { Subscriber, Writable } from "svelte/store"
 import { gameState } from "../state.svelte"
 import type {
-  Character,
+  ICharacter,
   Actor,
   Inventory,
   Tile,
@@ -27,10 +27,6 @@ export const TILE_FLOOR = 0
 export const TILE_BLOCK = 1
 export const VIEW_DISTANCE = 6
 export const INVENTORY_SLOTS = 3
-
-export const PKT_GAMEPAD_STATE = 1
-export const PKT_MENU = 2
-export const PKT_PLAYER_CONFIG = 3
 
 export const ICE_SERVERS: RTCIceServer[] = [
   {
@@ -137,13 +133,16 @@ export function waitTime(ms: number): Promise<void> {
   })
 }
 
-export function isEthereal(character: Character): boolean {
+export function isEthereal(character: ICharacter): boolean {
   return [...character.traits, ...character.items].some((item) => {
     return item.metadata?.ethereal === true
   })
 }
 
-export function removeItemByName(character: Character, itemName: string): void {
+export function removeItemByName(
+  character: ICharacter,
+  itemName: string,
+): void {
   character.items = character.items.filter((item) => {
     return item.name !== itemName
   })
@@ -200,7 +199,7 @@ export async function createAttackPlan(
 export function setBaseStat(
   stat: keyof CharacterStats,
   value: number,
-  ...characters: Character[]
+  ...characters: ICharacter[]
 ): void {
   characters.forEach((character) => {
     character.baseStats[stat] = value

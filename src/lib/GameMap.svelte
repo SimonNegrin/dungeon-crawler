@@ -25,7 +25,7 @@
   import Projectiles from "./Projectiles.svelte"
 
   let stageOffset = $derived(
-    calcStageOffset(gameState.stage, gameState.centerActor),
+    calcStageOffset(gameState.stage, gameState.centerActor!),
   )
 
   function calcStageOffset(stage: Stage | null, actor: Actor): Vec2 {

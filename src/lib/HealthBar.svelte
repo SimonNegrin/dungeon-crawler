@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { Character } from "./types"
+  import type { ICharacter } from "./types"
 
   let {
     character,
   }: {
-    character: Character
+    character: ICharacter
   } = $props()
 
   let health = $derived(

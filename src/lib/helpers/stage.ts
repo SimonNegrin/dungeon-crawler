@@ -1,11 +1,11 @@
 import EasyStar from "easystarjs"
 import { TILE_FLOOR, isEthereal, TILE_BLOCK, LAYER_WALLS } from "./common"
-import type { Actor, ActorType, Character, Grid, Tile } from "../types"
+import type { Actor, ActorType, ICharacter, Grid, Tile } from "../types"
 import Vec2 from "../Vec2"
 import { gameState } from "../state.svelte"
 
 export function getCharacterPathTo(
-  character: Character,
+  character: ICharacter,
   target: Vec2,
 ): Promise<Vec2[] | null> {
   return new Promise((resolve) => {
@@ -42,7 +42,7 @@ export function getCharacterPathTo(
 // If targetPosition is passed in this position
 // will be taken into account as available (not wall or blocked)
 export function createGrid(
-  character: Character,
+  character: ICharacter,
   targetPosition?: Vec2,
 ): Grid | null {
   if (!gameState.stage) {

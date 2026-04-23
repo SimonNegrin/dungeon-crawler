@@ -1,4 +1,4 @@
-import type { GameState, Player } from "./types"
+import type { IGlobalState, IPlayer } from "./types"
 import Vec2 from "./Vec2"
 import StageLoader from "./helpers/StageLoader"
 import { prefabsMap } from "./helpers/items"
@@ -8,257 +8,254 @@ import { TURN_PLAYERS } from "./helpers/game"
 import { setBaseStat } from "./helpers/common"
 import { femaleHurtSound, maleHurtSound } from "./helpers/audio"
 
-const gandalf: Player = {
-  isAlive: true,
-  sprite: "male wizard",
-  type: "player",
-  name: "Gandalf",
-  position: new Vec2(3, 3),
-  offset: new Vec2(0, 0),
-  sounds: {
-    hurt: femaleHurtSound,
-    death: femaleHurtSound,
-  },
-  baseStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  totalStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  currentStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  traits: [],
-  items: [],
-}
+// const gandalf: Player = {
+//   isAlive: true,
+//   sprite: "male wizard",
+//   type: "player",
+//   name: "Gandalf",
+//   position: new Vec2(3, 3),
+//   offset: new Vec2(0, 0),
+//   sounds: {
+//     hurt: femaleHurtSound,
+//     death: femaleHurtSound,
+//   },
+//   baseStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   totalStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   currentStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   traits: [],
+//   items: [],
+// }
 
-const ladelbar: Player = {
-  isAlive: true,
-  sprite: "bandit",
-  type: "player",
-  name: "Ladelbar",
-  position: new Vec2(2, 2),
-  offset: new Vec2(0, 0),
-  sounds: {
-    hurt: femaleHurtSound,
-    death: femaleHurtSound,
-  },
-  baseStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  totalStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  currentStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  traits: [],
-  items: [
-    {
-      name: "Colgante etéreo",
-      desc: "",
-      sprite: "crystal pendant",
-      metadata: {
-        ethereal: true,
-      },
-    },
-  ],
-}
+// const ladelbar: Player = {
+//   isAlive: true,
+//   sprite: "bandit",
+//   type: "player",
+//   name: "Ladelbar",
+//   position: new Vec2(2, 2),
+//   offset: new Vec2(0, 0),
+//   sounds: {
+//     hurt: femaleHurtSound,
+//     death: femaleHurtSound,
+//   },
+//   baseStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   totalStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   currentStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   traits: [],
+//   items: [
+//     {
+//       name: "Colgante etéreo",
+//       desc: "",
+//       sprite: "crystal pendant",
+//       metadata: {
+//         ethereal: true,
+//       },
+//     },
+//   ],
+// }
 
-const krom: Player = {
-  isAlive: true,
-  sprite: "farmer (pitchfork)",
-  type: "player",
-  name: "Krom",
-  position: new Vec2(3, 2),
-  offset: new Vec2(0, 0),
-  sounds: {
-    hurt: maleHurtSound,
-    death: maleHurtSound,
-  },
-  baseStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  totalStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  currentStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
+// const krom: Player = {
+//   isAlive: true,
+//   sprite: "farmer (pitchfork)",
+//   type: "player",
+//   name: "Krom",
+//   position: new Vec2(3, 2),
+//   offset: new Vec2(0, 0),
+//   sounds: {
+//     hurt: maleHurtSound,
+//     death: maleHurtSound,
+//   },
+//   baseStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   totalStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   currentStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
 
-  traits: [],
-  items: [],
-}
+//   traits: [],
+//   items: [],
+// }
 
-const trancos: Player = {
-  isAlive: true,
-  sprite: "male fighter",
-  type: "player",
-  name: "Trancos",
-  position: new Vec2(5, 3),
-  offset: new Vec2(0, 0),
-  traits: [],
-  items: [],
-  sounds: {
-    hurt: maleHurtSound,
-    death: maleHurtSound,
-  },
-  baseStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  totalStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  currentStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-}
+// const trancos: Player = {
+//   isAlive: true,
+//   sprite: "male fighter",
+//   type: "player",
+//   name: "Trancos",
+//   position: new Vec2(5, 3),
+//   offset: new Vec2(0, 0),
+//   traits: [],
+//   items: [],
+//   sounds: {
+//     hurt: maleHurtSound,
+//     death: maleHurtSound,
+//   },
+//   baseStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   totalStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   currentStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+// }
 
-const legolas: Player = {
-  isAlive: true,
-  sprite: "ranger",
-  type: "player",
-  name: "Legolas",
-  position: new Vec2(4, 3),
-  offset: new Vec2(0, 0),
-  traits: [],
-  items: [],
-  sounds: {
-    hurt: maleHurtSound,
-    death: maleHurtSound,
-  },
-  baseStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  totalStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-  currentStats: {
-    attack: 0,
-    aim: 0,
-    magic: 0,
-    defence: 0,
-    movement: 0,
-    actions: 0,
-    health: 0,
-  },
-}
+// const legolas: Player = {
+//   isAlive: true,
+//   sprite: "ranger",
+//   type: "player",
+//   name: "Legolas",
+//   position: new Vec2(4, 3),
+//   offset: new Vec2(0, 0),
+//   traits: [],
+//   items: [],
+//   sounds: {
+//     hurt: maleHurtSound,
+//     death: maleHurtSound,
+//   },
+//   baseStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   totalStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+//   currentStats: {
+//     attack: 0,
+//     aim: 0,
+//     magic: 0,
+//     defence: 0,
+//     movement: 0,
+//     actions: 0,
+//     health: 0,
+//   },
+// }
 
-setBaseStat("actions", 2, trancos, legolas, ladelbar, krom, gandalf)
-setBaseStat("movement", 8, trancos, legolas, ladelbar, krom, gandalf)
+// setBaseStat("actions", 2, trancos, legolas, ladelbar, krom, gandalf)
+// setBaseStat("movement", 8, trancos, legolas, ladelbar, krom, gandalf)
 
-setBaseStat("attack", 2, trancos, legolas, ladelbar, krom)
-setBaseStat("defence", 2, trancos, legolas, ladelbar, krom)
-setBaseStat("attack", 1, gandalf)
-setBaseStat("defence", 1, gandalf)
+// setBaseStat("attack", 2, trancos, legolas, ladelbar, krom)
+// setBaseStat("defence", 2, trancos, legolas, ladelbar, krom)
+// setBaseStat("attack", 1, gandalf)
+// setBaseStat("defence", 1, gandalf)
 
-setBaseStat("aim", 2, legolas, ladelbar)
-setBaseStat("magic", 2, trancos, legolas, krom, gandalf)
-setBaseStat("health", 8, trancos, legolas, ladelbar, krom, gandalf)
+// setBaseStat("aim", 2, legolas, ladelbar)
+// setBaseStat("magic", 2, trancos, legolas, krom, gandalf)
+// setBaseStat("health", 8, trancos, legolas, ladelbar, krom, gandalf)
 
 export const debug = $state({
   showCoords: false,
   showHealth: false,
 })
 
-export const gameState = $state<GameState>({
+export const gameState = $state<IGlobalState>({
   ignoreInput: false,
   stage: null,
   hurts: [],
   fog: [],
   playerIndex: 0,
-  currentPlayer: ladelbar,
-  centerActor: ladelbar,
-  initiativeRequired: 0,
   openInventory: null,
-  cursorPosition: ladelbar.position,
+  cursorPosition: new Vec2(0, 0),
   cursorPath: [],
   freezePath: false,
-  players: [gandalf, legolas, trancos, ladelbar, krom],
+  players: [],
   monsters: [],
   turn: TURN_PLAYERS,
 })

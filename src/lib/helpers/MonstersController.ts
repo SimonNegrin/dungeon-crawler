@@ -7,14 +7,14 @@ import {
   waitTime,
 } from "./common"
 import { gameState } from "../state.svelte"
-import type { AttackPlan, Monster, Player } from "../types"
+import type { AttackPlan, IMonster, IPlayer } from "../types"
 import Vec2 from "../Vec2"
 import { walkSound } from "./audio"
 import { getRectAdjacentActors, getCharacterPathTo } from "./stage"
 import { combat, physicAttack } from "./combat"
 
 export default class MonstersController {
-  private monstersPool: Monster[] = []
+  private monstersPool: IMonster[] = []
   private visionSystem = createVisionSystem()
 
   async execute(): Promise<void> {
@@ -45,7 +45,7 @@ export default class MonstersController {
     }
   }
 
-  private monsterCanViewPlayer(monster: Monster, player: Player): boolean {
+  private monsterCanViewPlayer(monster: IMonster, player: IPlayer): boolean {
     // The distance must be lower or equal than VIEW_DISTANCE
     if (monster.position.distanceTo(player.position) > VIEW_DISTANCE) {
       return false
@@ -66,7 +66,7 @@ export default class MonstersController {
   }
 
   private async movePhase(): Promise<void> {
-    let monster: Monster | undefined
+    let monster: IMonster | undefined
     while ((monster = this.monstersPool.shift())) {
       for (const player of gameState.players) {
         if (!player.isAlive) {
@@ -115,7 +115,7 @@ export default class MonstersController {
   private selectBestAttackPlan(attackPlans: AttackPlan[]): AttackPlan {
     const healthFactor = 1.5
     const stepsFactor = 1
-    const playersInPath = new Map<Monster, number>()
+    const playersInPath = new Map<IMonster, number>()
 
     // Count how many players will find the monster in his way
     // So the more players in the way will increate the path cost
@@ -133,13 +133,13 @@ export default class MonstersController {
         inPath += adjacentPlayers.length
       })
 
-      const monster = attackPlan.attacker as Monster
+      const monster = attackPlan.attacker as IMonster
       playersInPath.set(monster, inPath)
     })
 
     const [attackPlan] = attackPlans.toSorted((a, b) => {
-      const inPathA = playersInPath.get(a.attacker as Monster)!
-      const inPathB = playersInPath.get(b.attacker as Monster)!
+      const inPathA = playersInPath.get(a.attacker as IMonster)!
+      const inPathB = playersInPath.get(b.attacker as IMonster)!
       const healthCostA = a.target.currentStats.health * healthFactor
       const healthCostB = b.target.currentStats.health * healthFactor
       const pathCostA = a.path.length * stepsFactor
@@ -152,8 +152,8 @@ export default class MonstersController {
   }
 
   private async getAttackPlanForPlayer(
-    monster: Monster,
-    player: Player,
+    monster: IMonster,
+    player: IPlayer,
   ): Promise<AttackPlan | undefined> {
     if (!player.isAlive) {
       return
@@ -167,15 +167,15 @@ export default class MonstersController {
   }
 
   private async executeAttackPlan(attackPlan: AttackPlan): Promise<void> {
-    const monster = attackPlan.attacker as Monster
-    const player = attackPlan.target as Player
+    const monster = attackPlan.attacker as IMonster
+    const player = attackPlan.target as IPlayer
 
     if (gameState.centerActor !== player) {
       gameState.centerActor = player
       await waitTime(200)
     }
 
-    await this.moveAlongPath(monster as Monster, attackPlan.path)
+    await this.moveAlongPath(monster as IMonster, attackPlan.path)
 
     while (
       monster.isAlive &&
@@ -187,14 +187,17 @@ export default class MonstersController {
     }
   }
 
-  private async attackPlayer(monster: Monster, player: Player): Promise<void> {
+  private async attackPlayer(
+    monster: IMonster,
+    player: IPlayer,
+  ): Promise<void> {
     await combat(monster, player)
     await waitTime(200)
   }
 
   // Move the monster along the path until the end is reached
   // or the monster has enough initiative
-  private async moveAlongPath(monster: Monster, path: Vec2[]): Promise<void> {
+  private async moveAlongPath(monster: IMonster, path: Vec2[]): Promise<void> {
     for (const step of path) {
       if (monster.currentStats.movement <= 0) {
         break

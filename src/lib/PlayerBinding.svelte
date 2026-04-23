@@ -1,24 +1,18 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte"
+  import { onMount } from "svelte"
   import Qr from "./Qr.svelte"
   import SignalingConnection from "./helpers/SignalingConnection"
-  import {
-    createStateMachine,
-    ICE_SERVERS,
-    PKT_PLAYER_CONFIG,
-  } from "./helpers/common"
-  import type { PlayerConnection, IPlayerPreset } from "./types"
-  import SpriteRogue from "./sprites/SpriteRogue.svelte"
-  import PlayerPreset from "./PlayerPreset.svelte"
+  import { createStateMachine, ICE_SERVERS } from "./helpers/common"
+  import type { IPlayerConnection } from "./types"
+  import { createPlayerActor } from "./helpers/players"
+  import { setupPlayerConnection } from "./helpers/connections"
 
   let {
     playerId,
     onconnection,
-    ondisconnect,
   }: {
     playerId: string
-    onconnection: (connection: PlayerConnection) => void
-    ondisconnect: (playerId: string) => void
+    onconnection: (player: IPlayerConnection) => void
   } = $props()
 
   const componentState = createStateMachine("CREATING_ROOM", {
@@ -32,15 +26,9 @@
   let dataChannel: RTCDataChannel
   let signalingConnection: SignalingConnection
   let gamepadUrl = $state("")
-  let preset: IPlayerPreset | undefined = $state()
+  let connection: Partial<IPlayerConnection> = $state({})
 
-  onMount(() => {
-    joinRoom()
-  })
-
-  onDestroy(() => {
-    dataChannel?.removeEventListener("message", onMessage)
-  })
+  onMount(joinRoom)
 
   async function joinRoom(): Promise<void> {
     // const roomId = crypto.randomUUID()
@@ -64,24 +52,18 @@
     componentState.set("WAITING_PLAYER")
   }
 
-  function clearConnection(): void {
-    peerConnection?.close()
-    signalingConnection?.disconnect()
-    dataChannel?.close()
-  }
-
   function onPeerjoin(data: any): void {
     initSignaling()
   }
 
   async function onAnswer(data: any): Promise<void> {
     console.log("answer", data)
-    await peerConnection.setRemoteDescription(data)
+    await peerConnection?.setRemoteDescription(data)
   }
 
   async function onCandidate(data: any): Promise<void> {
     console.log("candidate", data)
-    await peerConnection.addIceCandidate(data)
+    await peerConnection?.addIceCandidate(data)
   }
 
   function onDisconnect(data: any): void {
@@ -103,54 +85,26 @@
     })
 
     dataChannel = peerConnection.createDataChannel("controlDatachannel")
-
-    dataChannel.addEventListener("message", onMessage)
-
-    dataChannel.addEventListener(
-      "open",
-      () => {
-        console.log("dataChannel open")
-        onconnection({
-          playerId,
-          connection: peerConnection,
-          channel: dataChannel,
-        })
-        $componentState = "CONNECTED"
-      },
-      { once: true },
-    )
-
-    dataChannel.addEventListener(
-      "close",
-      () => {
-        console.log("dataChannel close")
-        ondisconnect(playerId)
-      },
-      { once: true },
-    )
-
-    // const gamepadListener = listenGamepad(dataChannel)
-    // unsubscribeGamepad = gamepadListener.subscribe((gamepadStatus) => {
-    //   if (gamepadStatus.start) {
-    //     oncontinue()
-    //   }
-    // })
+    dataChannel.addEventListener("open", onOpen, { once: true })
 
     const offer = await peerConnection.createOffer()
     await peerConnection.setLocalDescription(offer)
     signalingConnection.sendOffer(offer)
   }
 
-  function onMessage(event: MessageEvent): void {
-    const data = new Uint8Array(event.data)
+  function onOpen(): void {
+    console.log("dataChannel open")
 
-    if (data[0] !== PKT_PLAYER_CONFIG) {
-      return
-    }
+    // Populate connection object
+    connection.playerId = playerId
+    connection.isReady = false
+    connection.actor = createPlayerActor(playerId, "dwarf", "male")
+    connection.peer = peerConnection
+    connection.channel = dataChannel
 
-    const decoder = new TextDecoder()
-    const json = decoder.decode(data.slice(1))
-    preset = JSON.parse(json)
+    setupPlayerConnection(connection as IPlayerConnection)
+    onconnection(connection as IPlayerConnection)
+    $componentState = "CONNECTED"
   }
 </script>
 
@@ -162,11 +116,7 @@
   {:else if $componentState === "SIGNALING"}
     <div>Conectando...</div>
   {:else if $componentState === "CONNECTED"}
-    {#if preset}
-      <PlayerPreset {preset} />
-    {:else}
-      <div>Waiting preset...</div>
-    {/if}
+    <div>Conectado</div>
   {/if}
 </div>
 

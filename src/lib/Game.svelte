@@ -27,7 +27,7 @@
         <div class="screen-container">
           <GameMap />
 
-          {#if gameState.openInventory}
+          {#if gameState.openInventory && gameState.currentPlayer}
             <InventoryExchange
               leftInventory={gameState.openInventory}
               rightInventory={gameState.currentPlayer}

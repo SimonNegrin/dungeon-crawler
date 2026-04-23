@@ -2,7 +2,8 @@
   import { onMount } from "svelte"
   import CrtScreen from "./CrtScreen.svelte"
   import PlayerBinding from "./PlayerBinding.svelte"
-  import type { PlayerConnection } from "./types"
+  import PlayerPreview from "./PlayerPreview.svelte"
+  import type { IPlayerConnection } from "./types"
 
   let {
     onclick,
@@ -10,30 +11,16 @@
     onclick: () => void
   } = $props()
 
-  let playerIds: string[] = $state([crypto.randomUUID()])
-  let connections: PlayerConnection[] = $state([])
+  let playerId: string = $state(crypto.randomUUID())
+  let players: IPlayerConnection[] = $state([])
   let wrapperWidth: number = $state(0)
   let landingScale = $derived(wrapperWidth / 736)
 
   onMount(() => {})
 
-  function onconnection(connection: PlayerConnection): void {
-    // connection.channel.addEventListener("message", (event) => {
-    //   console.log(event.data)
-    // })
-
-    connections.push(connection)
-    playerIds.push(crypto.randomUUID())
-  }
-
-  function ondisconnect(playerId: string): void {
-    connections = connections.filter((conn) => {
-      return conn.playerId !== playerId
-    })
-    playerIds = playerIds.filter((playerId) => {
-      return connections.some((conn) => conn.playerId === playerId)
-    })
-    playerIds.push(crypto.randomUUID())
+  function onconnection(player: IPlayerConnection): void {
+    players.push(player)
+    playerId = crypto.randomUUID()
   }
 </script>
 
@@ -51,9 +38,15 @@
         <div class="title">Six Rogues</div>
 
         <div class="players">
-          {#each playerIds as playerId (playerId)}
-            <PlayerBinding {playerId} {onconnection} {ondisconnect} />
+          {#each players as player (player.actor.id)}
+            <PlayerPreview {player} />
           {/each}
+
+          {#if playerId}
+            {#key playerId}
+              <PlayerBinding {playerId} {onconnection} />
+            {/key}
+          {/if}
         </div>
       </div>
     </div>

@@ -28,22 +28,21 @@ export interface Hurt {
   position: Vec2
 }
 
-interface GameState {
+export interface IGlobalState {
   ignoreInput: boolean
   stage: Stage | null
   hurts: Hurt[]
   fog: Vec2[]
   turn: Turn
   playerIndex: number
-  currentPlayer: Player
-  centerActor: Actor
-  initiativeRequired: number
+  currentPlayer?: IPlayer
+  centerActor?: Actor
   openInventory: Inventory | null
   freezePath: boolean
   cursorPosition: Vec2
   cursorPath: Vec2[]
-  players: Player[]
-  monsters: Monster[]
+  players: IPlayer[]
+  monsters: IMonster[]
 }
 
 export interface CharacterStats {
@@ -63,7 +62,8 @@ export interface CharacterSounds {
   death: SoundFn
 }
 
-export interface Character {
+export interface ICharacter {
+  id: string
   isAlive: boolean
   name: string
   position: Vec2
@@ -76,19 +76,19 @@ export interface Character {
   items: Item[]
 }
 
-export interface Player extends Character {
+export interface IPlayer extends ICharacter {
   type: "player"
   sprite: RogueName
 }
 
-export interface Monster extends Character {
+export interface IMonster extends ICharacter {
   type: "monster"
   sprite: MonsterSpriteName
 }
 
 export type ActorType = "player" | "monster"
 
-export type Actor = Player | Monster
+export type Actor = IPlayer | IMonster
 
 export type StatType =
   | "attack"
@@ -110,7 +110,7 @@ export interface EffectHandlers {
   onUse?: EffectHandler
 }
 
-export type EffectHandler = (character: Character, item: Item) => Promise<void>
+export type EffectHandler = (character: ICharacter, item: Item) => Promise<void>
 
 export interface ItemMetadata {
   uses?: number // para consumibles
@@ -225,16 +225,21 @@ export interface IProjectileConfig {
   type: ProjectileType
 }
 
-export interface PlayerConnection {
+export interface IPlayerConnection {
   playerId: string
-  connection: RTCPeerConnection
+  peer: RTCPeerConnection
   channel: RTCDataChannel
+  isWaiting: boolean
+  isReady: boolean
+  actor: IPlayer
 }
+
+export type PlayerGenre = "male" | "female"
 
 export interface IPlayerPreset {
   sprite: RogueName
   name: string
-  genre: "male" | "female"
+  genre: PlayerGenre
   points: number
   movement: number
   actions: number

@@ -1,5 +1,5 @@
 import { getMonsterSpriteNames } from "../sprites/SpriteMonster.svelte"
-import type { Monster, Layer, GameState } from "../types"
+import type { IMonster, Layer, IGlobalState } from "../types"
 import Vec2 from "../Vec2"
 import { monsterHurtRandomSound } from "./audio"
 import {
@@ -12,10 +12,10 @@ import {
 const LAYERS_TO_REMOVE = [LAYER_WALLS, "doors"]
 const MONSTERS_DENSITY = 0.1
 
-export function populateMonsters(gameState: GameState): Monster[] {
+export function populateMonsters(gameState: IGlobalState): IMonster[] {
   let validPositions = getValidPositions(gameState)
   let numMonsters = Math.floor(validPositions.length * MONSTERS_DENSITY)
-  const monsters: Monster[] = []
+  const monsters: IMonster[] = []
 
   while (numMonsters-- && validPositions.length) {
     const index = Math.floor(validPositions.length * Math.random())
@@ -27,10 +27,11 @@ export function populateMonsters(gameState: GameState): Monster[] {
   return monsters
 }
 
-function createMonster(pos: Vec2): Monster {
+function createMonster(pos: Vec2): IMonster {
   const monsterSpriteNames = getMonsterSpriteNames()
   const monsterSprite = getRandomFromArray(monsterSpriteNames)
-  const monster: Monster = {
+  const monster: IMonster = {
+    id: crypto.randomUUID(),
     isAlive: true,
     type: "monster",
     name: monsterSprite,
@@ -83,7 +84,7 @@ function createMonster(pos: Vec2): Monster {
   return monster
 }
 
-function getValidPositions(gameState: GameState): Vec2[] {
+function getValidPositions(gameState: IGlobalState): Vec2[] {
   if (!gameState.stage) {
     return []
   }
