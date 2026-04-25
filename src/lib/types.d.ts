@@ -248,3 +248,18 @@ export interface IPlayerPreset {
   aim: number
   magic: number
 }
+
+export interface IJoystickState {
+  top: boolean
+  right: boolean
+  bottom: boolean
+  left: boolean
+}
+
+export interface IGamepadState {
+  joystick: IJoystickState
+  abtn: boolean
+  bbtn: boolean
+  cbtn: boolean
+  dbtn: boolean
+}

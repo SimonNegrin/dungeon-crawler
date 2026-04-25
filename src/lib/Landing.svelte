@@ -69,7 +69,7 @@
     align-items: center;
     height: 50%;
     text-align: center;
-    color: #fff;
+    color: #ddd;
     font-size: 50px;
     text-shadow:
       -2px 0 0 rgb(226, 62, 251),

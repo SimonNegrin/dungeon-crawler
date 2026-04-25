@@ -66,6 +66,7 @@
     align-items: center;
     gap: 6px;
     padding: 4px;
+    color: #ddd;
   }
   .stats {
     display: grid;
@@ -81,6 +82,7 @@
     padding: 0 4px;
     background-color: #444;
     border: 2px inset #333;
+    color: #ddd;
     height: 20px;
 
     & .value {

@@ -15,6 +15,7 @@ import {
   TIME_AFTER_ATTACK,
   SHOOT_DISTANCE,
   createVisionSystem,
+  PLAYER_DEFAULT_HEATH,
 } from "./common"
 import { gameState } from "../state.svelte"
 import { clearFogAt } from "./fog"
@@ -30,6 +31,9 @@ import Vec2 from "../Vec2"
 import type { RogueName } from "../sprites/SpriteRogue.svelte"
 
 export async function currentPlayerAction(): Promise<void> {
+  if (gameState.ignoreInput) {
+    return
+  }
   gameState.ignoreInput = true
   await executePlayerAction()
   gameState.ignoreInput = false
@@ -354,7 +358,7 @@ export function createPlayerActor(
     defence: 0,
     movement: 0,
     actions: 0,
-    health: 0,
+    health: PLAYER_DEFAULT_HEATH,
   }
   return {
     id: playerId,
