@@ -7,6 +7,7 @@ import {
   moveCursorRight,
   moveCursorUp,
 } from "./cursor"
+import { nextPlayer } from "./game"
 import {
   attackMonster,
   currentPlayerAction,
@@ -24,6 +25,7 @@ export const PKT_PLAYER_READY = 5
 export const PKT_GAME_START = 6
 export const PKT_ENABLE_TURN = 7
 export const PKT_DISABLE_TURN = 8
+export const PKT_NEXT_PLAYER = 9
 
 export function setupPlayerConnection(conn: IPlayerConnection): void {
   conn.channel.addEventListener("message", (event: MessageEvent) => {
@@ -33,6 +35,7 @@ export function setupPlayerConnection(conn: IPlayerConnection): void {
       [PKT_PLAYER_ACCEPT]: createPlayerAcceptHandler(conn),
       [PKT_PLAYER_READY]: createPlayerReadyHandler(conn),
       [PKT_GAMEPAD_STATE]: createGamepadStateHandler(conn),
+      [PKT_NEXT_PLAYER]: createNextTurnHandler(conn),
     }
     const pktType = pkt[0]
     if (!handlers[pktType]) {
@@ -107,6 +110,20 @@ function createGamepadStateHandler(conn: IPlayerConnection): PktHandler {
     if (gamepadState.bbtn) attackMonster()
     if (gamepadState.cbtn) currentPlayerAction()
     if (gamepadState.dbtn) shootMonster()
+  }
+}
+
+function createNextTurnHandler(_: IPlayerConnection): PktHandler {
+  return async () => {
+    // Disable current player turn
+    let pkt = new Uint8Array([PKT_DISABLE_TURN])
+    gameState.currentPlayer!.channel.send(pkt.buffer)
+
+    await nextPlayer()
+
+    // Enable current player turn
+    pkt = new Uint8Array([PKT_ENABLE_TURN])
+    gameState.currentPlayer!.channel.send(pkt.buffer)
   }
 }
 

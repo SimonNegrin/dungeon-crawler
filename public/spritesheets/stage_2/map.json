@@ -1736,21 +1736,26 @@
         {
           "id": "28",
           "x": 2,
-          "y": 2
+          "y": 2,
+          "attributes": {
+            "type": "spawn"
+          }
         },
         {
           "id": "29",
           "x": 3,
           "y": 2,
           "attributes": {
-            "type": "spawn",
-            "spawnType": "player"
+            "type": "spawn"
           }
         },
         {
           "id": "29",
           "x": 2,
-          "y": 3
+          "y": 3,
+          "attributes": {
+            "type": "spawn"
+          }
         },
         {
           "id": "28",

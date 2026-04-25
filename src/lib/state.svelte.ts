@@ -5,242 +5,12 @@ import { prefabsMap } from "./helpers/items"
 import { populateMonsters } from "./helpers/monsters"
 import { clearFogAt, createFogPositions } from "./helpers/fog"
 import { TURN_PLAYERS } from "./helpers/game"
-
-// const gandalf: Player = {
-//   isAlive: true,
-//   sprite: "male wizard",
-//   type: "player",
-//   name: "Gandalf",
-//   position: new Vec2(3, 3),
-//   offset: new Vec2(0, 0),
-//   sounds: {
-//     hurt: femaleHurtSound,
-//     death: femaleHurtSound,
-//   },
-//   baseStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   totalStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   currentStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   traits: [],
-//   items: [],
-// }
-
-// const ladelbar: Player = {
-//   isAlive: true,
-//   sprite: "bandit",
-//   type: "player",
-//   name: "Ladelbar",
-//   position: new Vec2(2, 2),
-//   offset: new Vec2(0, 0),
-//   sounds: {
-//     hurt: femaleHurtSound,
-//     death: femaleHurtSound,
-//   },
-//   baseStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   totalStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   currentStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   traits: [],
-//   items: [
-//     {
-//       name: "Colgante etéreo",
-//       desc: "",
-//       sprite: "crystal pendant",
-//       metadata: {
-//         ethereal: true,
-//       },
-//     },
-//   ],
-// }
-
-// const krom: Player = {
-//   isAlive: true,
-//   sprite: "farmer (pitchfork)",
-//   type: "player",
-//   name: "Krom",
-//   position: new Vec2(3, 2),
-//   offset: new Vec2(0, 0),
-//   sounds: {
-//     hurt: maleHurtSound,
-//     death: maleHurtSound,
-//   },
-//   baseStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   totalStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   currentStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-
-//   traits: [],
-//   items: [],
-// }
-
-// const trancos: Player = {
-//   isAlive: true,
-//   sprite: "male fighter",
-//   type: "player",
-//   name: "Trancos",
-//   position: new Vec2(5, 3),
-//   offset: new Vec2(0, 0),
-//   traits: [],
-//   items: [],
-//   sounds: {
-//     hurt: maleHurtSound,
-//     death: maleHurtSound,
-//   },
-//   baseStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   totalStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   currentStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-// }
-
-// const legolas: Player = {
-//   isAlive: true,
-//   sprite: "ranger",
-//   type: "player",
-//   name: "Legolas",
-//   position: new Vec2(4, 3),
-//   offset: new Vec2(0, 0),
-//   traits: [],
-//   items: [],
-//   sounds: {
-//     hurt: maleHurtSound,
-//     death: maleHurtSound,
-//   },
-//   baseStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   totalStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-//   currentStats: {
-//     attack: 0,
-//     aim: 0,
-//     magic: 0,
-//     defence: 0,
-//     movement: 0,
-//     actions: 0,
-//     health: 0,
-//   },
-// }
-
-// setBaseStat("actions", 2, trancos, legolas, ladelbar, krom, gandalf)
-// setBaseStat("movement", 8, trancos, legolas, ladelbar, krom, gandalf)
-
-// setBaseStat("attack", 2, trancos, legolas, ladelbar, krom)
-// setBaseStat("defence", 2, trancos, legolas, ladelbar, krom)
-// setBaseStat("attack", 1, gandalf)
-// setBaseStat("defence", 1, gandalf)
-
-// setBaseStat("aim", 2, legolas, ladelbar)
-// setBaseStat("magic", 2, trancos, legolas, krom, gandalf)
-// setBaseStat("health", 8, trancos, legolas, ladelbar, krom, gandalf)
+import { LAYER_FLOOR } from "./helpers/common"
 
 export const debug = $state({
   showCoords: false,
   showHealth: false,
+  bindingGamepad: false,
 })
 
 export const gameState = $state<IGlobalState>({
@@ -263,20 +33,29 @@ export async function loadStage(stageName: string): Promise<void> {
   const stage = await stageLoader.load(stageName)
   const [firstPlayer] = gameState.players
 
-  // Set players spawn positions
-  firstPlayer.actor.position = new Vec2(2, 2)
-
   gameState.stage = stage
   gameState.fog = createFogPositions(stage)
   gameState.playerIndex = 0
   gameState.currentPlayer = firstPlayer
   gameState.centerActor = firstPlayer.actor
-  gameState.cursorPosition = firstPlayer.actor.position
   gameState.monsters = populateMonsters(gameState)
   gameState.turn = TURN_PLAYERS
 
-  // Clear fog at players positions
-  gameState.players.forEach((player) => {
+  const spawnTiles =
+    stage.layers
+      .find((layer) => layer.name === LAYER_FLOOR)
+      ?.tiles.filter((tile) => tile.attributes.type === "spawn") || []
+
+  spawnTiles.sort(() => 0.5 - Math.random())
+
+  gameState.players.forEach((player, i) => {
+    // Set spawn position
+    player.actor.position = spawnTiles[i].position
+
+    // Clear fog at player position
     clearFogAt(player.actor.position)
   })
+
+  // Use first player to set cursor position
+  gameState.cursorPosition = firstPlayer.actor.position
 }

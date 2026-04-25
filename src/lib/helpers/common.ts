@@ -18,6 +18,7 @@ import { getCharacterPathTo, getAliveActorAtPosition } from "./stage"
 import VisionSystem from "./VisionSystem"
 
 export const LAYER_WALLS = "walls"
+export const LAYER_FLOOR = "floor"
 
 export const STEP_TIME = 200
 export const ATTACK_TIME = 200

@@ -47,8 +47,8 @@
 
 <style>
   .preset {
-    width: 100%;
-    height: 100%;
+    width: 120px;
+    height: 120px;
     background-color: #222;
     border: 2px outset #333;
     display: flex;

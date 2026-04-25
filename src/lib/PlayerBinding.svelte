@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { onMount } from "svelte"
+  import { onDestroy, onMount } from "svelte"
   import Qr from "./Qr.svelte"
   import SignalingConnection from "./helpers/SignalingConnection"
   import { createStateMachine, ICE_SERVERS } from "./helpers/common"
   import type { IPlayerConnection } from "./types"
   import { createPlayerActor } from "./helpers/players"
   import { setupPlayerConnection } from "./helpers/connections"
+  import { debug, gameState } from "./state.svelte"
 
   let {
     playerId,
@@ -29,10 +30,10 @@
   let connection: Partial<IPlayerConnection> = $state({})
 
   onMount(joinRoom)
+  onDestroy(() => signalingConnection?.disconnect())
 
   async function joinRoom(): Promise<void> {
-    // const roomId = crypto.randomUUID()
-    const roomId = "04355560-13c7-4378-917d-f46e84fc876b"
+    const roomId = crypto.randomUUID()
     signalingConnection = new SignalingConnection(
       import.meta.env.VITE_SIGNALING_SERVER,
     )
@@ -52,26 +53,32 @@
     componentState.set("WAITING_PLAYER")
   }
 
-  function onPeerjoin(data: any): void {
+  function onPeerjoin(): void {
     initSignaling()
   }
 
+  function log(...msg: string[]): void {
+    if (debug.bindingGamepad) {
+      console.log(...msg)
+    }
+  }
+
   async function onAnswer(data: any): Promise<void> {
-    console.log("answer", data)
+    log("answer", data)
     await peerConnection?.setRemoteDescription(data)
   }
 
   async function onCandidate(data: any): Promise<void> {
-    console.log("candidate", data)
+    log("candidate", data)
     await peerConnection?.addIceCandidate(data)
   }
 
-  function onDisconnect(data: any): void {
-    console.log("disconnect", data)
+  function onDisconnect(): void {
+    log("disconnect signaling")
   }
 
   async function initSignaling(): Promise<void> {
-    console.log("initSignaling")
+    log("initSignaling")
     $componentState = "SIGNALING"
 
     peerConnection = new RTCPeerConnection({
@@ -93,7 +100,7 @@
   }
 
   function onOpen(): void {
-    console.log("dataChannel open")
+    log("dataChannel open")
 
     // Populate connection object
     connection.playerId = playerId
@@ -102,9 +109,12 @@
     connection.peer = peerConnection
     connection.channel = dataChannel
 
-    setupPlayerConnection(connection as IPlayerConnection)
-    onconnection(connection as IPlayerConnection)
+    const conn = connection as IPlayerConnection
+
+    setupPlayerConnection(conn)
+    gameState.players.push(conn)
     $componentState = "CONNECTED"
+    onconnection(conn)
   }
 </script>
 

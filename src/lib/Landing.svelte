@@ -2,15 +2,13 @@
   import CrtScreen from "./CrtScreen.svelte"
   import PlayerBinding from "./PlayerBinding.svelte"
   import PlayerPreview from "./PlayerPreview.svelte"
-  import type { IPlayerConnection } from "./types"
   import { gameState } from "./state.svelte"
 
   let playerId: string = $state(crypto.randomUUID())
   let wrapperWidth: number = $state(0)
   let landingScale = $derived(wrapperWidth / 736)
 
-  function onconnection(player: IPlayerConnection): void {
-    gameState.players.push(player)
+  function onconnection(): void {
     playerId = crypto.randomUUID()
   }
 </script>
