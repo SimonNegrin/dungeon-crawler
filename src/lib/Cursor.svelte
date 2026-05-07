@@ -42,11 +42,11 @@
     height: var(--tile-size);
     left: calc(var(--tile-size) * var(--x));
     top: calc(var(--tile-size) * var(--y));
-    border: 2px dotted #1dff09;
+    border: 2px dotted var(--color-yellow-green);
     transition-duration: 100ms;
 
     &.invalid-position {
-      border-color: red;
+      border-color: var(--color-tomato-red);
     }
   }
 </style>

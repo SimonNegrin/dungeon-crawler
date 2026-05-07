@@ -9,8 +9,50 @@
 }
 
 :root {
-  --main-background-color: rgb(22, 22, 22);
   --font-family-1: Alagard;
+
+  /* Escala de Grises / Neutros */
+  --color-black: #160d13;
+  --color-dark-gray: #5f575e;
+  --color-light-gray: #a69998;
+  --color-mild-yellow-white: #f6f2c3;
+
+  /* Verdes Azulados (Agua e Hielo) */
+  --color-extra-dark-green: #2f3d3a;
+  --color-dark-green-blue: #4d6660;
+  --color-light-green-blue: #8eb89e;
+
+  /* Colores Oscuros (Sombras y Complementos) */
+  --color-extra-dark-blue: #31293e;
+  --color-extra-dark-purple: #432142;
+
+  /* Rojos y Rosados */
+  --color-muted-pink: #9b4c63;
+  --color-tomato-red: #ad4030;
+  --color-peach-orange: #e79b7c;
+
+  /* Tierras (Roca, Piedra, Madera) */
+  --color-dark-maroon: #56212a;
+  --color-red-brown: #904b41;
+  --color-sandy-brown: #d1935f;
+
+  /* Amarillos y Verdes */
+  --color-gold-yellow: #ef9e4e;
+  --color-dark-yellow-green: #688145;
+  --color-yellow-green: #95b666;
+
+  /* Aliases funcionales */
+  --main-background-color: var(--color-black);
+  --color-success: var(--color-yellow-green);
+  --color-danger: var(--color-tomato-red);
+  --color-warning: var(--color-gold-yellow);
+  --color-info: var(--color-light-green-blue);
+  --color-accent: var(--color-muted-pink);
+  --color-surface: var(--color-dark-gray);
+  --color-surface-alt: var(--color-extra-dark-blue);
+  --color-text-primary: var(--color-mild-yellow-white);
+  --color-text-secondary: var(--color-light-gray);
+  --color-border: var(--color-dark-gray);
 
   font-family:
     var(--font-family-1),

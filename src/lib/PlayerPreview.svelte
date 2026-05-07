@@ -58,20 +58,20 @@
   .preset {
     width: 120px;
     height: 144px;
-    background-color: #222;
-    border: 2px outset #333;
+    background-color: var(--color-extra-dark-blue);
+    border: 2px outset var(--color-dark-gray);
     display: flex;
     flex-direction: column;
     justify-content: center;
 
     &.is-waiting {
-      background-color: #f67009;
-      border-color: #fc882f;
+      background-color: var(--color-gold-yellow);
+      border-color: var(--color-sandy-brown);
     }
 
     &.ready {
-      background-color: #26c51b;
-      border-color: #60e956;
+      background-color: var(--color-dark-yellow-green);
+      border-color: var(--color-yellow-green);
     }
   }
   .header {
@@ -80,7 +80,7 @@
     align-items: center;
     gap: 6px;
     padding: 4px;
-    color: #ddd;
+    color: var(--color-text-primary);
   }
   .stats {
     display: grid;
@@ -93,10 +93,9 @@
     display: flex;
     justify-content: start;
     align-items: center;
-    /* padding: 0 4px; */
-    background-color: #444;
-    border: 2px inset #333;
-    color: #ddd;
+    background-color: var(--color-extra-dark-purple);
+    border: 2px inset var(--color-dark-gray);
+    color: var(--color-text-primary);
     height: 20px;
 
     & .value {

@@ -2,6 +2,6 @@
 
 <style>
   .loading {
-    color: white;
+    color: var(--color-text-primary);
   }
 </style>

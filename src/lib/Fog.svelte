@@ -62,14 +62,14 @@
     position: absolute;
     width: var(--tile-size);
     height: var(--tile-size);
-    background-color: #000000;
+    background-color: var(--color-black);
     opacity: 1;
   }
   .star {
     position: absolute;
     width: 2px;
     height: 2px;
-    background-color: #fff;
+    background-color: var(--color-mild-yellow-white);
     transform: translate(-50%, -50%);
 
     &.blink {

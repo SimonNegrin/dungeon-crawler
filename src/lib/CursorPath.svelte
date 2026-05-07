@@ -68,12 +68,12 @@
       display: block;
       width: var(--sign-size);
       height: var(--sign-size);
-      background-color: #1dff09;
+      background-color: var(--color-yellow-green);
       border-radius: 100%;
     }
 
     &.too-far::before {
-      background-color: red;
+      background-color: var(--color-tomato-red);
     }
   }
 </style>

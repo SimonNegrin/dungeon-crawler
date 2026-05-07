@@ -96,8 +96,8 @@
 
 <style>
   .inventory-exchange {
-    --color-font: #f5e9bc;
-    --color-back: #a78a20;
+    --color-font: var(--color-mild-yellow-white);
+    --color-back: var(--color-gold-yellow);
 
     position: absolute;
     z-index: 300;

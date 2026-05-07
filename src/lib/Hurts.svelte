@@ -32,8 +32,8 @@
   }
 
   .damage {
-    --shadow-color: #fff;
-    color: red;
+    --shadow-color: var(--color-mild-yellow-white);
+    color: var(--color-tomato-red);
     text-shadow:
       1px 1px 0 var(--shadow-color),
       -1px 1px 0 var(--shadow-color),

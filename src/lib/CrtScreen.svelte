@@ -49,9 +49,9 @@
         ),
         linear-gradient(
           90deg,
-          rgba(255, 0, 0, 0.2),
-          rgba(0, 255, 0, 0.05),
-          rgba(0, 0, 255, 0.2)
+          color-mix(in srgb, var(--color-tomato-red) 20%, transparent),
+          color-mix(in srgb, var(--color-yellow-green) 5%, transparent),
+          color-mix(in srgb, var(--color-dark-green-blue) 20%, transparent)
         );
       background-size:
         100% 2px,

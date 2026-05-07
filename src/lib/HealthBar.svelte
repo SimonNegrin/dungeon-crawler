@@ -27,7 +27,7 @@
     border: 2px inset var(--border-color);
   }
   .health {
-    background-color: red;
+    background-color: var(--color-tomato-red);
     height: 4px;
     transition-duration: 200ms;
   }

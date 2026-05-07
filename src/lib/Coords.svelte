@@ -32,7 +32,7 @@
     left: 0;
     z-index: 2;
     font-size: 6px;
-    color: #fff;
-    background-color: black;
+    color: var(--color-text-primary);
+    background-color: var(--color-black);
   }
 </style>

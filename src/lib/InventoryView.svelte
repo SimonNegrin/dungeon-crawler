@@ -81,7 +81,7 @@
   {#if focus}
     <div class="cursor">
       <div class="pointer" style:left="calc(33% * var(--selected-index) + 13%)">
-        <ArrowUpIcon color1="#a78a20" color2="#f5e9bc" />
+        <ArrowUpIcon color1="var(--color-gold-yellow)" color2="var(--color-mild-yellow-white)" />
       </div>
     </div>
 
@@ -101,7 +101,7 @@
 
 <style>
   .inventory-view {
-    --bg-color: #a78a2047;
+    --bg-color: color-mix(in srgb, var(--color-gold-yellow) 28%, transparent);
 
     aspect-ratio: 100 / 66;
   }

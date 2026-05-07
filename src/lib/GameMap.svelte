@@ -123,7 +123,7 @@
   .game-map-container {
     overflow: hidden;
     position: relative;
-    background-color: rgb(22, 22, 22);
+    background-color: var(--color-black);
   }
   .stage {
     position: absolute;

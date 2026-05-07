@@ -47,6 +47,6 @@
   .arrow {
     width: 18px;
     height: 1px;
-    background-color: #fff;
+    background-color: var(--color-mild-yellow-white);
   }
 </style>

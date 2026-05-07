@@ -40,7 +40,7 @@
   <div class="projectile-magic-fireball">
     <div class="fireball">
       <Animation
-        color="#ffcb53"
+        color="var(--color-gold-yellow)"
         bind:this={animation}
         animation={{
           spritesheet: "/animations/explotions.png",
@@ -87,7 +87,7 @@
     width: 6px;
     height: 6px;
     border-radius: 100%;
-    background-color: #fff;
+    background-color: var(--color-mild-yellow-white);
     opacity: 0;
 
     &.show {

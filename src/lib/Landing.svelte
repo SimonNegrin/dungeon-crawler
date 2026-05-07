@@ -67,11 +67,11 @@
     align-items: center;
     height: 50%;
     text-align: center;
-    color: #ddd;
+    color: var(--color-text-primary);
     font-size: 50px;
     text-shadow:
-      -2px 0 0 rgb(226, 62, 251),
-      2px 0 0 rgb(62, 251, 223);
+      -2px 0 0 var(--color-extra-dark-purple),
+      2px 0 0 var(--color-dark-green-blue);
   }
   .players {
     height: 50%;

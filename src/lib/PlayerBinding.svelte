@@ -140,7 +140,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #fff;
+    color: var(--color-text-primary);
   }
   .qr-wrapper {
     display: flex;
@@ -148,7 +148,7 @@
     align-items: center;
     width: 100%;
     height: 100%;
-    background-color: #222;
-    border: 2px outset #333;
+    background-color: var(--color-extra-dark-blue);
+    border: 2px outset var(--color-dark-gray);
   }
 </style>

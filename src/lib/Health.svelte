@@ -15,6 +15,6 @@
     bottom: calc(100% + 4px);
     left: 50%;
     transform: translateX(-50%);
-    color: #fff;
+    color: var(--color-text-primary);
   }
 </style>
