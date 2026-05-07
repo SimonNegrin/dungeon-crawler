@@ -23,8 +23,8 @@
 <style>
   .health-bar {
     height: 8px;
-    background-color: var(--background-color);
-    border: 2px inset var(--border-color);
+    background-color: var(--color-dark-gray);
+    border: 2px inset var(--color-extra-dark-blue);
   }
   .health {
     background-color: var(--color-tomato-red);
