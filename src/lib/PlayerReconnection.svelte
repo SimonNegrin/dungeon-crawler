@@ -2,18 +2,17 @@
   import { onMount } from "svelte"
   import Qr from "./Qr.svelte"
   import { createStateMachine } from "./helpers/common"
-  import { setupWebRtcConnection } from "./helpers/webrtc"
-  import type { IPlayerConnection } from "./types"
-  import { createPlayerActor } from "./helpers/players"
+  import { setupWebRtcConnection, sendPlayerStateSync } from "./helpers/webrtc"
   import { setupPlayerConnection } from "./helpers/connections"
   import { gameState } from "./state.svelte"
+  import type { IPlayerConnection } from "./types"
 
   let {
-    playerId,
+    player = $bindable(),
     onconnection,
   }: {
-    playerId: string
-    onconnection: (player: IPlayerConnection) => void
+    player: IPlayerConnection
+    onconnection?: (player: IPlayerConnection) => void
   } = $props()
 
   const componentState = createStateMachine("CREATING_ROOM", {
@@ -24,12 +23,11 @@
   })
 
   let gamepadUrl = $state("")
-  let connection: Partial<IPlayerConnection> = $state({})
 
   onMount(async () => {
     componentState.set("WAITING_PLAYER")
 
-    await setupWebRtcConnection(playerId, {
+    await setupWebRtcConnection(player.playerId, {
       onGamepadUrl(url) {
         gamepadUrl = url
         console.log(gamepadUrl)
@@ -38,28 +36,24 @@
         componentState.set("SIGNALING")
       },
       onOpen(peerConnection, dataChannel) {
-        connection.playerId = playerId
-        connection.isReady = false
-        connection.isConnected = true
-        connection.actor = createPlayerActor(playerId, "dwarf", "male")
-        connection.peer = peerConnection
-        connection.channel = dataChannel
+        const p = gameState.players.find((p) => p.playerId === player.playerId)
+        if (p) {
+          p.peer = peerConnection
+          p.channel = dataChannel
+          p.isConnected = true
+        }
 
-        const conn = connection as IPlayerConnection
-
-        setupPlayerConnection(conn)
-        gameState.players.push(conn)
+        setupPlayerConnection(player)
         componentState.set("CONNECTED")
-        onconnection(conn)
+        onconnection?.(player)
+
+        sendPlayerStateSync(player)
       },
       onDisconnected() {
         if (gameState.stage === null) {
-          const conn = connection as IPlayerConnection
-          if (conn.playerId) {
-            gameState.players = gameState.players.filter(
-              (p) => p.playerId !== conn.playerId,
-            )
-          }
+          gameState.players = gameState.players.filter(
+            (p) => p.playerId !== player.playerId,
+          )
         }
         componentState.set("WAITING_PLAYER")
       },
@@ -67,9 +61,9 @@
   })
 </script>
 
-<div class="player-binding">
+<div class="player-reconnection">
   {#if $componentState === "CREATING_ROOM"}
-    <div>Creando sala...</div>
+    <div>Reconectando...</div>
   {:else if $componentState === "WAITING_PLAYER"}
     <div class="qr-wrapper">
       {#if gamepadUrl}
@@ -84,7 +78,7 @@
 </div>
 
 <style>
-  .player-binding {
+  .player-reconnection {
     --size: 120px;
     width: var(--size);
     height: var(--size);

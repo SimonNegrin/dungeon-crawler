@@ -28,6 +28,7 @@ export const PKT_ENABLE_TURN = 7
 export const PKT_DISABLE_TURN = 8
 export const PKT_NEXT_PLAYER = 9
 export const PKT_PLAYER_HEALTH = 10
+export const PKT_PLAYER_STATE_SYNC = 11
 
 export function setupPlayerConnection(conn: IPlayerConnection): void {
   conn.channel.addEventListener("message", (event: MessageEvent) => {
@@ -44,6 +45,10 @@ export function setupPlayerConnection(conn: IPlayerConnection): void {
       console.warn(`Unknown packet number "${pktType}"`)
     }
     handlers[pktType](pkt)
+  })
+
+  conn.channel.addEventListener("close", () => {
+    conn.isConnected = false
   })
 }
 

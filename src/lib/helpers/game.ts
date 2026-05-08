@@ -52,7 +52,7 @@ function nextAlivePlayerIndex(): number {
   ]
 
   const next = priorized.findIndex((player) => {
-    return player.actor.isAlive
+    return player.actor.isAlive && player.isConnected
   })
 
   if (next === -1) {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ActorStats from "./ActorStats.svelte"
+  import PlayerHero from "./PlayerHero.svelte"
   import { gameState } from "./state.svelte"
 
   let {
@@ -14,13 +14,13 @@
 </script>
 
 <div class="players-list">
-  {#each players as player}
+  {#each players as player (player.playerId)}
     <div
       class="player"
       class:left={side === "left"}
       class:right={side === "right"}
     >
-      <ActorStats actor={player.actor} />
+      <PlayerHero {player} />
     </div>
   {/each}
 </div>

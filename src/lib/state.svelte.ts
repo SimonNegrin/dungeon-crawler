@@ -10,7 +10,7 @@ import { LAYER_FLOOR } from "./helpers/common"
 export const debug = $state({
   showCoords: false,
   showHealth: false,
-  bindingGamepad: false,
+  bindingGamepad: true,
 })
 
 export const gameState = $state<IGlobalState>({

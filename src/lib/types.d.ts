@@ -231,6 +231,7 @@ export interface IPlayerConnection {
   channel: RTCDataChannel
   isWaiting: boolean
   isReady: boolean
+  isConnected: boolean
   actor: IPlayer
 }
 

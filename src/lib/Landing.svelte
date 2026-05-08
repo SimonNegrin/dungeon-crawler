@@ -25,7 +25,7 @@
         <div class="title">Six Rogues</div>
 
         <div class="players">
-          {#each gameState.players as player (player.actor.id)}
+          {#each gameState.players as player (player.playerId)}
             <PlayerPreview {player} />
           {/each}
 
