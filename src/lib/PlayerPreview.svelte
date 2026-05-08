@@ -52,14 +52,18 @@
       <SpriteItem name="buckler" scale={spriteScale} />
       <div class="value">{player.actor.currentStats.defence}</div>
     </div>
-    <div class="stat">
-      <SpriteItem name="arrows" scale={spriteScale} />
-      <div class="value">{player.actor.currentStats.aim}</div>
-    </div>
-    <div class="stat">
-      <SpriteItem name="wide-brimmed hat" scale={spriteScale} />
-      <div class="value">{player.actor.currentStats.magic}</div>
-    </div>
+    {#if player.actor.currentStats.aim > 0}
+      <div class="stat">
+        <SpriteItem name="arrows" scale={spriteScale} />
+        <div class="value">{player.actor.currentStats.aim}</div>
+      </div>
+    {/if}
+    {#if player.actor.currentStats.magic > 0}
+      <div class="stat">
+        <SpriteItem name="wide-brimmed hat" scale={spriteScale} />
+        <div class="value">{player.actor.currentStats.magic}</div>
+      </div>
+    {/if}
   </div>
 </div>
 
