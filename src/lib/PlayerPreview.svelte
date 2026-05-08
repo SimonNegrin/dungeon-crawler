@@ -31,35 +31,34 @@
     <div class="name">{player.actor.name}</div>
   </div>
   <div class="stats">
-    <div class="stat">
+    <div class="stat health">
       <SpriteItem name="apple" scale={spriteScale} />
       <div class="value">{player.actor.currentStats.health}</div>
     </div>
-    <div></div>
-    <div class="stat">
+    <div class="stat movement">
       <SpriteItem name="leather boots" scale={spriteScale} />
       <div class="value">{player.actor.currentStats.movement}</div>
     </div>
-    <div class="stat">
+    <div class="stat actions">
       <SpriteItem name="leather gloves" scale={spriteScale} />
       <div class="value">{player.actor.currentStats.actions}</div>
     </div>
-    <div class="stat">
+    <div class="stat attack">
       <SpriteItem name="short sword" scale={spriteScale} />
       <div class="value">{player.actor.currentStats.attack}</div>
     </div>
-    <div class="stat">
+    <div class="stat defence">
       <SpriteItem name="buckler" scale={spriteScale} />
       <div class="value">{player.actor.currentStats.defence}</div>
     </div>
     {#if player.actor.currentStats.aim > 0}
-      <div class="stat">
+      <div class="stat aim">
         <SpriteItem name="arrows" scale={spriteScale} />
         <div class="value">{player.actor.currentStats.aim}</div>
       </div>
     {/if}
     {#if player.actor.currentStats.magic > 0}
-      <div class="stat">
+      <div class="stat magic">
         <SpriteItem name="wide-brimmed hat" scale={spriteScale} />
         <div class="value">{player.actor.currentStats.magic}</div>
       </div>
@@ -117,7 +116,12 @@
   .stats {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 20px);
+    grid-template-areas:
+      "health void"
+      "movement actions"
+      "attack defence"
+      "aim magic";
     gap: 4px;
     padding: 4px;
   }
@@ -132,6 +136,28 @@
 
     & .value {
       font-size: 12px;
+    }
+
+    &.health {
+      grid-area: health;
+    }
+    &.movement {
+      grid-area: movement;
+    }
+    &.actions {
+      grid-area: actions;
+    }
+    &.attack {
+      grid-area: attack;
+    }
+    &.defence {
+      grid-area: defence;
+    }
+    &.aim {
+      grid-area: aim;
+    }
+    &.magic {
+      grid-area: magic;
     }
   }
 </style>
