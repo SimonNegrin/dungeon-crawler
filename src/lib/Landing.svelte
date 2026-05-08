@@ -70,8 +70,8 @@
     color: var(--color-text-primary);
     font-size: 50px;
     text-shadow:
-      -2px 0 0 var(--color-extra-dark-purple),
-      2px 0 0 var(--color-dark-green-blue);
+      -2px 0 1px #ff00ff,
+      2px 0 1px #00e5ff;
   }
   .players {
     height: 50%;

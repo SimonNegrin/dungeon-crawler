@@ -18,6 +18,7 @@ import type {
 import Vec2 from "../Vec2"
 import { createDice, killActor } from "./common"
 import { gameState } from "../state.svelte"
+import { PKT_PLAYER_HEALTH } from "./connections"
 import ProjectileArrow from "../ProjectileArrow.svelte"
 import ProjectileMagicFireball from "../ProjectileMagicFireball.svelte"
 
@@ -76,6 +77,16 @@ export function damage(target: Actor, hits: number): void {
     killActor(target)
   } else {
     target.sounds.hurt()
+  }
+
+  if (target.type === "player") {
+    const playerConn = gameState.players.find(
+      (conn) => conn.actor.id === target.id,
+    )
+    if (playerConn) {
+      const pkt = new Uint8Array([PKT_PLAYER_HEALTH, health])
+      playerConn.channel.send(pkt.buffer)
+    }
   }
 }
 
