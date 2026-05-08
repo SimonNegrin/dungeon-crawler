@@ -10,13 +10,22 @@
   }: {
     player: IPlayerConnection
   } = $props()
+
+  let statusText = $derived.by(() => {
+    if (player.isReady) return "¡Listo!"
+    if (player.isWaiting) return "Esperando..."
+    return "Conectado"
+  })
 </script>
 
-<div
-  class="preset"
-  class:is-waiting={player.isWaiting}
-  class:ready={player.isReady}
->
+<div class="preset">
+  <div
+    class="status-badge"
+    class:ready={player.isReady}
+    class:waiting={player.isWaiting}
+  >
+    {statusText}
+  </div>
   <div class="header">
     <SpriteRogue name={player.actor.sprite} />
     <div class="name">{player.actor.name}</div>
@@ -56,6 +65,7 @@
 
 <style>
   .preset {
+    position: relative;
     width: 120px;
     height: 144px;
     background-color: var(--color-extra-dark-blue);
@@ -63,15 +73,33 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+  }
+  .status-badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 10px;
+    border-radius: 0;
+    background-color: var(--color-extra-dark-blue);
+    border: 2px outset var(--color-dark-gray);
+    color: var(--color-text-primary);
+    z-index: 1;
 
-    &.is-waiting {
+    &.waiting {
       background-color: var(--color-gold-yellow);
       border-color: var(--color-sandy-brown);
+      color: var(--color-extra-dark-blue);
     }
 
     &.ready {
       background-color: var(--color-dark-yellow-green);
       border-color: var(--color-yellow-green);
+      color: var(--color-extra-dark-blue);
     }
   }
   .header {
