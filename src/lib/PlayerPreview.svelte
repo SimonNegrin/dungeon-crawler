@@ -76,6 +76,18 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    animation: player-enter 0.4s ease-out both;
+  }
+
+  @keyframes player-enter {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
   .status-badge {
     position: absolute;
