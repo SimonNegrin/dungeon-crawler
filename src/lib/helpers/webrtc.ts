@@ -1,7 +1,8 @@
 import SignalingConnection from "./SignalingConnection"
-import { ICE_SERVERS } from "./common"
+import { canCastMagic, ICE_SERVERS } from "./common"
 import { PKT_PLAYER_STATE_SYNC } from "./connections"
 import type { IPlayerConnection, WebRtcHandle } from "../types"
+import { gameState } from "../state.svelte"
 
 export interface WebRtcCallbacks {
   onPeerjoin: () => void
@@ -111,6 +112,8 @@ export function sendPlayerStateSync(conn: IPlayerConnection): void {
     defence: conn.actor.totalStats.defence,
     aim: conn.actor.totalStats.aim,
     magic: conn.actor.totalStats.magic,
+    canCastMagic: canCastMagic(conn.actor),
+    inGame: gameState.stage !== null,
   }
   const encoder = new TextEncoder()
   const payload = encoder.encode(JSON.stringify(state))

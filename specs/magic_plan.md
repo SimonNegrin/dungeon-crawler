@@ -165,6 +165,8 @@ Implementación:
 
 ## Sincronización con el gamepad (rogue-gamepad)
 
+#### Completado: Sí
+
 Objetivo: que el gamepad muestre/oculte el botón Magic de forma correcta, incluyendo el caso “habilidad mágica otorgada por item”.
 
 Plan:
@@ -173,6 +175,10 @@ Plan:
 2. En rogue-gamepad, almacenar ese booleano en `globalState.player` (o un campo separado) y usarlo para renderizar los botones de magia.
 3. Mantener compatibilidad:
    - Si el campo no existe (clientes antiguos), fallback a `magic > 0`.
+
+Implementación:
+- dungeon-tv: `sendPlayerStateSync` incluye `canCastMagic` en `PKT_PLAYER_STATE_SYNC` (`src/lib/helpers/webrtc.ts`).
+- rogue-gamepad: guarda `canCastMagic` en `globalState.canCastMagic` con fallback a `magic > 0` (`src/main.ts`) y usa ese flag para renderizar los botones de magia (`src/lib/Gamepad.svelte`).
 
 ## Paso a paso (implementación)
 

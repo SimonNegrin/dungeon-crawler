@@ -12,6 +12,7 @@ import { nextPlayer } from "./game"
 import { attackMonster, currentPlayerAction, shootMonster } from "./players"
 import { getAliveActorAtPosition } from "./stage"
 import { castSpell, getMagicMenuItems } from "./spells"
+import { sendPlayerStateSync } from "./webrtc"
 
 type PktHandler = (pkt: Uint8Array) => void
 
@@ -89,12 +90,14 @@ function createPlayerConfigHandler(conn: IPlayerConnection): PktHandler {
     setBaseStat("aim", preset.aim, conn.actor)
     setBaseStat("magic", preset.magic, conn.actor)
     setBaseStat("health", preset.health, conn.actor)
+    sendPlayerStateSync(conn)
   }
 }
 
 function createPlayerAcceptHandler(conn: IPlayerConnection): PktHandler {
   return () => {
     conn.isWaiting = true
+    sendPlayerStateSync(conn)
   }
 }
 
@@ -116,6 +119,7 @@ function createPlayerReadyHandler(conn: IPlayerConnection): PktHandler {
     const gameStartPkt = new Uint8Array([PKT_GAME_START])
     gameState.players.forEach((conn) => {
       conn.webRtc.dataChannel.send(gameStartPkt)
+      sendPlayerStateSync(conn)
     })
 
     // Enable turn to the current player

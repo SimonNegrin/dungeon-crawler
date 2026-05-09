@@ -2,6 +2,7 @@
   import PlayerBinding from "./PlayerBinding.svelte"
   import { setupPlayerConnection } from "./helpers/connections"
   import { createPlayerActor } from "./helpers/players"
+  import { sendPlayerStateSync } from "./helpers/webrtc"
   import { gameState } from "./state.svelte"
   import type { WebRtcHandle, IPlayerConnection } from "./types"
 
@@ -30,6 +31,7 @@
     const player = partialPlayer as IPlayerConnection
 
     setupPlayerConnection(player)
+    sendPlayerStateSync(player)
     gameState.players.push(player)
     onconnection(player)
   }
