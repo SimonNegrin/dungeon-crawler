@@ -225,10 +225,14 @@ export interface IProjectileConfig {
   type: ProjectileType
 }
 
+export interface WebRtcHandle {
+  peerConnection: RTCPeerConnection
+  dataChannel: RTCDataChannel
+}
+
 export interface IPlayerConnection {
   playerId: string
-  peer: RTCPeerConnection
-  channel: RTCDataChannel
+  webRtc: WebRtcHandle
   isWaiting: boolean
   isReady: boolean
   isConnected: boolean

@@ -1,34 +1,31 @@
 import SignalingConnection from "./SignalingConnection"
 import { ICE_SERVERS } from "./common"
 import { PKT_PLAYER_STATE_SYNC } from "./connections"
-import type { IPlayerConnection } from "../types"
+import type { IPlayerConnection, WebRtcHandle } from "../types"
 
 export interface WebRtcCallbacks {
   onPeerjoin: () => void
-  onOpen: (
-    peerConnection: RTCPeerConnection,
-    dataChannel: RTCDataChannel,
-  ) => void
+  onOpen: (handle: WebRtcHandle) => void
   onDisconnected: () => void
   onGamepadUrl: (url: string) => void
-}
-
-export interface WebRtcHandle {
-  signalingConnection: SignalingConnection
-  peerConnection: RTCPeerConnection
-  dataChannel: RTCDataChannel
-  disconnect: () => void
 }
 
 export async function setupWebRtcConnection(
   playerId: string,
   callbacks: WebRtcCallbacks,
-): Promise<WebRtcHandle> {
+): Promise<void> {
   const signalingConnection = new SignalingConnection(
     import.meta.env.VITE_SIGNALING_SERVER,
   )
-  await signalingConnection.connect()
-  await signalingConnection.createRoom(playerId)
+
+  try {
+    await signalingConnection.connect()
+    await signalingConnection.createRoom(playerId)
+  } catch (error) {
+    console.error("Failed to connect to signaling server:", error)
+    signalingConnection.disconnect()
+    return
+  }
 
   const url = new URL(import.meta.env.VITE_GAMEPAD_URL)
   url.searchParams.set("r", playerId)
@@ -36,12 +33,14 @@ export async function setupWebRtcConnection(
 
   let peerConnection: RTCPeerConnection
   let dataChannel: RTCDataChannel
-  let disconnected = false
 
-  function handleDisconnected(): void {
-    if (disconnected) return
-    disconnected = true
-    callbacks.onDisconnected()
+  const handle: WebRtcHandle = {
+    get peerConnection() {
+      return peerConnection
+    },
+    get dataChannel() {
+      return dataChannel
+    },
   }
 
   signalingConnection.on("peerjoin", () => {
@@ -57,14 +56,6 @@ export async function setupWebRtcConnection(
     await peerConnection?.addIceCandidate(data)
   })
 
-  signalingConnection.on("disconnect", () => {
-    console.log("disconnect signaling")
-  })
-
-  // Is not necessary to handle signaling disconnect
-  // because we need to keep the connection open
-  // to allow the player reconnect
-
   function initSignaling(): void {
     peerConnection = new RTCPeerConnection({
       iceServers: ICE_SERVERS,
@@ -79,38 +70,31 @@ export async function setupWebRtcConnection(
     peerConnection.addEventListener("iceconnectionstatechange", () => {
       const state = peerConnection.iceConnectionState
       if (state === "disconnected" || state === "failed") {
-        handleDisconnected()
+        signalingConnection.disconnect()
+        callbacks.onDisconnected()
       }
     })
 
     dataChannel = peerConnection.createDataChannel("controlDatachannel")
+    dataChannel.binaryType = "arraybuffer"
     dataChannel.addEventListener(
       "open",
-      () => callbacks.onOpen(peerConnection, dataChannel),
+      () => {
+        signalingConnection.disconnect()
+        callbacks.onOpen(handle)
+      },
       { once: true },
     )
 
     dataChannel.addEventListener("close", () => {
-      handleDisconnected()
+      signalingConnection.disconnect()
+      callbacks.onDisconnected()
     })
 
-    peerConnection.createOffer().then((offer) => {
-      peerConnection.setLocalDescription(offer)
+    peerConnection.createOffer().then(async (offer) => {
+      await peerConnection.setLocalDescription(offer)
       signalingConnection.sendOffer(offer)
     })
-  }
-
-  return {
-    get signalingConnection() {
-      return signalingConnection
-    },
-    get peerConnection() {
-      return peerConnection
-    },
-    get dataChannel() {
-      return dataChannel
-    },
-    disconnect: () => signalingConnection.disconnect(),
   }
 }
 
@@ -131,5 +115,5 @@ export function sendPlayerStateSync(conn: IPlayerConnection): void {
   const encoder = new TextEncoder()
   const payload = encoder.encode(JSON.stringify(state))
   const pkt = new Uint8Array([PKT_PLAYER_STATE_SYNC, ...payload])
-  conn.channel.send(pkt)
+  conn.webRtc.dataChannel.send(pkt)
 }

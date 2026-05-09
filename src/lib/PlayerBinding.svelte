@@ -3,17 +3,14 @@
   import Qr from "./Qr.svelte"
   import { createStateMachine } from "./helpers/common"
   import { setupWebRtcConnection } from "./helpers/webrtc"
-  import type { IPlayerConnection } from "./types"
-  import { createPlayerActor } from "./helpers/players"
-  import { setupPlayerConnection } from "./helpers/connections"
-  import { gameState } from "./state.svelte"
+  import type { WebRtcHandle } from "./types"
 
   let {
     playerId,
     onconnection,
   }: {
     playerId: string
-    onconnection: (player: IPlayerConnection) => void
+    onconnection: (handle: WebRtcHandle) => void
   } = $props()
 
   const componentState = createStateMachine("CREATING_ROOM", {
@@ -24,7 +21,6 @@
   })
 
   let gamepadUrl = $state("")
-  let connection: Partial<IPlayerConnection> = $state({})
 
   onMount(async () => {
     componentState.set("WAITING_PLAYER")
@@ -32,35 +28,17 @@
     await setupWebRtcConnection(playerId, {
       onGamepadUrl(url) {
         gamepadUrl = url
+        // Keep log to be able to join the room without read the QR code
         console.log(gamepadUrl)
       },
       onPeerjoin() {
         componentState.set("SIGNALING")
       },
-      onOpen(peerConnection, dataChannel) {
-        connection.playerId = playerId
-        connection.isReady = false
-        connection.isConnected = true
-        connection.actor = createPlayerActor(playerId, "dwarf", "male")
-        connection.peer = peerConnection
-        connection.channel = dataChannel
-
-        const conn = connection as IPlayerConnection
-
-        setupPlayerConnection(conn)
-        gameState.players.push(conn)
+      onOpen(handle) {
         componentState.set("CONNECTED")
-        onconnection(conn)
+        onconnection(handle)
       },
       onDisconnected() {
-        if (gameState.stage === null) {
-          const conn = connection as IPlayerConnection
-          if (conn.playerId) {
-            gameState.players = gameState.players.filter(
-              (p) => p.playerId !== conn.playerId,
-            )
-          }
-        }
         componentState.set("WAITING_PLAYER")
       },
     })

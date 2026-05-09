@@ -1,6 +1,6 @@
 <script lang="ts">
   import CrtScreen from "./CrtScreen.svelte"
-  import PlayerBinding from "./PlayerBinding.svelte"
+  import PlayerConnection from "./PlayerConnection.svelte"
   import PlayerPreview from "./PlayerPreview.svelte"
   import { gameState } from "./state.svelte"
 
@@ -31,7 +31,7 @@
 
           {#if playerId}
             {#key playerId}
-              <PlayerBinding {playerId} {onconnection} />
+              <PlayerConnection {playerId} {onconnection} />
             {/key}
           {/if}
         </div>

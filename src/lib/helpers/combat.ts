@@ -85,7 +85,7 @@ export function damage(target: Actor, hits: number): void {
     )
     if (playerConn) {
       const pkt = new Uint8Array([PKT_PLAYER_HEALTH, health])
-      playerConn.channel.send(pkt.buffer)
+      playerConn.webRtc.dataChannel.send(pkt.buffer)
     }
   }
 }

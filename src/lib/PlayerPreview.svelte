@@ -12,17 +12,19 @@
   } = $props()
 
   let statusText = $derived.by(() => {
+    if (!player.isConnected) return "Desconectado"
     if (player.isReady) return "¡Listo!"
     if (player.isWaiting) return "Esperando..."
     return "Conectado"
   })
 </script>
 
-<div class="preset">
+<div class="preset" class:disconnected={!player.isConnected}>
   <div
     class="status-badge"
     class:ready={player.isReady}
     class:waiting={player.isWaiting}
+    class:offline={!player.isConnected}
   >
     {statusText}
   </div>
@@ -79,6 +81,10 @@
     animation: player-enter 0.4s ease-out both;
   }
 
+  .preset.disconnected {
+    filter: grayscale(1) brightness(0.6);
+  }
+
   @keyframes player-enter {
     0% {
       opacity: 0;
@@ -115,6 +121,12 @@
       background-color: var(--color-dark-yellow-green);
       border-color: var(--color-yellow-green);
       color: var(--color-extra-dark-blue);
+    }
+
+    &.offline {
+      background-color: var(--color-dark-gray);
+      border-color: var(--color-light-gray);
+      color: var(--color-text-primary);
     }
   }
   .header {

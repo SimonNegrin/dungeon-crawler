@@ -31,8 +31,14 @@ export const PKT_PLAYER_HEALTH = 10
 export const PKT_PLAYER_STATE_SYNC = 11
 
 export function setupPlayerConnection(conn: IPlayerConnection): void {
-  conn.channel.addEventListener("message", (event: MessageEvent) => {
+  console.log(`Setting up connection for player ${conn.playerId}`)
+  conn.webRtc.dataChannel.binaryType = "arraybuffer"
+
+  conn.webRtc.dataChannel.addEventListener("message", (event: MessageEvent) => {
     const pkt = new Uint8Array(event.data)
+    const pktType = pkt[0]
+    console.log(`Packet received from ${conn.playerId}: ${pktType}`)
+
     const handlers: Record<number, PktHandler> = {
       [PKT_PLAYER_CONFIG]: createPlayerConfigHandler(conn),
       [PKT_PLAYER_ACCEPT]: createPlayerAcceptHandler(conn),
@@ -40,15 +46,34 @@ export function setupPlayerConnection(conn: IPlayerConnection): void {
       [PKT_GAMEPAD_STATE]: createGamepadStateHandler(conn),
       [PKT_NEXT_PLAYER]: createNextTurnHandler(conn),
     }
-    const pktType = pkt[0]
     if (!handlers[pktType]) {
       console.warn(`Unknown packet number "${pktType}"`)
     }
     handlers[pktType](pkt)
   })
 
-  conn.channel.addEventListener("close", () => {
+  conn.webRtc.dataChannel.addEventListener("close", () => {
     conn.isConnected = false
+
+    const isCurrentPlayer = gameState.currentPlayer?.playerId === conn.playerId
+
+    if (!isCurrentPlayer || gameState.stage === null) {
+      return
+    }
+
+    const connectedPlayers = gameState.players.filter((p) => p.isConnected)
+
+    if (connectedPlayers.length === 0) {
+      return
+    }
+
+    let pkt = new Uint8Array([PKT_DISABLE_TURN])
+    gameState.currentPlayer!.webRtc.dataChannel.send(pkt.buffer)
+
+    nextPlayer()
+
+    pkt = new Uint8Array([PKT_ENABLE_TURN])
+    gameState.currentPlayer!.webRtc.dataChannel.send(pkt.buffer)
   })
 }
 
@@ -94,12 +119,12 @@ function createPlayerReadyHandler(conn: IPlayerConnection): PktHandler {
     // Send game start pkt to all players
     const gameStartPkt = new Uint8Array([PKT_GAME_START])
     gameState.players.forEach((conn) => {
-      conn.channel.send(gameStartPkt)
+      conn.webRtc.dataChannel.send(gameStartPkt)
     })
 
     // Enable turn to the current player
     const enableTurnPkt = new Uint8Array([PKT_ENABLE_TURN])
-    gameState.currentPlayer!.channel.send(enableTurnPkt)
+    gameState.currentPlayer!.webRtc.dataChannel.send(enableTurnPkt)
   }
 }
 
@@ -125,13 +150,13 @@ function createNextTurnHandler(_: IPlayerConnection): PktHandler {
   return async () => {
     // Disable current player turn
     let pkt = new Uint8Array([PKT_DISABLE_TURN])
-    gameState.currentPlayer!.channel.send(pkt.buffer)
+    gameState.currentPlayer!.webRtc.dataChannel.send(pkt.buffer)
 
     await nextPlayer()
 
     // Enable current player turn
     pkt = new Uint8Array([PKT_ENABLE_TURN])
-    gameState.currentPlayer!.channel.send(pkt.buffer)
+    gameState.currentPlayer!.webRtc.dataChannel.send(pkt.buffer)
   }
 }
 

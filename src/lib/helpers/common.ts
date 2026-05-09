@@ -219,9 +219,6 @@ export function createStateMachine<T extends Record<string, (keyof T)[]>>(
   const set = (newState: keyof T) => {
     // If state not change return
     if (newState === state) {
-      console.warn(
-        `Invalid state machine chage from "${String(state)}" to "${String(newState)}"`,
-      )
       return
     }
 
