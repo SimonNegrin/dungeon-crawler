@@ -71,7 +71,7 @@ Implementación: extendido `ItemMetadata` y actualizado el UI de stats de item p
 
 ### 3) Registro de hechizos (acciones mágicas)
 
-#### Completado: No
+#### Completado: Sí
 
 Crear un registro/tabla de hechizos del juego (ej. `helpers/spells.ts`) que defina:
 
@@ -85,6 +85,8 @@ Crear un registro/tabla de hechizos del juego (ej. `helpers/spells.ts`) que defi
 - `cast(ctx)` (función que aplica el efecto: proyectil, estado, etc.)
 
 El hechizo base “Proyectil mágico” se modela también como entrada en el registro pero con `consumesItem=false`.
+
+Implementación: `src/lib/helpers/spells.ts` (incluye el hechizo base “Proyectil mágico”).
 
 ## UI del “pergamino” en dungeon-tv
 
