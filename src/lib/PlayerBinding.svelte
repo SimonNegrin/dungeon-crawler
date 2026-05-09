@@ -23,11 +23,12 @@
   let gamepadUrl = $state("")
 
   onMount(async () => {
-    componentState.set("WAITING_PLAYER")
-
     await setupWebRtcConnection(playerId, {
       onGamepadUrl(url) {
         gamepadUrl = url
+        componentState.update((state) =>
+          state === "CREATING_ROOM" ? "WAITING_PLAYER" : state,
+        )
         // Keep log to be able to join the room without read the QR code
         console.log(gamepadUrl)
       },
@@ -47,11 +48,13 @@
 
 <div class="player-binding">
   {#if $componentState === "CREATING_ROOM"}
-    <div>Creando sala...</div>
+    <div>Loading</div>
   {:else if $componentState === "WAITING_PLAYER"}
     <div class="qr-wrapper">
       {#if gamepadUrl}
         <Qr content={gamepadUrl} size={100} />
+      {:else}
+        <div>Loading</div>
       {/if}
     </div>
   {:else if $componentState === "SIGNALING"}
