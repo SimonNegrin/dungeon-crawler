@@ -170,12 +170,15 @@ function createGamepadStateHandler(conn: IPlayerConnection): PktHandler {
 
         const target =
           getAliveActorAtPosition(gameState.cursorPosition) || undefined
-        await castSpell({
+        const casted = await castSpell({
           caster,
           spellId: selected?.spellId ?? "magic_projectile",
           target,
           item: selected?.item,
         })
+        if (casted) {
+          sendPlayerStateSync(gameState.currentPlayer!)
+        }
         return
       }
 

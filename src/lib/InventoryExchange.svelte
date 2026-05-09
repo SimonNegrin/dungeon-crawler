@@ -7,6 +7,7 @@
   import InventoryView from "./InventoryView.svelte"
   import OnkeydownCapture from "./OnkeydownCapture.svelte"
   import { moveInventoryItem } from "./helpers/common"
+  import { sendPlayerStateSync } from "./helpers/webrtc"
 
   let {
     leftInventory,
@@ -37,10 +38,16 @@
 
   function moveToLeft(index: number): void {
     moveInventoryItem(index, rightInventory, leftInventory)
+    if (gameState.currentPlayer) {
+      sendPlayerStateSync(gameState.currentPlayer)
+    }
   }
 
   function moveToRight(index: number): void {
     moveInventoryItem(index, leftInventory, rightInventory)
+    if (gameState.currentPlayer) {
+      sendPlayerStateSync(gameState.currentPlayer)
+    }
   }
 
   function onleft(): void {
