@@ -36,8 +36,7 @@ export function setupPlayerConnection(conn: IPlayerConnection): void {
 
   conn.webRtc.dataChannel.addEventListener("message", (event: MessageEvent) => {
     const pkt = new Uint8Array(event.data)
-    const pktType = pkt[0]
-    console.log(`Packet received from ${conn.playerId}: ${pktType}`)
+    const [pktType] = pkt
 
     const handlers: Record<number, PktHandler> = {
       [PKT_PLAYER_CONFIG]: createPlayerConfigHandler(conn),
