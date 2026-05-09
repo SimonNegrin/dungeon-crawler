@@ -55,7 +55,7 @@ Para “otorgar magia” se añade un flag explícito a metadata, para no reutil
 
 ### 2) Items “hechizo”
 
-#### Completado: No
+#### Completado: Sí
 
 Extender `ItemMetadata` para soportar hechizos:
 
@@ -66,6 +66,8 @@ Extender `ItemMetadata` para soportar hechizos:
 Criterio de identificación:
 
 - Un item es “hechizo” si tiene `metadata.spellId` (y normalmente `metadata.uses`).
+
+Implementación: extendido `ItemMetadata` y actualizado el UI de stats de item para mostrar “Hechizo: {spellId}”.
 
 ### 3) Registro de hechizos (acciones mágicas)
 

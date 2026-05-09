@@ -119,6 +119,8 @@ export interface ItemMetadata {
   ethereal?: boolean // inmunidad física
   magic?: boolean // ataque mágico
   grantsMagic?: boolean
+  spellId?: string
+  spellPower?: number
 }
 
 export interface Item {

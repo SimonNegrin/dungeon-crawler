@@ -28,6 +28,12 @@
       if (item.metadata.magic) {
         stats.push("Ataque mágico")
       }
+      if (item.metadata.grantsMagic) {
+        stats.push("Habilidad mágica")
+      }
+      if (item.metadata.spellId) {
+        stats.push(`Hechizo: ${item.metadata.spellId}`)
+      }
       if (item.metadata.ethereal) {
         stats.push("Inmunidad física")
       }
