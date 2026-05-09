@@ -141,7 +141,7 @@ Implementar una función central tipo `castSpell(actor, spellId)`:
    - efecto directo: aplicar estado/daño/buff
 6. Consumir item (solo si el hechizo viene de un item):
    - `item.metadata.uses--`
-   - si `uses <= 0`: `removeItemByName(actor, item.name)`
+   - si `uses <= 0`: eliminar esa instancia de item del `actor` (en `items` o `traits`)
 
 Implementación: `castSpell(...)` en `src/lib/helpers/spells.ts` + integración en `src/lib/helpers/connections.ts` y wrapper `magickAttack()` en `src/lib/helpers/players.ts`.
 
@@ -172,42 +172,41 @@ Objetivo: que el gamepad muestre/oculte el botón Magic de forma correcta, inclu
 Plan:
 
 1. En dungeon-tv, al enviar `PKT_PLAYER_STATE_SYNC`, incluir un booleano adicional `canCastMagic`.
-2. En rogue-gamepad, almacenar ese booleano en `globalState.player` (o un campo separado) y usarlo para renderizar los botones de magia.
+2. En rogue-gamepad, almacenar ese booleano y usarlo para renderizar los botones de magia.
 3. Mantener compatibilidad:
    - Si el campo no existe (clientes antiguos), fallback a `magic > 0`.
 
 Implementación:
-- dungeon-tv: `sendPlayerStateSync` incluye `canCastMagic` en `PKT_PLAYER_STATE_SYNC` (`src/lib/helpers/webrtc.ts`).
-- rogue-gamepad: guarda `canCastMagic` en `globalState.canCastMagic` con fallback a `magic > 0` (`src/main.ts`) y usa ese flag para renderizar los botones de magia (`src/lib/Gamepad.svelte`).
+- dungeon-tv: `sendPlayerStateSync` incluye `canCastMagic` e `inGame` en `PKT_PLAYER_STATE_SYNC` (`src/lib/helpers/webrtc.ts`), y se envía al conectar, durante configuración, al aceptar y al iniciar partida.
+- rogue-gamepad: guarda `canCastMagic` en `globalState.canCastMagic` y usa ese flag para renderizar los botones de magia (`src/lib/Gamepad.svelte`). El sync no fuerza el salto de pantalla de configuración (solo hidrata `globalState.player` si ya existe o si `inGame===true`).
 
 ## Paso a paso (implementación)
 
-1. **Añadir modelo de hechizos**
-   - Crear registro de hechizos y tipos (`spellId`, definición, cast handler).
-   - Añadir helpers: `canCastMagic(actor)`, `getAvailableSpells(actor)`.
-2. **Extender metadata de items**
-   - Añadir `grantsMagic?: boolean` y `spellId?: string` en `ItemMetadata`.
-   - Ajustar `ItemStats` para mostrar “Habilidad mágica” y/o “Hechizo: X” si procede.
-3. **Crear items de hechizo en prefabs**
-   - Añadir al menos un item “Pergamino de congelación” con `metadata.spellId="freeze"` y `metadata.uses=3`.
-   - (Opcional) añadir un item que otorgue magia a un no-mago: `metadata.grantsMagic=true`.
-4. **Overlay del pergamino**
-   - Crear componente UI del pergamino y renderizarlo en el monitor.
-   - Añadir estado a `gameState` para abrir/cerrar y seleccionar.
-5. **Actualizar manejo de input**
-   - Modificar el handler de `PKT_GAMEPAD_STATE` para rutear input según `magicMenuOpen`.
-   - Asegurar que al abrir el pergamino no se mueve el cursor (ni se atacan monstruos accidentalmente).
-6. **Implementar el pipeline de casting**
-   - Centralizar validaciones (acciones, rango, LoS, target).
-   - Integrar consumo de usos y eliminación del item.
-   - Reutilizar el proyectil mágico existente como hechizo base.
-7. **Implementar “congelación”**
-   - Añadir el estado “frozen” (trait/item temporal) a monstruos.
-   - Integrar en el loop de monstruos: si frozen, perder turno y decrementar `turns`.
-8. **Sincronizar disponibilidad de magia con el gamepad**
-   - Extender el payload de sync del jugador (dungeon-tv).
-   - Ajustar UI del gamepad para usar `canCastMagic` (o fallback).
-9. **Validación manual (checklist)**
+1. **Añadir modelo de hechizos** — Implementado
+   - Registro en `src/lib/helpers/spells.ts` (`SPELLS`, `SpellDefinition`, `resolveSpell`).
+   - Helper `canCastMagic(actor)` en `src/lib/helpers/common.ts`.
+   - Helper `getMagicMenuItems(actor)` para construir la lista del pergamino.
+2. **Extender metadata de items** — Implementado
+   - `ItemMetadata`: `grantsMagic`, `spellId`, `spellPower`, `frozen` (además de `uses`, `turns`, `range`).
+   - UI: `ItemStats` muestra “Habilidad mágica” y “Hechizo: {spellId}”.
+3. **Crear items de hechizo en prefabs** — Implementado parcial
+   - Añadido “Pergamino de congelación” (`spellId="freeze"`, `uses=3`).
+   - No se ha añadido un prefab de item “otorga magia” (`grantsMagic=true`).
+4. **Overlay del pergamino** — Implementado
+   - Overlay `src/lib/MagicScroll.svelte` renderizado en `.screen-container` (dentro de `Game.svelte`).
+   - Estado en `gameState`: `magicMenuOpen`, `magicMenuIndex`.
+5. **Actualizar manejo de input** — Implementado
+   - Routing en `src/lib/helpers/connections.ts` según `magicMenuOpen`.
+   - Al abrir: requiere `canCastMagic` y monstruo bajo cursor (si falla suena `attackFailSound()`).
+6. **Implementar el pipeline de casting** — Implementado
+   - `castSpell(...)` centraliza validaciones, coste de acciones, LoS/rango, ejecución y consumo de usos.
+7. **Implementar “congelación”** — Implementado
+   - Hechizo `freeze` aplica trait “Congelado” con `metadata.frozen=true` y `turns`.
+   - Turno de monstruos: si está congelado, pierde su turno y se decrementa/elimina el efecto.
+8. **Sincronizar disponibilidad de magia con el gamepad** — Implementado
+   - Sync incluye `canCastMagic` + `inGame` y se envía en varios momentos (connect/config/accept/start/reconnect).
+   - Gamepad usa `globalState.canCastMagic` y el sync no salta la configuración.
+9. **Validación manual (checklist)** — Pendiente (no marcada)
    - Un mago abre el pergamino, selecciona “Proyectil mágico”, lanza y no consume nada.
    - Un mago con “Congelación (3)” lo usa 3 veces y el item desaparece.
    - Un no-mago con un item de hechizo pero sin `grantsMagic` no puede abrir el pergamino (o no ve hechizos).

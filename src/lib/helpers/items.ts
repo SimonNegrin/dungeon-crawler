@@ -489,6 +489,14 @@ const itemPrefabs: Item[] = [
       uses: 3,
     },
   },
+  {
+    sprite: "tome",
+    name: "Tomo arcano",
+    desc: "Otorga habilidad mágica",
+    metadata: {
+      grantsMagic: true,
+    },
+  },
   // {
   //   sprite: "red potion",
   //   name: "Poción de vida",
