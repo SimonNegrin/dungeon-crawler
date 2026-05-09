@@ -147,6 +147,8 @@ Implementación: `castSpell(...)` en `src/lib/helpers/spells.ts` + integración 
 
 ## Hechizos iniciales (mínimo para validar el sistema)
 
+#### Completado: Sí
+
 - **Proyectil mágico** (base, infinito)
   - Tipo: proyectil (reutiliza fireball actual)
   - Requiere target (monstruo)
@@ -156,6 +158,10 @@ Implementación: `castSpell(...)` en `src/lib/helpers/spells.ts` + integración 
   - Efecto sugerido: aplicar un estado “frozen” por N turnos que impide actuar al monstruo
 
 Nota: la implementación del estado puede apoyarse en `traits` con `metadata.turns`, y el controlador de turnos de monstruos debería decrementar turnos y saltarse la acción si está congelado.
+
+Implementación:
+- “Proyectil mágico”: `src/lib/helpers/spells.ts` (hechizo `magic_projectile`)
+- “Congelación”: `src/lib/helpers/spells.ts` (hechizo `freeze`) + item `Pergamino de congelación` en `src/lib/helpers/items.ts` + control de turno “frozen” en `src/lib/helpers/MonstersController.ts`.
 
 ## Sincronización con el gamepad (rogue-gamepad)
 

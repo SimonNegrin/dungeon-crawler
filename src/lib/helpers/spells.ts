@@ -46,6 +46,40 @@ export const SPELLS = {
       })
     },
   },
+  freeze: {
+    id: "freeze",
+    name: "Congelación",
+    type: "effect",
+    requiresTarget: true,
+    range: SHOOT_DISTANCE,
+    requiresLineOfSight: true,
+    actionCost: 1,
+    consumesItem: true,
+    async cast({ target }) {
+      if (!target) {
+        return
+      }
+
+      const existing = [...target.traits, ...target.items].find((item) => {
+        return item.metadata?.frozen === true
+      })
+
+      if (existing?.metadata) {
+        existing.metadata.turns = Math.max(2, existing.metadata.turns ?? 0)
+        return
+      }
+
+      target.traits.push({
+        sprite: "scroll",
+        name: "Congelado",
+        desc: "No puede actuar",
+        metadata: {
+          frozen: true,
+          turns: 2,
+        },
+      })
+    },
+  },
 } satisfies Record<string, SpellDefinition>
 
 export type SpellId = keyof typeof SPELLS

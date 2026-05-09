@@ -123,6 +123,7 @@ export interface ItemMetadata {
   grantsMagic?: boolean
   spellId?: string
   spellPower?: number
+  frozen?: boolean
 }
 
 export interface Item {

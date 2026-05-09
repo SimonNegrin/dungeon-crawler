@@ -480,6 +480,15 @@ const itemPrefabs: Item[] = [
     desc: "Una llave vieja y oxidada",
     // Key item, no stat modifiers
   },
+  {
+    sprite: "scroll",
+    name: "Pergamino de congelación",
+    desc: "Congela a un enemigo durante 2 turnos",
+    metadata: {
+      spellId: "freeze",
+      uses: 3,
+    },
+  },
   // {
   //   sprite: "red potion",
   //   name: "Poción de vida",

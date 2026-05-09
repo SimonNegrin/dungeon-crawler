@@ -16,10 +16,12 @@ import { combat, physicAttack } from "./combat"
 export default class MonstersController {
   private monstersPool: IMonster[] = []
   private visionSystem = createVisionSystem()
+  private frozenThisTurn = new Set<string>()
 
   async execute(): Promise<void> {
     gameState.ignoreInput = true
     this.restoreMonstersStats()
+    this.tickFrozen()
     this.loadMonstersPool()
     await this.attackPhase()
     await this.movePhase()
@@ -33,8 +35,41 @@ export default class MonstersController {
   // will have finished
   private loadMonstersPool(): void {
     this.monstersPool = gameState.monsters.filter((monster) => {
-      return monster.isAlive
+      return monster.isAlive && !this.frozenThisTurn.has(monster.id)
     })
+  }
+
+  private tickFrozen(): void {
+    this.frozenThisTurn.clear()
+
+    for (const monster of gameState.monsters) {
+      if (!monster.isAlive) continue
+
+      const frozen = [...monster.traits, ...monster.items].find((item) => {
+        return item.metadata?.frozen === true
+      })
+
+      const turns = frozen?.metadata?.turns
+      if (!frozen || typeof turns !== "number" || turns <= 0) {
+        continue
+      }
+
+      this.frozenThisTurn.add(monster.id)
+      frozen.metadata!.turns = turns - 1
+
+      if (frozen.metadata!.turns <= 0) {
+        const inTraits = monster.traits.indexOf(frozen)
+        if (inTraits !== -1) {
+          monster.traits.splice(inTraits, 1)
+          continue
+        }
+
+        const inItems = monster.items.indexOf(frozen)
+        if (inItems !== -1) {
+          monster.items.splice(inItems, 1)
+        }
+      }
+    }
   }
 
   private async attackPhase(): Promise<void> {
