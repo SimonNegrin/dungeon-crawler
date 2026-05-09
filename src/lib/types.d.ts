@@ -38,6 +38,8 @@ export interface IGlobalState {
   freezePath: boolean
   cursorPosition: Vec2
   cursorPath: Vec2[]
+  magicMenuOpen: boolean
+  magicMenuIndex: number
   playerIndex: number
   currentPlayer?: IPlayerConnection
   centerActor?: Actor

@@ -1,0 +1,141 @@
+<script lang="ts">
+  import { fade, fly } from "svelte/transition"
+  import type { Actor, Item } from "./types"
+  import { gameState } from "./state.svelte"
+  import { getSpell, resolveSpell } from "./helpers/spells"
+
+  type MagicMenuItem = {
+    id: string
+    name: string
+    uses?: number
+    item?: Item
+  }
+
+  function clampIndex(index: number, length: number): number {
+    if (length <= 0) return 0
+    return Math.max(0, Math.min(index, length - 1))
+  }
+
+  function buildMenuItems(actor?: Actor): MagicMenuItem[] {
+    const items: MagicMenuItem[] = []
+
+    const base = getSpell("magic_projectile")
+    items.push({
+      id: base.id,
+      name: base.name,
+    })
+
+    if (!actor) {
+      return items
+    }
+
+    for (const item of [...actor.traits, ...actor.items]) {
+      const spellId = item.metadata?.spellId
+      if (!spellId) continue
+
+      const spell = resolveSpell(spellId)
+      items.push({
+        id: spellId,
+        name: spell?.name ?? spellId,
+        uses: item.metadata?.uses,
+        item,
+      })
+    }
+
+    return items
+  }
+
+  let menuItems = $derived(buildMenuItems(gameState.currentPlayer?.actor))
+  let selectedIndex = $derived(clampIndex(gameState.magicMenuIndex, menuItems.length))
+</script>
+
+<div class="magic-scroll" transition:fade>
+  <div class="scroll" transition:fly={{ y: 10 }}>
+    <div class="title">Magia</div>
+    <ul class="list">
+      {#each menuItems as item, i (item.id + ":" + i)}
+        <li class:selected={i === selectedIndex}>
+          <span class="marker">{i === selectedIndex ? "▶" : ""}</span>
+          <span class="name">{item.name}</span>
+          {#if item.uses !== undefined}
+            <span class="uses">{item.uses} usos</span>
+          {/if}
+        </li>
+      {/each}
+    </ul>
+  </div>
+</div>
+
+<style>
+  .magic-scroll {
+    --color-font: var(--color-mild-yellow-white);
+    --color-back: var(--color-gold-yellow);
+
+    position: absolute;
+    z-index: 250;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .scroll {
+    width: 80%;
+    max-width: 280px;
+    pointer-events: all;
+    background-color: var(--color-font);
+    color: var(--color-back);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+
+  .title {
+    font-size: 1em;
+    text-align: center;
+    border-bottom: 2px dotted var(--color-back);
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+  }
+
+  .list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    border-radius: 6px;
+  }
+
+  li.selected {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .marker {
+    width: 14px;
+    flex: 0 0 14px;
+    text-align: center;
+  }
+
+  .name {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .uses {
+    flex: 0 0 auto;
+    opacity: 0.9;
+  }
+</style>
+

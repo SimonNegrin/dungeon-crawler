@@ -3,6 +3,7 @@
   import GameMap from "./GameMap.svelte"
   import { TILE_SIZE, VIEWPORT_SIZE } from "./helpers/common"
   import InventoryExchange from "./InventoryExchange.svelte"
+  import MagicScroll from "./MagicScroll.svelte"
   import PlayersList from "./PlayersList.svelte"
   import { gameState } from "./state.svelte"
 
@@ -32,6 +33,10 @@
               leftInventory={gameState.openInventory}
               rightInventory={gameState.currentPlayer.actor}
             />
+          {/if}
+
+          {#if gameState.magicMenuOpen}
+            <MagicScroll />
           {/if}
         </div>
         <div class="right-space">

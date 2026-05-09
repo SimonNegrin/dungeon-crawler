@@ -90,6 +90,8 @@ Implementación: `src/lib/helpers/spells.ts` (incluye el hechizo base “Proyect
 
 ## UI del “pergamino” en dungeon-tv
 
+#### Completado: Sí
+
 1. Crear un overlay (componente Svelte) renderizado en la zona del mapa (dentro de `.screen-container`).
 2. El overlay muestra:
    - Título: “Magia”
@@ -100,6 +102,8 @@ Implementación: `src/lib/helpers/spells.ts` (incluye el hechizo base “Proyect
    - `magicMenuOpen: boolean`
    - `magicMenuIndex: number`
    - (opcional) `magicMenuItems: MagicActionViewModel[]` derivado
+
+Implementación: `src/lib/MagicScroll.svelte` (overlay) + `magicMenuOpen/magicMenuIndex` en `gameState`.
 
 ## Input / State machine (dungeon-tv)
 

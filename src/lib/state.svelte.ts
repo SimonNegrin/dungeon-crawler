@@ -23,6 +23,8 @@ export const gameState = $state<IGlobalState>({
   cursorPosition: new Vec2(0, 0),
   cursorPath: [],
   freezePath: false,
+  magicMenuOpen: false,
+  magicMenuIndex: 0,
   players: [],
   monsters: [],
   turn: TURN_PLAYERS,
