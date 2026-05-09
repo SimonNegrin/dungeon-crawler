@@ -107,6 +107,8 @@ Implementación: `src/lib/MagicScroll.svelte` (overlay) + `magicMenuOpen/magicMe
 
 ## Input / State machine (dungeon-tv)
 
+#### Completado: Sí
+
 Reutilizar el mismo paquete `PKT_GAMEPAD_STATE` y cambiar el “routing” del input según estado:
 
 - Si `magicMenuOpen`:
@@ -117,6 +119,8 @@ Reutilizar el mismo paquete `PKT_GAMEPAD_STATE` y cambiar el “routing” del i
 - Si `magicMenuOpen` es `false`:
   - comportamiento actual (mover cursor, atacar, disparar, etc.)
   - botón Magic => abre el pergamino (si `canCastMagic(currentPlayer.actor)`)
+
+Implementación: routing aplicado en `src/lib/helpers/connections.ts` (A=Magic, C=Caminar). Al abrir, se valida `canCastMagic` y que haya monstruo bajo el cursor; si falla, suena `attackFailSound()`. Al confirmar, se ejecuta “Proyectil mágico” (el resto de hechizos queda pendiente del pipeline unificado).
 
 ## Casting (pipeline unificado)
 

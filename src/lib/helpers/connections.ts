@@ -1,7 +1,7 @@
 import { gameState, loadStage } from "../state.svelte"
 import type { IGamepadState, IPlayerConnection, IPlayerPreset } from "../types"
-import { playerReadySound } from "./audio"
-import { setBaseStat } from "./common"
+import { attackFailSound, playerReadySound } from "./audio"
+import { canCastMagic, setBaseStat } from "./common"
 import {
   moveCursorDown,
   moveCursorLeft,
@@ -15,6 +15,8 @@ import {
   magickAttack,
   shootMonster,
 } from "./players"
+import { getAliveActorAtPosition } from "./stage"
+import { getMagicMenuItems } from "./spells"
 
 type PktHandler = (pkt: Uint8Array) => void
 
@@ -134,11 +136,62 @@ function createGamepadStateHandler(conn: IPlayerConnection): PktHandler {
       return
     }
     const gamepadState = pktToGamepadState(pkt)
+
+    if (gameState.magicMenuOpen) {
+      const items = getMagicMenuItems(gameState.currentPlayer?.actor)
+      const maxIndex = Math.max(0, items.length - 1)
+
+      if (gamepadState.joystick.top) {
+        gameState.magicMenuIndex = Math.max(0, gameState.magicMenuIndex - 1)
+      }
+      if (gamepadState.joystick.bottom) {
+        gameState.magicMenuIndex = Math.min(
+          maxIndex,
+          gameState.magicMenuIndex + 1,
+        )
+      }
+
+      if (gamepadState.cbtn) {
+        gameState.magicMenuOpen = false
+        return
+      }
+
+      if (gamepadState.abtn) {
+        const selectedIndex = Math.max(
+          0,
+          Math.min(gameState.magicMenuIndex, maxIndex),
+        )
+        const selected = items[selectedIndex]
+        gameState.magicMenuOpen = false
+
+        if (selected?.spellId === "magic_projectile") {
+          await magickAttack()
+        }
+        return
+      }
+
+      return
+    }
+
     if (gamepadState.joystick.right) moveCursorRight()
     if (gamepadState.joystick.left) moveCursorLeft()
     if (gamepadState.joystick.top) moveCursorUp()
     if (gamepadState.joystick.bottom) moveCursorDown()
-    if (gamepadState.abtn) magickAttack()
+    if (gamepadState.abtn) {
+      const actor = gameState.currentPlayer?.actor
+      if (!actor || !canCastMagic(actor)) {
+        return
+      }
+
+      const target = getAliveActorAtPosition(gameState.cursorPosition)
+      if (target?.type !== "monster") {
+        attackFailSound()
+        return
+      }
+
+      gameState.magicMenuIndex = 0
+      gameState.magicMenuOpen = true
+    }
     if (gamepadState.bbtn) attackMonster()
     if (gamepadState.cbtn) currentPlayerAction()
     if (gamepadState.dbtn) shootMonster()

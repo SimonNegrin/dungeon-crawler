@@ -59,3 +59,38 @@ export function resolveSpell(spellId: string): SpellDefinition | undefined {
   }
 }
 
+export type MagicMenuItem = {
+  spellId: string
+  name: string
+  uses?: number
+  item?: Item
+}
+
+export function getMagicMenuItems(actor?: Actor): MagicMenuItem[] {
+  const items: MagicMenuItem[] = []
+
+  const base = getSpell("magic_projectile")
+  items.push({
+    spellId: base.id,
+    name: base.name,
+  })
+
+  if (!actor) {
+    return items
+  }
+
+  for (const item of [...actor.traits, ...actor.items]) {
+    const spellId = item.metadata?.spellId
+    if (!spellId) continue
+
+    const spell = resolveSpell(spellId)
+    items.push({
+      spellId,
+      name: spell?.name ?? spellId,
+      uses: item.metadata?.uses,
+      item,
+    })
+  }
+
+  return items
+}

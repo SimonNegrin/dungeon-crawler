@@ -1,59 +1,25 @@
 <script lang="ts">
   import { fade, fly } from "svelte/transition"
-  import type { Actor, Item } from "./types"
+  import type { Actor } from "./types"
   import { gameState } from "./state.svelte"
-  import { getSpell, resolveSpell } from "./helpers/spells"
-
-  type MagicMenuItem = {
-    id: string
-    name: string
-    uses?: number
-    item?: Item
-  }
+  import { getMagicMenuItems } from "./helpers/spells"
 
   function clampIndex(index: number, length: number): number {
     if (length <= 0) return 0
     return Math.max(0, Math.min(index, length - 1))
   }
 
-  function buildMenuItems(actor?: Actor): MagicMenuItem[] {
-    const items: MagicMenuItem[] = []
-
-    const base = getSpell("magic_projectile")
-    items.push({
-      id: base.id,
-      name: base.name,
-    })
-
-    if (!actor) {
-      return items
-    }
-
-    for (const item of [...actor.traits, ...actor.items]) {
-      const spellId = item.metadata?.spellId
-      if (!spellId) continue
-
-      const spell = resolveSpell(spellId)
-      items.push({
-        id: spellId,
-        name: spell?.name ?? spellId,
-        uses: item.metadata?.uses,
-        item,
-      })
-    }
-
-    return items
-  }
-
-  let menuItems = $derived(buildMenuItems(gameState.currentPlayer?.actor))
-  let selectedIndex = $derived(clampIndex(gameState.magicMenuIndex, menuItems.length))
+  let menuItems = $derived(getMagicMenuItems(gameState.currentPlayer?.actor))
+  let selectedIndex = $derived(
+    clampIndex(gameState.magicMenuIndex, menuItems.length),
+  )
 </script>
 
 <div class="magic-scroll" transition:fade>
   <div class="scroll" transition:fly={{ y: 10 }}>
     <div class="title">Magia</div>
     <ul class="list">
-      {#each menuItems as item, i (item.id + ":" + i)}
+      {#each menuItems as item, i (item.spellId + ":" + i)}
         <li class:selected={i === selectedIndex}>
           <span class="marker">{i === selectedIndex ? "▶" : ""}</span>
           <span class="name">{item.name}</span>
@@ -138,4 +104,3 @@
     opacity: 0.9;
   }
 </style>
-
