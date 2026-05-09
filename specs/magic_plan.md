@@ -120,9 +120,11 @@ Reutilizar el mismo paquete `PKT_GAMEPAD_STATE` y cambiar el “routing” del i
   - comportamiento actual (mover cursor, atacar, disparar, etc.)
   - botón Magic => abre el pergamino (si `canCastMagic(currentPlayer.actor)`)
 
-Implementación: routing aplicado en `src/lib/helpers/connections.ts` (A=Magic, C=Caminar). Al abrir, se valida `canCastMagic` y que haya monstruo bajo el cursor; si falla, suena `attackFailSound()`. Al confirmar, se ejecuta “Proyectil mágico” (el resto de hechizos queda pendiente del pipeline unificado).
+Implementación: routing aplicado en `src/lib/helpers/connections.ts` (A=Magic, C=Caminar). Al abrir, se valida `canCastMagic` y que haya monstruo bajo el cursor; si falla, suena `attackFailSound()`. Al confirmar, se lanza el hechizo seleccionado vía `castSpell(...)`.
 
 ## Casting (pipeline unificado)
+
+#### Completado: Sí
 
 Implementar una función central tipo `castSpell(actor, spellId)`:
 
@@ -140,6 +142,8 @@ Implementar una función central tipo `castSpell(actor, spellId)`:
 6. Consumir item (solo si el hechizo viene de un item):
    - `item.metadata.uses--`
    - si `uses <= 0`: `removeItemByName(actor, item.name)`
+
+Implementación: `castSpell(...)` en `src/lib/helpers/spells.ts` + integración en `src/lib/helpers/connections.ts` y wrapper `magickAttack()` en `src/lib/helpers/players.ts`.
 
 ## Hechizos iniciales (mínimo para validar el sistema)
 

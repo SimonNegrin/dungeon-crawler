@@ -16,7 +16,6 @@ import {
   SHOOT_DISTANCE,
   createVisionSystem,
   PLAYER_DEFAULT_HEATH,
-  canCastMagic,
 } from "./common"
 import { gameState } from "../state.svelte"
 import { clearFogAt } from "./fog"
@@ -28,6 +27,7 @@ import {
 } from "./stage"
 import type { CharacterStats, IPlayer, PlayerGenre } from "../types"
 import { projectileTo, combat, physicAttack } from "./combat"
+import { castSpell } from "./spells"
 import Vec2 from "../Vec2"
 import type { RogueName } from "../sprites/SpriteRogue.svelte"
 
@@ -299,51 +299,13 @@ export async function shootMonster(): Promise<boolean> {
 export async function magickAttack(): Promise<boolean> {
   const player = gameState.currentPlayer!
 
-  // Check if the player have magic ability
-  if (!canCastMagic(player.actor)) {
-    return false
-  }
-
   const monster = getAliveActorAtPosition(gameState.cursorPosition)
 
-  if (monster?.type !== "monster") {
-    return false
-  }
-
-  // Check if the player has actions to do magic
-  if (player.actor.currentStats.actions <= 0) {
-    tiredSound()
-    return false
-  }
-
-  // Check if the monster is near enough to shoot
-  if (monster.position.distanceTo(player.actor.position) > SHOOT_DISTANCE) {
-    return false
-  }
-
-  // Check if we have line of sight
-  const visionSystem = createVisionSystem()
-  if (
-    !visionSystem.hasLineOfSight(
-      player.actor.position.x,
-      player.actor.position.y,
-      monster.position.x,
-      monster.position.y,
-    )
-  ) {
-    return false
-  }
-
-  player.actor.currentStats.actions--
-
-  await projectileTo({
-    id: Symbol(),
-    from: player.actor,
-    target: monster,
-    type: "fireball",
+  return castSpell({
+    caster: player.actor,
+    spellId: "magic_projectile",
+    target: monster || undefined,
   })
-
-  return true
 }
 
 export function createPlayerActor(

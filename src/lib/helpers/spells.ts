@@ -1,5 +1,6 @@
 import type { Actor, Item } from "../types"
-import { SHOOT_DISTANCE } from "./common"
+import { canCastMagic, createVisionSystem, SHOOT_DISTANCE } from "./common"
+import { tiredSound } from "./audio"
 import { projectileTo } from "./combat"
 
 export type SpellType = "projectile" | "effect" | "support"
@@ -93,4 +94,87 @@ export function getMagicMenuItems(actor?: Actor): MagicMenuItem[] {
   }
 
   return items
+}
+
+export type CastSpellArgs = {
+  caster: Actor
+  spellId: string
+  target?: Actor
+  item?: Item
+}
+
+export async function castSpell({
+  caster,
+  spellId,
+  target,
+  item,
+}: CastSpellArgs): Promise<boolean> {
+  if (!canCastMagic(caster)) {
+    return false
+  }
+
+  const spell = resolveSpell(spellId)
+  if (!spell) {
+    return false
+  }
+
+  const requiredActions = spell.actionCost || 1
+  if (caster.currentStats.actions < requiredActions) {
+    tiredSound()
+    return false
+  }
+
+  if (spell.requiresTarget) {
+    if (!target || target.type !== "monster") {
+      return false
+    }
+
+    const range = item?.metadata?.range ?? spell.range
+    if (target.position.distanceTo(caster.position) > range) {
+      return false
+    }
+
+    if (spell.requiresLineOfSight) {
+      const visionSystem = createVisionSystem()
+      if (
+        !visionSystem.hasLineOfSight(
+          caster.position.x,
+          caster.position.y,
+          target.position.x,
+          target.position.y,
+        )
+      ) {
+        return false
+      }
+    }
+  }
+
+  caster.currentStats.actions -= requiredActions
+
+  await spell.cast({ caster, target, item })
+
+  if (item && spell.consumesItem) {
+    const uses = item.metadata?.uses
+    if (typeof uses === "number") {
+      item.metadata!.uses = uses - 1
+      if (item.metadata!.uses <= 0) {
+        removeItemInstance(caster, item)
+      }
+    }
+  }
+
+  return true
+}
+
+function removeItemInstance(actor: Actor, item: Item): void {
+  const inItems = actor.items.indexOf(item)
+  if (inItems !== -1) {
+    actor.items.splice(inItems, 1)
+    return
+  }
+
+  const inTraits = actor.traits.indexOf(item)
+  if (inTraits !== -1) {
+    actor.traits.splice(inTraits, 1)
+  }
 }

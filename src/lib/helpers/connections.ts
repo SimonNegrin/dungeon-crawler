@@ -9,14 +9,9 @@ import {
   moveCursorUp,
 } from "./cursor"
 import { nextPlayer } from "./game"
-import {
-  attackMonster,
-  currentPlayerAction,
-  magickAttack,
-  shootMonster,
-} from "./players"
+import { attackMonster, currentPlayerAction, shootMonster } from "./players"
 import { getAliveActorAtPosition } from "./stage"
-import { getMagicMenuItems } from "./spells"
+import { castSpell, getMagicMenuItems } from "./spells"
 
 type PktHandler = (pkt: Uint8Array) => void
 
@@ -164,9 +159,19 @@ function createGamepadStateHandler(conn: IPlayerConnection): PktHandler {
         const selected = items[selectedIndex]
         gameState.magicMenuOpen = false
 
-        if (selected?.spellId === "magic_projectile") {
-          await magickAttack()
+        const caster = gameState.currentPlayer?.actor
+        if (!caster) {
+          return
         }
+
+        const target =
+          getAliveActorAtPosition(gameState.cursorPosition) || undefined
+        await castSpell({
+          caster,
+          spellId: selected?.spellId ?? "magic_projectile",
+          target,
+          item: selected?.item,
+        })
         return
       }
 
