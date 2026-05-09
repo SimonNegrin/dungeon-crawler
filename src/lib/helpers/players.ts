@@ -16,6 +16,7 @@ import {
   SHOOT_DISTANCE,
   createVisionSystem,
   PLAYER_DEFAULT_HEATH,
+  canCastMagic,
 } from "./common"
 import { gameState } from "../state.svelte"
 import { clearFogAt } from "./fog"
@@ -299,7 +300,7 @@ export async function magickAttack(): Promise<boolean> {
   const player = gameState.currentPlayer!
 
   // Check if the player have magic ability
-  if (player.actor.currentStats.magic <= 0) {
+  if (!canCastMagic(player.actor)) {
     return false
   }
 

@@ -39,15 +39,17 @@ Pasar de un único ataque mágico (proyectil) a un sistema de habilidades mágic
 
 ### 1) Definición de “habilidad mágica”
 
-#### Completado: No
+#### Completado: Sí
 
-Implementar un helper único y reutilizable (ej. `canCastMagic(actor)`), con esta semántica:
+Implementado el helper `canCastMagic(actor)` con esta semántica:
 
 - `true` si `actor.currentStats.magic > 0`
 - `true` si algún item/trait en `actor.items` o `actor.traits` otorga magia
 - `false` en caso contrario
 
-Para “otorgar magia” se recomienda añadir un flag explícito a metadata, para no reutilizar el actual `metadata.magic` (hoy se muestra como “Ataque mágico”):
+Implementación: `src/lib/helpers/common.ts` (y uso inicial integrado en el ataque mágico actual).
+
+Para “otorgar magia” se añade un flag explícito a metadata, para no reutilizar el actual `metadata.magic` (hoy se muestra como “Ataque mágico”):
 
 - `ItemMetadata.grantsMagic?: boolean`
 

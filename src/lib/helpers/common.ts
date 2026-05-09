@@ -141,6 +141,16 @@ export function isEthereal(character: ICharacter): boolean {
   })
 }
 
+export function canCastMagic(character: ICharacter): boolean {
+  if (character.currentStats.magic > 0) {
+    return true
+  }
+
+  return [...character.traits, ...character.items].some((item) => {
+    return item.metadata?.grantsMagic === true
+  })
+}
+
 export function removeItemByName(
   character: ICharacter,
   itemName: string,

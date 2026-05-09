@@ -118,6 +118,7 @@ export interface ItemMetadata {
   range?: number // para armas a distancia
   ethereal?: boolean // inmunidad física
   magic?: boolean // ataque mágico
+  grantsMagic?: boolean
 }
 
 export interface Item {
