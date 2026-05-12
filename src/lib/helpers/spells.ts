@@ -43,6 +43,8 @@ export const SPELLS = {
         from: caster,
         target,
         type: "fireball",
+        tint: "var(--color-mild-yellow-white)",
+        impactTint: "var(--color-gold-yellow)",
       })
     },
   },

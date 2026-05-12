@@ -15,6 +15,10 @@
 
   let animation: Animation
   let showBullet = $state(true)
+  let bulletTint = $derived(config.tint ?? "var(--color-mild-yellow-white)")
+  let impactTint = $derived(
+    config.impactTint ?? config.tint ?? "var(--color-gold-yellow)",
+  )
 
   onMount(magicShootSound)
 
@@ -40,7 +44,7 @@
   <div class="projectile-magic-fireball">
     <div class="fireball">
       <Animation
-        color="var(--color-gold-yellow)"
+        color={impactTint}
         bind:this={animation}
         animation={{
           spritesheet: "/animations/explotions.png",
@@ -61,7 +65,11 @@
           ],
         }}
       />
-      <div class="bullet" class:show={showBullet}></div>
+      <div
+        class="bullet"
+        class:show={showBullet}
+        style:background-color={bulletTint}
+      ></div>
     </div>
   </div>
 </Projectile>
@@ -87,7 +95,6 @@
     width: 6px;
     height: 6px;
     border-radius: 100%;
-    background-color: var(--color-mild-yellow-white);
     opacity: 0;
 
     &.show {

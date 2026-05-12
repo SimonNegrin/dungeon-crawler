@@ -27,7 +27,7 @@ Completado: No
 
 ## Iteración 1 — Colores configurables en proyectiles (base)
 
-Completado: No
+Completado: Sí
 
 - Extender `IProjectileConfig` para soportar estilo visual, por ejemplo:
   - `tint?: string`
@@ -73,7 +73,7 @@ Completado: No
 
 ## Iteración 5 — Señalización persistente de estados en enemigos (freeze como base)
 
-Completado: No
+Completado: Sí
 
 - Derivar estado visual del actor desde `actor.traits/items` (similar a `isEthereal(actor)`):
   - identificar `frozen` y otros estados futuros

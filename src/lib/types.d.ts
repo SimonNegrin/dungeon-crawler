@@ -229,6 +229,8 @@ export interface IProjectileConfig {
   from: Actor
   target: Actor
   type: ProjectileType
+  tint?: string
+  impactTint?: string
 }
 
 export interface WebRtcHandle {

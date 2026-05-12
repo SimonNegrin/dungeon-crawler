@@ -13,6 +13,7 @@
   } = $props()
 
   let angle = $derived(config.target.position.sub(config.from.position).angle())
+  let tint = $derived(config.tint ?? "var(--color-mild-yellow-white)")
 
   onMount(arrowShootSound)
 
@@ -32,7 +33,11 @@
 
 <Projectile {config} {ontarget}>
   <div class="projectile-arrow">
-    <div class="arrow" style:transform="rotate({angle}rad)"></div>
+    <div
+      class="arrow"
+      style:transform="rotate({angle}rad)"
+      style:background-color={tint}
+    ></div>
   </div>
 </Projectile>
 
@@ -47,6 +52,5 @@
   .arrow {
     width: 18px;
     height: 1px;
-    background-color: var(--color-mild-yellow-white);
   }
 </style>

@@ -141,6 +141,12 @@ export function isEthereal(character: ICharacter): boolean {
   })
 }
 
+export function isFrozen(character: ICharacter): boolean {
+  return [...character.traits, ...character.items].some((item) => {
+    return item.metadata?.frozen === true
+  })
+}
+
 export function canCastMagic(character: ICharacter): boolean {
   if (character.currentStats.magic > 0) {
     return true
