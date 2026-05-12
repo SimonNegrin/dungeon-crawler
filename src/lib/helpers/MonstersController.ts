@@ -16,12 +16,12 @@ import { combat, physicAttack } from "./combat"
 export default class MonstersController {
   private monstersPool: IMonster[] = []
   private visionSystem = createVisionSystem()
-  private frozenThisTurn = new Set<string>()
+  private statusBlockedThisTurn = new Set<string>()
 
   async execute(): Promise<void> {
     gameState.ignoreInput = true
     this.restoreMonstersStats()
-    this.tickFrozen()
+    this.tickStatuses()
     this.loadMonstersPool()
     await this.attackPhase()
     await this.movePhase()
@@ -35,38 +35,52 @@ export default class MonstersController {
   // will have finished
   private loadMonstersPool(): void {
     this.monstersPool = gameState.monsters.filter((monster) => {
-      return monster.isAlive && !this.frozenThisTurn.has(monster.id)
+      return monster.isAlive && !this.statusBlockedThisTurn.has(monster.id)
     })
   }
 
-  private tickFrozen(): void {
-    this.frozenThisTurn.clear()
+  private tickStatuses(): void {
+    this.statusBlockedThisTurn.clear()
 
     for (const monster of gameState.monsters) {
       if (!monster.isAlive) continue
 
-      const frozen = [...monster.traits, ...monster.items].find((item) => {
-        return item.metadata?.frozen === true
-      })
+      const statusItems = [...monster.traits, ...monster.items].filter(
+        (item) => {
+          const m = item.metadata
+          if (!m || typeof m.turns !== "number" || m.turns <= 0) {
+            return false
+          }
+          return (
+            m.frozen === true ||
+            m.burning === true ||
+            m.confused === true ||
+            m.statusId !== undefined
+          )
+        },
+      )
 
-      const turns = frozen?.metadata?.turns
-      if (!frozen || typeof turns !== "number" || turns <= 0) {
-        continue
-      }
+      for (const item of statusItems) {
+        const m = item.metadata!
+        const isFrozen = m.frozen === true || m.statusId === "frozen"
 
-      this.frozenThisTurn.add(monster.id)
-      frozen.metadata!.turns = turns - 1
+        m.turns = m.turns! - 1
 
-      if (frozen.metadata!.turns <= 0) {
-        const inTraits = monster.traits.indexOf(frozen)
-        if (inTraits !== -1) {
-          monster.traits.splice(inTraits, 1)
-          continue
+        if (isFrozen) {
+          this.statusBlockedThisTurn.add(monster.id)
         }
 
-        const inItems = monster.items.indexOf(frozen)
-        if (inItems !== -1) {
-          monster.items.splice(inItems, 1)
+        if (m.turns <= 0) {
+          const inTraits = monster.traits.indexOf(item)
+          if (inTraits !== -1) {
+            monster.traits.splice(inTraits, 1)
+            continue
+          }
+
+          const inItems = monster.items.indexOf(item)
+          if (inItems !== -1) {
+            monster.items.splice(inItems, 1)
+          }
         }
       }
     }

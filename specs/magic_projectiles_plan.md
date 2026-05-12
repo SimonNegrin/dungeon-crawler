@@ -236,17 +236,57 @@ Completado: Sí
 
 ## Iteración 6 — Marco general de estados con VFX (burning / confused / etc.)
 
-Completado: No
+Completado: Sí
 
-- Estandarizar metadata para estados temporales:
-  - opción rápida: flags por estado en `ItemMetadata` (`burning`, `confused`, etc.) + `turns`
-  - opción escalable: `statusId: "frozen" | "burning" | "confused"` + `turns`
-- Implementar overlays por estado en `Avatar.svelte`:
-  - Frozen: tint azul + cristales/escarcha
-  - Burning: glow naranja/rojo pulsante (y opcional partículas)
-  - Confused: estrellas orbitando o overlay equivalente
-- Validación manual:
+- Estandarizar metadata para estados temporales: ✅
+  - Flags por estado en `ItemMetadata` (`burning`, `confused`) + `turns` (compatibilidad)
+  - Opción escalable: `statusId: "frozen" | "burning" | "confused"` + `turns` (preferida)
+- Implementar overlays por estado en `Avatar.svelte`: ✅
+  - Frozen: tint azul + escarcha (ya existente, mantenido)
+  - Burning: glow naranja/rojo pulsante (`burning-pulse` 600ms alternate)
+  - Confused: estrellas amarillas orbitando (`confused-spin` 900ms linear) + wobble del sprite
+- Validación manual: ✅
   - Si existen múltiples estados, se apilan con prioridad/legibilidad controlada
+
+### Cambios realizados
+
+- **`types.d.ts`**: añadidos a `ItemMetadata`:
+  - `burning?: boolean` — flag de compatibilidad
+  - `confused?: boolean` — flag de compatibilidad
+  - `statusId?: "frozen" | "burning" | "confused"` — enfoque escalable (preferido para nuevos hechizos)
+- **`common.ts`**:
+  - `isFrozen()` actualizado para detectar también `statusId === "frozen"`
+  - `isBurning()` — nuevo helper
+  - `isConfused()` — nuevo helper
+  - `getActorStatuses()` — nuevo helper que devuelve array de estados activos
+- **`Avatar.svelte`**: tres overlays independientes con prioridad visual:
+  - `.frozen` / `.frozen-overlay` (z-index: 1) — azul, escarcha
+  - `.burning` / `.burning-overlay` (z-index: 2) — naranja/rojo, pulso borroso, `inset: -4px` para glow exterior
+  - `.confused` / `.confused-overlay` (z-index: 3) — estrellas amarillas rotando, `inset: -8px` para orbitar alrededor
+  - `.confused` en sprite-wrapper → animación wobble lateral
+  - `.burning` en sprite-wrapper → `saturate(1.3) brightness(1.1)`
+  - Los overlays no interfieren entre sí: `pointer-events: none`, posicionamiento absoluto independiente
+- **`MonstersController.ts`**:
+  - `frozenThisTurn` → `statusBlockedThisTurn`
+  - `tickFrozen()` → `tickStatuses()` — itera todos los items con metadata de estado, decrementa `turns`, elimina al expirar
+  - Solo frozen bloquea acciones (`statusBlockedThisTurn.add`); burning y confused son solo visuales por ahora
+
+### Prioridad de apilamiento visual
+
+```
+┌─────────────────────────┐
+│ confused-overlay z:3    │ ← estrellas amarillas rotando (más exterior)
+│   ┌───────────────────┐ │
+│   │ burning-overlay z:2 │ ← glow naranja pulsante
+│   │   ┌─────────────┐ │ │
+│   │   │ frozen-overlay│ │ ← escarcha azul (más interior)
+│   │   │   SPRITE    │ │ │
+│   │   └─────────────┘ │ │
+│   └───────────────────┘ │
+└─────────────────────────┘
+```
+
+Estados coexistentes se apilan limpiamente: frozen modifica el sprite con filtros, burning y confused añaden overlays posicionados en capas independientes. Cada overlay puede mostrarse u ocultarse sin afectar a los demás.
 
 ## Iteración 7 — Hechizos que aplican estados + mantenimiento por turno
 

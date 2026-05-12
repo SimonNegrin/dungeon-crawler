@@ -124,6 +124,9 @@ export interface ItemMetadata {
   spellId?: string
   spellPower?: number
   frozen?: boolean
+  burning?: boolean
+  confused?: boolean
+  statusId?: "frozen" | "burning" | "confused"
 }
 
 export interface Item {
