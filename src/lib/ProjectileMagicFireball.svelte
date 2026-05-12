@@ -3,7 +3,6 @@
   import Projectile from "./Projectile.svelte"
   import type { IProjectileConfig } from "./types"
   import { events } from "./helpers/common"
-  import { attackRoll, damage } from "./helpers/combat"
   import { magicFireSound, magicShootSound } from "./helpers/audio"
   import { onMount } from "svelte"
 
@@ -25,14 +24,7 @@
   async function ontarget(): Promise<void> {
     showBullet = false
 
-    const hits = attackRoll(
-      config.from.currentStats.magic,
-      config.target.currentStats.defence,
-    )
-
-    if (hits > 0) {
-      damage(config.target, hits)
-    }
+    config.onImpact?.(config)
 
     magicFireSound()
     await animation.play()

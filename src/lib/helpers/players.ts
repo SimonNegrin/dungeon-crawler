@@ -26,7 +26,13 @@ import {
   isActorAtPositon,
 } from "./stage"
 import type { CharacterStats, IPlayer, PlayerGenre } from "../types"
-import { projectileTo, combat, physicAttack } from "./combat"
+import {
+  projectileTo,
+  combat,
+  physicAttack,
+  attackRoll,
+  damage,
+} from "./combat"
 import { castSpell } from "./spells"
 import Vec2 from "../Vec2"
 import type { RogueName } from "../sprites/SpriteRogue.svelte"
@@ -291,6 +297,15 @@ export async function shootMonster(): Promise<boolean> {
     from: player.actor,
     target: monster,
     type: "arrow",
+    onImpact(config) {
+      const hits = attackRoll(
+        config.from.currentStats.aim,
+        config.target.currentStats.defence,
+      )
+      if (hits > 0) {
+        damage(config.target, hits)
+      }
+    },
   })
 
   return true

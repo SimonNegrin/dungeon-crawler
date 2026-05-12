@@ -1,7 +1,7 @@
 import type { Actor, Item } from "../types"
 import { canCastMagic, createVisionSystem, SHOOT_DISTANCE } from "./common"
 import { tiredSound } from "./audio"
-import { projectileTo } from "./combat"
+import { projectileTo, attackRoll, damage } from "./combat"
 
 export type SpellType = "projectile" | "effect" | "support"
 
@@ -45,6 +45,15 @@ export const SPELLS = {
         type: "fireball",
         tint: "var(--color-mild-yellow-white)",
         impactTint: "var(--color-gold-yellow)",
+        onImpact(config) {
+          const hits = attackRoll(
+            config.from.currentStats.magic,
+            config.target.currentStats.defence,
+          )
+          if (hits > 0) {
+            damage(config.target, hits)
+          }
+        },
       })
     },
   },

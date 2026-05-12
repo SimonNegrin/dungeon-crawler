@@ -231,6 +231,7 @@ export interface IProjectileConfig {
   type: ProjectileType
   tint?: string
   impactTint?: string
+  onImpact?: (config: IProjectileConfig) => void
 }
 
 export interface WebRtcHandle {

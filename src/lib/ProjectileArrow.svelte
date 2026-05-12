@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte"
-  import { attackRoll, damage } from "./helpers/combat"
   import { events } from "./helpers/common"
   import Projectile from "./Projectile.svelte"
   import type { IProjectileConfig } from "./types"
@@ -18,15 +17,7 @@
   onMount(arrowShootSound)
 
   async function ontarget(): Promise<void> {
-    const hits = attackRoll(
-      config.from.currentStats.aim,
-      config.target.currentStats.defence,
-    )
-
-    if (hits > 0) {
-      damage(config.target, hits)
-    }
-
+    config.onImpact?.(config)
     events.shootCompleted.emit(config)
   }
 </script>
