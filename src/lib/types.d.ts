@@ -221,7 +221,7 @@ export interface IProjectile {
   resolve: () => void
 }
 
-export type ProjectileType = "arrow" | "fireball"
+export type ProjectileType = "arrow" | "fireball" | "magic"
 export type ProjectileComponent = Component<{ config: IProjectileConfig }>
 
 export interface IProjectileConfig {
@@ -229,6 +229,7 @@ export interface IProjectileConfig {
   from: Actor
   target: Actor
   type: ProjectileType
+  variant?: "bolt" | "orb" | "shard"
   tint?: string
   impactTint?: string
   onImpact?: (config: IProjectileConfig) => void

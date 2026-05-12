@@ -42,7 +42,8 @@ export const SPELLS = {
         id: Symbol(),
         from: caster,
         target,
-        type: "fireball",
+        type: "magic",
+        variant: "orb",
         tint: "var(--color-mild-yellow-white)",
         impactTint: "var(--color-gold-yellow)",
         onImpact(config) {
@@ -87,6 +88,108 @@ export const SPELLS = {
         metadata: {
           frozen: true,
           turns: 2,
+        },
+      })
+    },
+  },
+  magic_bolt: {
+    id: "magic_bolt",
+    name: "Rayo arcano",
+    type: "projectile",
+    requiresTarget: true,
+    range: SHOOT_DISTANCE,
+    requiresLineOfSight: true,
+    actionCost: 1,
+    consumesItem: true,
+    async cast({ caster, target }) {
+      if (!target) {
+        return
+      }
+
+      await projectileTo({
+        id: Symbol(),
+        from: caster,
+        target,
+        type: "magic",
+        variant: "bolt",
+        tint: "#aa55ff",
+        impactTint: "#cc88ff",
+        onImpact(config) {
+          const hits = attackRoll(
+            config.from.currentStats.magic,
+            config.target.currentStats.defence,
+          )
+          if (hits > 0) {
+            damage(config.target, hits)
+          }
+        },
+      })
+    },
+  },
+  magic_shard: {
+    id: "magic_shard",
+    name: "Esquirla de hielo",
+    type: "projectile",
+    requiresTarget: true,
+    range: SHOOT_DISTANCE,
+    requiresLineOfSight: true,
+    actionCost: 1,
+    consumesItem: true,
+    async cast({ caster, target }) {
+      if (!target) {
+        return
+      }
+
+      await projectileTo({
+        id: Symbol(),
+        from: caster,
+        target,
+        type: "magic",
+        variant: "shard",
+        tint: "#55ccff",
+        impactTint: "#88ddff",
+        onImpact(config) {
+          const hits = attackRoll(
+            config.from.currentStats.magic,
+            config.target.currentStats.defence,
+          )
+          if (hits > 0) {
+            damage(config.target, hits)
+          }
+        },
+      })
+    },
+  },
+  magic_poison: {
+    id: "magic_poison",
+    name: "Orbe tóxico",
+    type: "projectile",
+    requiresTarget: true,
+    range: SHOOT_DISTANCE,
+    requiresLineOfSight: true,
+    actionCost: 1,
+    consumesItem: true,
+    async cast({ caster, target }) {
+      if (!target) {
+        return
+      }
+
+      await projectileTo({
+        id: Symbol(),
+        from: caster,
+        target,
+        type: "magic",
+        variant: "orb",
+        tint: "#44cc44",
+        impactTint: "#77ff77",
+        onImpact(config) {
+          const hits = attackRoll(
+            config.from.currentStats.magic,
+            config.target.currentStats.defence,
+          )
+          if (hits > 0) {
+            damage(config.target, hits)
+          }
         },
       })
     },

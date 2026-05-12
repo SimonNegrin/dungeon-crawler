@@ -490,6 +490,33 @@ const itemPrefabs: Item[] = [
     },
   },
   {
+    sprite: "scroll 2",
+    name: "Página de rayo arcano",
+    desc: "Lanza un rayo de energía arcana",
+    metadata: {
+      spellId: "magic_bolt",
+      uses: 3,
+    },
+  },
+  {
+    sprite: "scroll 2",
+    name: "Página de esquirla helada",
+    desc: "Lanza una esquirla de hielo cortante",
+    metadata: {
+      spellId: "magic_shard",
+      uses: 3,
+    },
+  },
+  {
+    sprite: "page",
+    name: "Página de orbe tóxico",
+    desc: "Lanza un orbe de energía venenosa",
+    metadata: {
+      spellId: "magic_poison",
+      uses: 3,
+    },
+  },
+  {
     sprite: "tome",
     name: "Tomo arcano",
     desc: "Otorga habilidad mágica",

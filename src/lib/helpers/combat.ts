@@ -21,12 +21,14 @@ import { gameState } from "../state.svelte"
 import { PKT_PLAYER_HEALTH } from "./connections"
 import ProjectileArrow from "../ProjectileArrow.svelte"
 import ProjectileMagicFireball from "../ProjectileMagicFireball.svelte"
+import MagicProjectile from "../MagicProjectile.svelte"
 
 const dice6 = createDice(6)
 
 export const projectilesMap: Record<ProjectileType, ProjectileComponent> = {
   arrow: ProjectileArrow,
   fireball: ProjectileMagicFireball,
+  magic: MagicProjectile,
 }
 
 export async function combat(from: Actor, target: Actor): Promise<void> {
